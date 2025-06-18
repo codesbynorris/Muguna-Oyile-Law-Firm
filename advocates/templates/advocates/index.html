@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  {% load static %}
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Muguna & Oyile Law Firm - Expert legal services in business, real estate, and family law">
+  <title>Muguna & Oyile | Trusted Legal Services in Kenya</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+  <link rel="icon" href="{% static 'images/favicon.ico' %}" type="image/x-icon">
+</head>
+<body>
+  <!-- Skip to Content Link for Accessibility -->
+  <a href="#main-content" class="skip-link">Skip to main content</a>
+
+  <!-- Header -->
+<header id="header">
+  <div class="container header-container">
+    <div class="logo">
+      <a href="#home">MUGUNA & OYILE</a>
+    </div>
+    <nav>
+      <ul id="navMenu">
+        <li><a href="#home">Home</a></li>
+        <li><a href="#services">Services</a></li>
+        <li><a href="#about">About</a></li>
+        <li><a href="#attorneys">Attorneys</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+    </nav>
+    <div class="mobile-menu-btn" id="mobileMenuBtn">
+      <i class="fas fa-bars"></i>
+    </div>
+  </div>
+</header>
+
+  <!-- Main Content -->
+  <main id="main-content">
+    <!-- Hero Section -->
+    <section class="hero" id="home" aria-labelledby="hero-heading">
+      <div class="container">
+        <h1 id="hero-heading">Expert Legal Solutions You Can Trust</h1>
+        <p>Our team of experienced attorneys is dedicated to providing personalized legal services to protect your rights and interests.</p>
+        <div class="hero-buttons">
+          <a href="#contact" class="btn btn-primary">Schedule Consultation</a>
+          <a href="#services" class="btn btn-secondary">Learn More</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Services Section -->
+    <section class="services section-padding" id="services" aria-labelledby="services-heading">
+      <div class="container">
+        <div class="section-header">
+          <h2 id="services-heading">Our Legal Services</h2>
+          <p class="section-subtitle">Comprehensive legal solutions tailored to your needs</p>
+        </div>
+        <div class="services-grid">
+          <article class="service-card">
+            <div class="service-icon" aria-hidden="true">
+              <i class="fas fa-briefcase"></i>
+            </div>
+            <h3>Business Law</h3>
+            <p>Corporate structuring, contracts, compliance, mergers & acquisitions, and business litigation.</p>
+            <a href="#contact" class="service-link" aria-label="Learn more about Business Law">Learn more <i class="fas fa-chevron-right"></i></a>
+          </article>
+          <article class="service-card">
+            <div class="service-icon" aria-hidden="true">
+              <i class="fas fa-home"></i>
+            </div>
+            <h3>Real Estate</h3>
+            <p>Property transactions, title disputes, landlord-tenant matters, and real estate development.</p>
+            <a href="#contact" class="service-link" aria-label="Learn more about Real Estate Law">Learn more <i class="fas fa-chevron-right"></i></a>
+          </article>
+          <article class="service-card">
+            <div class="service-icon" aria-hidden="true">
+              <i class="fas fa-users"></i>
+            </div>
+            <h3>Family Law</h3>
+            <p>Divorce, child custody, prenuptial agreements, adoption, and domestic violence cases.</p>
+            <a href="#contact" class="service-link" aria-label="Learn more about Family Law">Learn more <i class="fas fa-chevron-right"></i></a>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- About Section -->
+    <section class="about section-padding bg-light" id="about" aria-labelledby="about-heading">
+      <div class="container">
+        <div class="about-content">
+          <div class="about-text">
+            <h2 id="about-heading">About Our Firm</h2>
+            <p class="lead">Founded in 2010, Muguna & Oyile has established itself as a premier law firm in Kenya, known for its commitment to excellence and client-focused approach.</p>
+            <p>Our team combines decades of legal experience with a deep understanding of Kenyan law. We pride ourselves on delivering strategic, practical solutions to complex legal challenges while maintaining the highest ethical standards.</p>
+            <div class="stats">
+              <div class="stat-item">
+                <span class="stat-number" data-count="250">0</span>+
+                <span class="stat-label">Cases Handled</span>
+              </div>
+              <div class="stat-item">
+                <span class="stat-number" data-count="15">0</span>+
+                <span class="stat-label">Years Experience</span>
+              </div>
+              <div class="stat-item">
+                <span class="stat-number" data-count="98">0</span>%
+                <span class="stat-label">Success Rate</span>
+              </div>
+            </div>
+          </div>
+          <div class="about-image">
+            <img src="https://th.bing.com/th/id/OIP.3UaLE1RlTurlKhW1xmIJ1QHaEq?rs=1&pid=ImgDetMain" alt="Our law firm office" loading="lazy">
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Attorneys Section -->
+    <section class="attorneys section-padding" id="attorneys" aria-labelledby="attorneys-heading">
+      <div class="container">
+        <div class="section-header">
+          <h2 id="attorneys-heading">Our Attorneys</h2>
+          <p class="section-subtitle">Meet our team of dedicated legal professionals</p>
+        </div>
+        <div class="attorneys-grid">
+          <article class="attorney-card">
+            <div class="attorney-image">
+              <img src="https://randomuser.me/api/portraits/women/45.jpg" alt="Attorney Sarah Johnson" loading="lazy">
+            </div>
+            <h3>Sarah Johnson</h3>
+            <p class="attorney-title">Business Law Specialist</p>
+            <p class="attorney-bio">With 12 years of experience in corporate law, Sarah has helped numerous businesses navigate complex legal landscapes.</p>
+            <div class="attorney-contact">
+              <a href="mailto:sarah@muguna-oyile.com" aria-label="Email Sarah Johnson"><i class="fas fa-envelope"></i></a>
+              <a href="tel:+254712345678" aria-label="Call Sarah Johnson"><i class="fas fa-phone"></i></a>
+            </div>
+          </article>
+          <article class="attorney-card">
+            <div class="attorney-image">
+              <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Attorney Michael Chen" loading="lazy">
+            </div>
+            <h3>Michael Chen</h3>
+            <p class="attorney-title">Real Estate Attorney</p>
+            <p class="attorney-bio">Michael specializes in property law and has successfully handled over 150 real estate transactions.</p>
+            <div class="attorney-contact">
+              <a href="mailto:michael@muguna-oyile.com" aria-label="Email Michael Chen"><i class="fas fa-envelope"></i></a>
+              <a href="tel:+254712345679" aria-label="Call Michael Chen"><i class="fas fa-phone"></i></a>
+            </div>
+          </article>
+          <article class="attorney-card">
+            <div class="attorney-image">
+              <img src="https://randomuser.me/api/portraits/women/68.jpg" alt="Attorney Emily Rodriguez" loading="lazy">
+            </div>
+            <h3>Emily Rodriguez</h3>
+            <p class="attorney-title">Family Law Expert</p>
+            <p class="attorney-bio">Emily brings compassion and expertise to family law matters, helping clients through difficult transitions.</p>
+            <div class="attorney-contact">
+              <a href="mailto:emily@muguna-oyile.com" aria-label="Email Emily Rodriguez"><i class="fas fa-envelope"></i></a>
+              <a href="tel:+254712345680" aria-label="Call Emily Rodriguez"><i class="fas fa-phone"></i></a>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section class="testimonials section-padding bg-light" aria-labelledby="testimonials-heading">
+      <div class="container">
+        <div class="section-header">
+          <h2 id="testimonials-heading">Client Testimonials</h2>
+          <p class="section-subtitle">What our clients say about us</p>
+        </div>
+        <div class="testimonials-slider">
+          <div class="testimonial">
+            <div class="testimonial-content">
+              <i class="fas fa-quote-left" aria-hidden="true"></i>
+              <p>Muguna & Oyile provided exceptional service during our business acquisition. Their attention to detail and strategic advice were invaluable.</p>
+            </div>
+            <div class="testimonial-author">
+              <p class="author-name">James Mwangi</p>
+              <p class="author-title">CEO, Acme Enterprises</p>
+            </div>
+          </div>
+          <!-- Additional testimonials would go here -->
+        </div>
+      </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section class="contact section-padding" id="contact" aria-labelledby="contact-heading">
+  <div class="container">
+    <div class="section-header">
+      <h2 id="contact-heading">Contact Us</h2>
+      <p class="section-subtitle">Get in touch with our legal team</p>
+    </div>
+    
+    <div class="contact-content">
+      <div class="contact-methods">
+        
+        
+        <div class="contact-info">
+          <div class="info-item">
+            <i class="fas fa-map-marker-alt"></i>
+            <div>
+              <h3>Our Office</h3>
+              <address>123 Legal Avenue, Suite 500<br>Nairobi, Kenya</address>
+            </div>
+          </div>
+          <div class="info-item">
+            <i class="fas fa-phone-alt"></i>
+            <div>
+              <h3>Phone</h3>
+              <p><a href="tel:+254746152650">+254 746 152650</a></p>
+            </div>
+          </div>
+          <div class="info-item">
+            <i class="fas fa-clock"></i>
+            <div>
+              <h3>Hours</h3>
+              <p>Mon-Fri: 8:00 AM - 5:00 PM<br>Sat: 9:00 AM - 1:00 PM</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="map-container">
+        <iframe
+          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d15955.050674902174!2d39.845718!3d-3.617586!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x18405963e04b72a3%3A0x89cabc6b8329fdb1!2sMkoroshoni%2C%20Kilifi!5e0!3m2!1sen!2ske!4v1700000000000"
+          width="100%" height="400" style="border:0;" allowfullscreen="" loading="lazy"
+          referrerpolicy="no-referrer-when-downgrade" aria-label="Our location on Google Maps">
+        </iframe>
+      </div>
+    </div>
+  </div>
+</section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer" role="contentinfo">
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-column">
+          <h3 class="footer-logo">MUGUNA & OYILE</h3>
+          <p>Providing exceptional legal services with integrity and professionalism since 2010.</p>
+          <div class="footer-social">
+            <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+            <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+            <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+            <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+          </div>
+        </div>
+        <div class="footer-column">
+          <h3>Quick Links</h3>
+          <ul>
+            <li><a href="#home">Home</a></li>
+            <li><a href="#services">Services</a></li>
+            <li><a href="#about">About Us</a></li>
+            <li><a href="#attorneys">Attorneys</a></li>
+            <li><a href="#contact">Contact</a></li>
+          </ul>
+        </div>
+        <div class="footer-column">
+          <h3>Services</h3>
+          <ul>
+            <li><a href="#services">Business Law</a></li>
+            <li><a href="#services">Real Estate</a></li>
+            <li><a href="#services">Family Law</a></li>
+            <li><a href="#services">Legal Consultation</a></li>
+          </ul>
+        </div>
+        <div class="footer-column">
+          <h3>Newsletter</h3>
+          <p>Subscribe to our newsletter for legal updates and insights.</p>
+          <form class="newsletter-form">
+            <input type="email" placeholder="Your email address" required>
+            <button type="submit" class="btn btn-secondary">Subscribe</button>
+          </form>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2023 Muguna & Oyile Advocates. All Rights Reserved.</p>
+        <div class="footer-links">
+          <a href="#">Privacy Policy</a>
+          <a href="#">Terms of Service</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Back to Top Button -->
+  <button id="backToTop" class="back-to-top" aria-label="Back to top">
+    <i class="fas fa-arrow-up"></i>
+  </button>
+
+  <script src="{% static 'js/script.js' %}" defer></script>
+</body>
+</html>
