@@ -1,0 +1,122 @@
+{% extends "base.html" %}
+
+{% block title %}Home | Muguna & Oyile{% endblock %}
+
+{% block content %}
+  <!-- Hero Section -->
+  <section class="hero" id="home" aria-labelledby="hero-heading">
+    <div class="container">
+      <h1 id="hero-heading">Expert Legal Solutions You Can Trust</h1>
+      <p>Our team of experienced attorneys is dedicated to providing personalized legal services to protect your rights and interests.</p>
+      <div class="hero-buttons">
+        <a href="{% url 'contact' %}" class="btn btn-primary">Schedule Consultation</a>
+        <a href="{% url 'services' %}" class="btn btn-secondary">Learn More</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Services Section -->
+  <section class="services section-padding" id="services" aria-labelledby="services-heading">
+    <div class="container">
+      <div class="section-header">
+        <h2 id="services-heading">Our Legal Services</h2>
+        <p class="section-subtitle">Expert legal solutions tailored to your specific needs</p>
+      </div>
+      <div class="services-grid">
+        <!-- Consultancy Services -->
+        <article class="service-card">
+          <div class="service-icon">
+            <i class="fas fa-handshake"></i>
+          </div>
+          <div class="service-content">
+            <h3>Consultancy Services</h3>
+            <p class="service-description">Strategic legal advice and guidance to help you navigate complex legal landscapes and make informed decisions.</p>
+            <ul class="service-features">
+              <li><i class="fas fa-check-circle"></i> Legal risk assessment</li>
+              <li><i class="fas fa-check-circle"></i> Regulatory compliance</li>
+              <li><i class="fas fa-check-circle"></i> Contract review & drafting</li>
+              <li><i class="fas fa-check-circle"></i> Due diligence</li>
+            </ul>
+            <a href="{% url 'contact' %}" class="btn btn-outline">Request Consultation</a>
+          </div>
+        </article>
+
+        <!-- Corporate & Commercial Law -->
+        <article class="service-card">
+          <div class="service-icon">
+            <i class="fas fa-briefcase"></i>
+          </div>
+          <div class="service-content">
+            <h3>Corporate & Commercial Law</h3>
+            <p class="service-description">Comprehensive legal support for businesses at every stage of their lifecycle.</p>
+            <ul class="service-features">
+              <li><i class="fas fa-check-circle"></i> Company formation</li>
+              <li><i class="fas fa-check-circle"></i> Mergers & acquisitions</li>
+              <li><i class="fas fa-check-circle"></i> Corporate governance</li>
+              <li><i class="fas fa-check-circle"></i> Commercial contracts</li>
+            </ul>
+            <a href="{% url 'contact' %}" class="btn btn-outline">Discuss Your Needs</a>
+          </div>
+        </article>
+
+        <!-- Property & Real Estate Law -->
+        <article class="service-card">
+          <div class="service-icon">
+            <i class="fas fa-home"></i>
+          </div>
+          <div class="service-content">
+            <h3>Property & Real Estate Law</h3>
+            <p class="service-description">Expert guidance through all aspects of property transactions and disputes.</p>
+            <ul class="service-features">
+              <li><i class="fas fa-check-circle"></i> Conveyancing</li>
+              <li><i class="fas fa-check-circle"></i> Title disputes</li>
+              <li><i class="fas fa-check-circle"></i> Lease agreements</li>
+              <li><i class="fas fa-check-circle"></i> Development projects</li>
+            </ul>
+            <a href="{% url 'contact' %}" class="btn btn-outline">Get Started</a>
+          </div>
+        </article>
+
+        <!-- Dispute Resolution -->
+        <article class="service-card">
+          <div class="service-icon">
+            <i class="fas fa-balance-scale"></i>
+          </div>
+          <div class="service-content">
+            <h3>Dispute Resolution</h3>
+            <p class="service-description">Effective strategies for resolving conflicts through negotiation, mediation, or litigation.</p>
+            <ul class="service-features">
+              <li><i class="fas fa-check-circle"></i> Commercial disputes</li>
+              <li><i class="fas fa-check-circle"></i> Employment disputes</li>
+              <li><i class="fas fa-check-circle"></i> Contract disputes</li>
+              <li><i class="fas fa-check-circle"></i> Alternative dispute resolution</li>
+            </ul>
+            <a href="{% url 'contact' %}" class="btn btn-outline">Resolve Your Matter</a>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- Testimonials Section -->
+  <section class="testimonials section-padding bg-light" aria-labelledby="testimonials-heading">
+    <div class="container">
+      <div class="section-header">
+        <h2 id="testimonials-heading">Client Testimonials</h2>
+        <p class="section-subtitle">What our clients say about us</p>
+      </div>
+      <div class="testimonials-slider">
+        <div class="testimonial">
+          <div class="testimonial-content">
+            <i class="fas fa-quote-left" aria-hidden="true"></i>
+            <p>Muguna & Oyile provided exceptional service during our business acquisition. Their attention to detail and strategic advice were invaluable.</p>
+          </div>
+          <div class="testimonial-author">
+            <p class="author-name">James Mwangi</p>
+            <p class="author-title">CEO, Acme Enterprises</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+{% endblock %}

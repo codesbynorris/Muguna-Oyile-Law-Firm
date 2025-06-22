@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Muguna & Oyile Law Firm - Expert legal services in business, real estate, and family law">
+  <title>{% block title %}Muguna & Oyile | Trusted Legal Services in Kenya{% endblock %}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Hoefler+Text&family=Montserrat:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+  {% block extra_css %}{% endblock %}
+</head>
+<body>
+  <!-- Skip to Content Link for Accessibility -->
+  <a href="#main-content" class="skip-link">Skip to main content</a>
+
+  <!-- Header -->
+  <header id="header">
+    <div class="container header-container">
+      <div class="logo">
+        <a href="{% url 'home' %}" aria-label="Home">
+          <img src="{% static 'images/logo.png' %}" 
+               alt="Muguna & Oyile Law Firm Logo" 
+               width="180" 
+               height="60"
+               loading="eager">
+        </a>
+      </div>
+      <nav>
+        <ul id="navMenu">
+          <li><a href="{% url 'home' %}" {% if request.path == '/' %}class="active"{% endif %}>Home</a></li>
+          <li><a href="{% url 'services' %}" {% if request.path == '/services/' %}class="active"{% endif %}>Services</a></li>
+          <li><a href="{% url 'about' %}" {% if request.path == '/about/' %}class="active"{% endif %}>About</a></li>
+          <li><a href="{% url 'attorneys' %}" {% if request.path == '/attorneys/' %}class="active"{% endif %}>Attorneys</a></li>
+          <li><a href="{% url 'contact' %}" {% if request.path == '/contact/' %}class="active"{% endif %}>Contact</a></li>
+        </ul>
+      </nav>
+      <div class="mobile-menu-btn" id="mobileMenuBtn">
+        <i class="fas fa-bars"></i>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main id="main-content">
+    {% block content %}
+    {% endblock %}
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer" role="contentinfo">
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-column">
+          <h3 class="footer-logo">MUGUNA & OYILE</h3>
+          <p>Providing exceptional legal services with integrity and professionalism since 2024.</p>
+          <div class="footer-social">
+            <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+            <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+            <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+            <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+          </div>
+        </div>
+        <div class="footer-column">
+          <h3>Quick Links</h3>
+          <ul>
+            <li><a href="{% url 'home' %}">Home</a></li>
+            <li><a href="{% url 'services' %}">Services</a></li>
+            <li><a href="{% url 'about' %}">About Us</a></li>
+            <li><a href="{% url 'attorneys' %}">Attorneys</a></li>
+            <li><a href="{% url 'contact' %}">Contact</a></li>
+          </ul>
+        </div>
+        <div class="footer-column">
+          <h3>Services</h3>
+          <ul>
+            <li><a href="{% url 'services' %}#consultancy">Consultancy Services</a></li>
+            <li><a href="{% url 'services' %}#corporate">Corporate & Commercial</a></li>
+            <li><a href="{% url 'services' %}#property">Property & Real Estate</a></li>
+            <li><a href="{% url 'services' %}#dispute">Dispute Resolution</a></li>
+          </ul>
+        </div>
+        <div class="footer-column">
+          <h3>Newsletter</h3>
+          <p>Subscribe to our newsletter for legal updates and insights.</p>
+          <form class="newsletter-form" method="post" action="{% url 'newsletter_subscribe' %}">
+            {% csrf_token %}
+            <input type="email" name="email" placeholder="Your email address" required>
+            <button type="submit" class="btn btn-secondary">Subscribe</button>
+          </form>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2024 Muguna & Oyile Advocates. All Rights Reserved.</p>
+        <div class="footer-links">
+          <a href="{% url 'privacy_policy' %}">Privacy Policy</a>
+          <a href="{% url 'terms_of_service' %}">Terms of Service</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Back to Top Button -->
+  <button id="backToTop" class="back-to-top" aria-label="Back to top">
+    <i class="fas fa-arrow-up"></i>
+  </button>
+
+  <script src="{% static 'js/main.js' %}"></script>
+  {% block extra_js %}{% endblock %}
+</body>
+</html>
