@@ -1,272 +1,468 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>About Us - Muguna & Oyile Advocates</title>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <style>
-      :root {
-        --primary-color: #182942;
-        --primary-accent: #ebd19e;
-        --light-5: #ffffff;
-        --border-radius: 8px;
-        --transition: all 0.3s ease;
-        --box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-        --text-light: #f8f9fa;
-        --text-muted: #6c757d;
+{% extends "base.html" %}
+
+{% block title %}About Muguna & Oyile Advocates | Legal Excellence in Kenya{% endblock %}
+
+{% block extra_css %}
+<style>
+  /* =========================================== */
+  /* ABOUT PAGE STYLES - FULLY SELF-CONTAINED */
+  /* =========================================== */
+  
+  /* Body class for scoping */
+  body.about-page {
+    padding-top: 0;
+  }
+  
+  /* Header adjustments for about page */
+  body.about-page #header {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    background: white;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    z-index: 1000;
+  }
+  
+  body.about-page #header .logo a,
+  body.about-page #header nav a,
+  body.about-page #header .mobile-menu-btn {
+    color: var(--primary-color);
+  }
+  
+  body.about-page #header.transparent-header {
+    background: transparent !important;
+    box-shadow: none !important;
+  }
+  
+  body.about-page #header.transparent-header .logo a,
+  body.about-page #header.transparent-header nav a,
+  body.about-page #header.transparent-header .mobile-menu-btn {
+    color: white;
+  }
+  
+  body.about-page #header.transparent-header .primary-nav a.active {
+    color: var(--primary-accent);
+    border-bottom: 2px solid var(--primary-accent);
+  }
+  
+  /* Hero section */
+  .about-hero-section {
+    background: 
+      linear-gradient(135deg, rgba(24, 41, 66, 0.95) 0%, rgba(15, 27, 46, 0.98) 100%),
+      url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><path fill="%23ebd19e" fill-opacity="0.03" d="M0 0h100v100H0z"/><path fill="none" stroke="%23ebd19e" stroke-opacity="0.1" stroke-width="0.5" d="M20 20h60v60H20zM25 25h50v50H25z"/></svg>');
+    padding: 12rem 0 6rem;
+    color: white;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    margin-top: var(--header-height);
+  }
+  
+  .about-hero-title {
+    font-size: 3.5rem;
+    color: var(--primary-accent);
+    margin-bottom: 1.5rem;
+    position: relative;
+    display: inline-block;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+  }
+  
+  .about-hero-title::after {
+    content: "";
+    position: absolute;
+    bottom: -10px;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background: linear-gradient(90deg, var(--primary-accent), transparent);
+  }
+  
+  .about-hero-subtitle {
+    font-family: 'Courier New', monospace;
+    letter-spacing: 1px;
+    color: rgba(255,255,255,0.9);
+    border-left: 3px solid var(--primary-accent);
+    padding-left: 1rem;
+    max-width: 700px;
+    margin: 0 auto;
+    font-size: 1.2rem;
+  }
+  
+  /* Intro section with seal */
+  .about-intro-section {
+    position: relative;
+    max-width: 800px;
+    margin: -3rem auto 5rem;
+    padding: 3rem;
+    background: var(--light-5);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    border-radius: 0 0 var(--border-radius) var(--border-radius);
+    z-index: 2;
+    text-align: center;
+  }
+  
+  .about-intro-section::before {
+    content: "⚖";
+    position: absolute;
+    top: -30px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 60px;
+    background: var(--primary-color);
+    color: var(--primary-accent);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+  }
+  
+  /* Values section */
+  .about-values-section {
+    padding: 2rem 0;
+  }
+  
+  .about-values-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 2rem;
+    margin-top: 3rem;
+  }
+  
+  .about-value-card {
+    background: var(--light-5);
+    border: 1px solid var(--light-3);
+    border-top: 5px solid var(--primary-accent);
+    border-radius: var(--border-radius);
+    padding: 2rem;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  
+  .about-value-card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, rgba(24,41,66,0.03) 0%, rgba(235,209,158,0.03) 100%);
+    z-index: 0;
+  }
+  
+  .about-value-card.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  
+  .about-value-card:hover {
+    transform: translateY(-5px) scale(1.02);
+    box-shadow: 0 15px 30px rgba(24,41,66,0.1);
+  }
+  
+  .about-value-icon {
+    font-size: 1.8rem;
+    color: var(--primary-accent);
+    background: rgba(24,41,66,0.1);
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1.5rem;
+    transition: all 0.3s ease;
+  }
+  
+  .about-value-card:hover .about-value-icon {
+    background: var(--primary-accent);
+    color: var(--primary-color);
+    transform: rotate(15deg);
+  }
+  
+  /* Approach section */
+  .about-approach-section {
+    position: relative;
+    padding: 4rem 0;
+  }
+  
+  .about-approach-intro {
+    text-align: center;
+    max-width: 800px;
+    margin: 0 auto 3rem;
+  }
+  
+  .about-approach-timeline {
+    position: relative;
+    padding-top: 40px;
+  }
+  
+  .about-approach-timeline::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 3px;
+    height: 100%;
+    background: linear-gradient(to bottom, var(--primary-accent), transparent);
+  }
+  
+  .about-approach-content {
+    position: relative;
+    padding: 1.5rem 2rem;
+    margin: 2rem auto;
+    max-width: 45%;
+    background: var(--light-5);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+    border-radius: var(--border-radius);
+  }
+  
+  .about-approach-content:nth-child(odd) {
+    margin-left: 0;
+    border-left: 3px solid var(--primary-accent);
+  }
+  
+  .about-approach-content:nth-child(even) {
+    margin-right: 0;
+    border-right: 3px solid var(--primary-accent);
+  }
+  
+  .about-approach-content::before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--primary-accent);
+    border: 3px solid var(--light-5);
+  }
+  
+  .about-approach-content:nth-child(odd)::before {
+    right: -60px;
+    transform: translateY(-50%);
+  }
+  
+  .about-approach-content:nth-child(even)::before {
+    left: -60px;
+    transform: translateY(-50%);
+  }
+  
+  /* Promise section */
+  .about-promise-section {
+    background: 
+      linear-gradient(135deg, rgba(24,41,66,0.97) 0%, rgba(15,27,46,0.98) 100%),
+      url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><path fill="%23ebd19e" fill-opacity="0.05" d="M50 0L100 50L50 100L0 50Z"/></svg>');
+    color: white;
+    padding: 4rem;
+    border-radius: var(--border-radius);
+    margin: 5rem auto;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+  }
+  
+  .about-promise-section::before {
+    content: "";
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(235,209,158,0.1) 0%, transparent 70%);
+    animation: about-rotate 20s linear infinite;
+  }
+  
+  @keyframes about-rotate {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+  
+  /* Responsive adjustments */
+  @media (max-width: 992px) {
+    .about-approach-content {
+      max-width: 80%;
+      margin: 2rem auto !important;
+      border-left: 3px solid var(--primary-accent) !important;
+      border-right: none !important;
+    }
+    
+    .about-approach-content::before {
+      display: none;
+    }
+  }
+  
+  @media (max-width: 768px) {
+    .about-hero-section {
+      padding: 8rem 0 4rem;
+    }
+    
+    .about-hero-title {
+      font-size: 2.5rem;
+    }
+    
+    .about-values-grid {
+      grid-template-columns: 1fr;
+    }
+    
+    .about-approach-timeline::before {
+      left: 30px;
+    }
+  }
+  
+  @media (max-width: 576px) {
+    .about-intro-section {
+      padding: 2rem 1.5rem;
+      margin-top: -1.5rem;
+    }
+    
+    .about-promise-section {
+      padding: 2rem;
+    }
+    
+    .about-hero-title {
+      font-size: 2rem;
+    }
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Add about-page class to body -->
+<script>
+  document.body.classList.add('about-page');
+</script>
+
+<!-- Hero Section -->
+<section class="about-hero-section">
+  <div class="container">
+    <h1 class="about-hero-title">About Muguna & Oyile Advocates</h1>
+    <p class="about-hero-subtitle">Progressive, sustainable and impact-driven legal solutions for businesses and individuals</p>
+  </div>
+</section>
+
+<!-- Main Content -->
+<main id="main-content">
+  <!-- Intro Section -->
+  <section class="about-intro-section">
+    <p>A full-service law firm based in Nairobi and Meru, Kenya, established in 2024 to provide progressive, sustainable and impact-driven legal support to businesses and individuals.</p>
+  </section>
+
+  <!-- Values Section -->
+  <section class="about-values-section container">
+    <h2 class="text-center">Our Values & Attributes</h2>
+    <div class="about-values-grid">
+      <div class="about-value-card">
+        <div class="about-value-icon">
+          <i class="fas fa-balance-scale"></i>
+        </div>
+        <h3>Integrity</h3>
+        <p>We uphold the highest ethical standards, ensuring honesty, transparency and trust in every engagement.</p>
+      </div>
+      <div class="about-value-card">
+        <div class="about-value-icon">
+          <i class="fas fa-handshake"></i>
+        </div>
+        <h3>Reliability</h3>
+        <p>We are committed to consistency, responsiveness and excellence ensuring our clients receive timely and effective legal solutions.</p>
+      </div>
+      <div class="about-value-card">
+        <div class="about-value-icon">
+          <i class="fas fa-user-tie"></i>
+        </div>
+        <h3>Professionalism</h3>
+        <p>Our team delivers exceptional legal services with diligence, expertise and a client-first approach.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Approach Section -->
+  <section class="about-approach-section container">
+    <div class="about-approach-intro">
+      <h2>Our Approach</h2>
+      <p>At Muguna & Oyile Advocates, our values define our approach to legal service. We combine traditional legal expertise with innovative strategies to deliver exceptional results for our clients.</p>
+    </div>
+    
+    <div class="about-approach-timeline">
+      <div class="about-approach-content">
+        <p>We are dedicated to delivering professional, innovative and client-centered solutions that empower our clients and foster long-term success.</p>
+      </div>
+      <div class="about-approach-content">
+        <p>Our team comprises exceptional legal professionals, carefully selected and nurtured to bring a diverse range of legal and industry expertise.</p>
+      </div>
+      <div class="about-approach-content">
+        <p>With a strong collaborative approach, we work closely with clients to understand their unique challenges and strategically position them for success.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Promise Section -->
+  <section class="about-promise-section container">
+    <h2 class="text-center">Our Promise</h2>
+    <p class="text-center">At Muguna & Oyile Advocates, we are committed to excellence, integrity and innovation, ensuring that our legal solutions not only meet but exceed our clients' expectations.</p>
+  </section>
+</main>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  // Add about-page class to body
+  document.body.classList.add('about-page');
+  
+  // Header behavior for about page
+  const header = document.getElementById('header');
+  const heroSection = document.querySelector('.about-hero-section');
+  
+  if (heroSection) {
+    // Set initial header state
+    const heroBottom = heroSection.offsetTop + heroSection.offsetHeight;
+    
+    if (window.scrollY <= heroBottom - header.offsetHeight) {
+      header.classList.add('transparent-header');
+    }
+    
+    // Scroll handler
+    window.addEventListener('scroll', function() {
+      const heroBottom = heroSection.offsetTop + heroSection.offsetHeight;
+      const scrollPosition = window.scrollY + header.offsetHeight;
+      
+      if (scrollPosition > heroBottom) {
+        header.classList.remove('transparent-header');
+      } else {
+        header.classList.add('transparent-header');
       }
       
-      body {
-        font-family: 'Montserrat', sans-serif;
-        line-height: 1.6;
-        color: #333;
-        margin: 0;
-        padding: 0;
-        background-color: #f9f9f9;
+      // Sticky behavior
+      if (window.scrollY > 100) {
+        header.classList.add('sticky');
+      } else {
+        header.classList.remove('sticky');
       }
-
-      .container {
-        max-width: 1200px;
-        margin: 0 auto;
-        padding: 0 20px;
+    });
+  }
+  
+  // Animate value cards on scroll
+  const valueCards = document.querySelectorAll('.about-value-card');
+  const cardObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
       }
+    });
+  }, { threshold: 0.1 });
 
-      header {
-        background: linear-gradient(135deg, var(--primary-color) 0%, #1a3a6a 100%);
-        color: var(--text-light);
-        padding: 80px 0 60px;
-        text-align: center;
-        margin-bottom: 40px;
-        position: relative;
-        overflow: hidden;
-      }
-
-      header::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiPjxkZWZzPjxwYXR0ZXJuIGlkPSJwYXR0ZXJuIiB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHBhdHRlcm5Vbml0cz0idXNlclNwYWNlT25Vc2UiIHBhdHRlcm5UcmFuc2Zvcm09InJvdGF0ZSg0NSkiPjxyZWN0IHdpZHRoPSIyMCIgaGVpZ2h0PSIyMCIgZmlsbD0icmdiYSgyNTUsMjU1LDI1NSwwLjAzKSIvPjwvcGF0dGVybj48L2RlZnM+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0idXJsKCNwYXR0ZXJuKSIvPjwvc3ZnPg==');
-      }
-
-      h1 {
-        font-size: 2.8rem;
-        font-weight: 600;
-        margin-bottom: 15px;
-        position: relative;
-        display: inline-block;
-      }
-
-      h1::after {
-        content: '';
-        position: absolute;
-        bottom: -10px;
-        left: 50%;
-        transform: translateX(-50%);
-        width: 80px;
-        height: 3px;
-        background-color: var(--primary-accent);
-      }
-
-      .header-subtitle {
-        font-size: 1.2rem;
-        font-weight: 300;
-        max-width: 800px;
-        margin: 20px auto 0;
-        opacity: 0.9;
-      }
-
-      h2 {
-        color: var(--primary-color);
-        font-size: 2rem;
-        font-weight: 600;
-        margin-top: 60px;
-        margin-bottom: 25px;
-        position: relative;
-      }
-
-      h2::after {
-        content: '';
-        position: absolute;
-        bottom: -10px;
-        left: 0;
-        width: 60px;
-        height: 3px;
-        background-color: var(--primary-accent);
-      }
-
-      .intro-section {
-        background-color: var(--light-5);
-        padding: 50px;
-        border-radius: var(--border-radius);
-        box-shadow: var(--box-shadow);
-        margin-bottom: 50px;
-        font-size: 1.1rem;
-        line-height: 1.8;
-        position: relative;
-      }
-
-      .intro-section::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 5px;
-        height: 100%;
-        background-color: var(--primary-accent);
-        border-radius: var(--border-radius) 0 0 var(--border-radius);
-      }
-
-      .values-section {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-        gap: 30px;
-        margin: 60px 0;
-      }
-
-      .value-card {
-        background-color: var(--light-5);
-        padding: 35px 30px;
-        border-radius: var(--border-radius);
-        box-shadow: var(--box-shadow);
-        transition: var(--transition);
-        border-top: 4px solid var(--primary-accent);
-      }
-
-      .value-card:hover {
-        transform: translateY(-10px);
-        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
-      }
-
-      .value-card h3 {
-        color: var(--primary-color);
-        font-size: 1.4rem;
-        margin-bottom: 20px;
-        display: flex;
-        align-items: center;
-      }
-
-      .value-card h3 i {
-        margin-right: 15px;
-        color: var(--primary-accent);
-        font-size: 1.8rem;
-      }
-
-      .value-card p {
-        color: var(--text-muted);
-        font-weight: 400;
-      }
-
-      .approach-section, .promise-section {
-        background-color: var(--light-5);
-        padding: 50px;
-        border-radius: var(--border-radius);
-        box-shadow: var(--box-shadow);
-        margin: 50px 0;
-        line-height: 1.8;
-      }
-
-      .promise-section {
-        background: linear-gradient(135deg, var(--primary-color) 0%, #1a3a6a 100%);
-        color: var(--text-light);
-      }
-
-      .promise-section h2 {
-        color: var(--text-light);
-      }
-
-      .promise-section h2::after {
-        background-color: var(--primary-accent);
-      }
-
-      footer {
-        background-color: #111;
-        color: var(--text-light);
-        text-align: center;
-        padding: 40px 0;
-        margin-top: 80px;
-      }
-
-      .footer-content {
-        max-width: 800px;
-        margin: 0 auto;
-      }
-
-      .footer-content p {
-        margin: 10px 0;
-        opacity: 0.8;
-      }
-
-      .footer-content p:first-child {
-        font-weight: 500;
-        opacity: 1;
-      }
-
-      @media (max-width: 768px) {
-        h1 {
-          font-size: 2.2rem;
-        }
-        
-        .intro-section, .approach-section, .promise-section {
-          padding: 30px;
-        }
-        
-        .values-section {
-          grid-template-columns: 1fr;
-        }
-      }
-    </style>
-</head>
-<body>
-    <header>
-        <div class="container">
-            <h1>About Muguna & Oyile Advocates</h1>
-            <p class="header-subtitle">Progressive, sustainable and impact-driven legal solutions for businesses and individuals</p>
-        </div>
-    </header>
-
-    <main class="container">
-        <section class="intro-section">
-            <p>A full-service law firm based in Nairobi and Meru, Kenya, established in 2024 to provide progressive, sustainable and impact-driven legal support to businesses and individuals.</p>
-        </section>
-
-        <h2>Our Values & Attributes</h2>
-        <div class="values-section">
-            <div class="value-card">
-                <h3><i class="fas fa-balance-scale"></i> Integrity</h3>
-                <p>We uphold the highest ethical standards, ensuring honesty, transparency and trust in every engagement.</p>
-            </div>
-            <div class="value-card">
-                <h3><i class="fas fa-handshake"></i> Reliability</h3>
-                <p>We are committed to consistency, responsiveness and excellence ensuring our clients receive timely and effective legal solutions.</p>
-            </div>
-            <div class="value-card">
-                <h3><i class="fas fa-user-tie"></i> Professionalism</h3>
-                <p>Our team delivers exceptional legal services with diligence, expertise and a client-first approach.</p>
-            </div>
-        </div>
-
-        <section class="approach-section">
-            <h2>Our Approach</h2>
-            <p>At Muguna & Oyile Advocates, our values define our approach to legal service. We are dedicated to delivering professional, innovative and client-centered solutions that empower our clients and foster long-term success.</p>
-            <p>Our team comprises exceptional legal professionals, carefully selected and nurtured to bring a diverse range of legal and industry expertise in every engagement. With a strong collaborative and agile approach, we work closely with our clients to understand their unique challenges and strategically position them for success on both local and global platforms.</p>
-        </section>
-
-        <section class="promise-section">
-            <h2>Our Promise</h2>
-            <p>At Muguna & Oyile Advocates, we are committed to excellence, integrity and innovation, ensuring that our legal solutions not only meet but exceed our clients' expectations. We combine traditional legal expertise with forward-thinking strategies to deliver comprehensive solutions tailored to your specific needs.</p>
-        </section>
-    </main>
-
-    <footer>
-        <div class="footer-content">
-            <p>&copy; 2024 Muguna & Oyile Advocates. All rights reserved.</p>
-            <p>Nairobi | Meru, Kenya</p>
-        </div>
-    </footer>
-</body>
-</html>
+  valueCards.forEach((card, index) => {
+    card.style.transitionDelay = `${index * 0.1}s`;
+    cardObserver.observe(card);
+  });
+});
+</script>
+{% endblock %}
