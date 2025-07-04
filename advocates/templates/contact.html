@@ -1,0 +1,427 @@
+{% extends "base.html" %}
+
+{% block title %} Contact Muguna & Oyile Advocates | Legal Excellence in Kenya{% endblock %}
+
+{% block extra_css %}
+<style>
+  :root {
+    --primary-color: #182942;
+    --primary-dark: #1a3a6a;
+    --primary-accent: #ebd19e;
+    --light-5: #ffffff;
+    --border-radius: 8px;
+    --transition: all 0.3s ease;
+    --box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    --text-light: #f8f9fa;
+    --text-muted: #6c757d;
+  }
+
+  /* Enhanced Centered Header */
+  .section-header.centered-header {
+    text-align: center;
+    max-width: 800px;
+    margin: 0 auto 50px;
+    padding: 2.5rem;
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+    color: var(--light-5);
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .section-header.centered-header::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><rect fill="%23ebd19e" fill-opacity="0.05" width="50" height="50" x="50" y="50"/></svg>');
+    background-size: 20px 20px;
+    opacity: 0.3;
+  }
+  
+  .section-header.centered-header h1 {
+    font-size: 2.5rem;
+    color: var(--primary-accent);
+    margin-bottom: 15px;
+    position: relative;
+    font-family: var(--heading-font);
+  }
+  
+  .section-header.centered-header .header-subtitle {
+    color: rgba(255, 255, 255, 0.85);
+    font-size: 1.1rem;
+    position: relative;
+  }
+  
+  .section-header.centered-header::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100px;
+    height: 4px;
+    background: var(--primary-accent);
+    border-radius: 2px;
+  }
+
+  /* Contact Section */
+  section.contact-section {
+    padding: 3rem 0;
+    background: var(--light-5);
+    text-align: center;
+  }
+
+  .contact-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3rem;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+    align-items: start;
+  }
+
+  .contact-methods {
+    text-align: center;
+  }
+
+  .contact-methods p {
+    color: var(--text-muted);
+    margin-bottom: 2rem;
+    font-size: 1.1rem;
+    line-height: 1.6;
+  }
+
+  .social-icons {
+    display: flex;
+    gap: 1rem;
+    margin: 2rem auto;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .office-location {
+    margin: 1.5rem 0;
+    color: var(--primary-color);
+    font-weight: 500;
+    font-size: 1.1rem;
+    line-height: 1.6;
+    padding: 1rem;
+    background: rgba(235, 209, 158, 0.1);
+    border-radius: var(--border-radius);
+  }
+
+  .icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.2rem;
+    text-decoration: none;
+    transition: var(--transition);
+    cursor: pointer;
+  }
+
+  .icon:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--box-shadow);
+  }
+
+  .icon .tooltip {
+    position: absolute;
+    top: -40px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--primary-color);
+    color: white;
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: var(--transition);
+  }
+
+  .icon:hover .tooltip {
+    opacity: 1;
+    top: -50px;
+  }
+
+  /* Brand colors */
+  .facebook { background-color: #3b5998; }
+  .twitter { background-color: #1da1f2; }
+  .linkedin { background-color: #0077b5; }
+  .whatsapp { background-color: #25d366; }
+  .email-icon { background-color: #d44638; }
+
+  /* Map Container */
+  .map-container {
+    border-radius: var(--border-radius);
+    overflow: hidden;
+    box-shadow: var(--box-shadow);
+    height: 500px;
+    position: relative;
+  }
+
+  .map-container::after {
+    content: "Our Office Location";
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background: var(--primary-color);
+    color: white;
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    z-index: 1;
+  }
+
+  .map-container iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+  }
+
+  .office-hours {
+    margin-top: 2rem;
+    text-align: center;
+  }
+
+  .office-hours h3 {
+    font-size: 1.3rem;
+    margin-bottom: 1rem;
+    color: var(--primary-color);
+    font-family: var(--heading-font);
+  }
+
+  .office-hours p {
+    color: var(--text-muted);
+    margin-bottom: 0.5rem;
+  }
+
+  /* Modal Styles */
+  .modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.7);
+    backdrop-filter: blur(5px);
+    justify-content: center;
+    align-items: center;
+    animation: fadeIn 0.3s;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  .modal-content {
+    background: var(--light-5);
+    padding: 2.5rem;
+    border-radius: var(--border-radius);
+    width: 90%;
+    max-width: 500px;
+    position: relative;
+    box-shadow: 0 5px 25px rgba(0,0,0,0.2);
+  }
+
+  /* Responsive Styles */
+  @media (max-width: 992px) {
+    .contact-container {
+      grid-template-columns: 1fr;
+    }
+    
+    .map-container {
+      height: 400px;
+      order: -1;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .section-header.centered-header h1 {
+      font-size: 2rem;
+    }
+    
+    .map-container {
+      height: 350px;
+    }
+    
+    .icon {
+      width: 45px;
+      height: 45px;
+    }
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="container">
+  <div class="section-header centered-header">
+    <h1>Contact Us</h1>
+    <p class="header-subtitle">Have questions or need legal assistance? Reach out to us today.</p>
+  </div>
+</section>
+
+<main class="container">
+  <div class="contact-container">
+    <div class="contact-methods">
+      <p style="margin-bottom: 30px; font-size: 1.1rem; color: var(--text-muted);">
+        Our team is ready to assist you with all your legal needs. Contact us through any of these channels.
+      </p>
+      
+      <div class="social-icons">
+        <a href="https://facebook.com" class="icon facebook" target="_blank" aria-label="Facebook">
+          <i class="fab fa-facebook-f"></i>
+          <span class="tooltip">Facebook</span>
+        </a>
+        <a href="https://twitter.com" class="icon twitter" target="_blank" aria-label="Twitter">
+          <i class="fab fa-twitter"></i>
+          <span class="tooltip">Twitter</span>
+        </a>
+        <div class="icon email-icon" id="emailIcon" aria-label="Email">
+          <i class="fas fa-envelope"></i>
+          <span class="tooltip">Email Us</span>
+        </div>
+        <a href="https://linkedin.com" class="icon linkedin" target="_blank" aria-label="LinkedIn">
+          <i class="fab fa-linkedin-in"></i>
+          <span class="tooltip">LinkedIn</span>
+        </a>
+        <a href="https://wa.me/254103758354" class="icon whatsapp" target="_blank" aria-label="WhatsApp">
+          <i class="fab fa-whatsapp"></i>
+          <span class="tooltip">WhatsApp</span>
+        </a>
+      </div>
+
+      <p class="office-location">
+        <i class="fas fa-map-marker-alt" style="margin-right: 8px;"></i>
+        24th Floor, Britam Towers, Hospital Road, Upper Hill, Nairobi
+      </p>
+      
+      <div class="office-hours">
+        <h3>Office Hours</h3>
+        <p>Monday - Friday: 8:00 AM - 5:00 PM</p>
+        <p>Saturday: 9:00 AM - 1:00 PM</p>
+        <p>Sunday: Closed</p>
+      </div>
+    </div>
+    
+    <div class="map-container">
+      <iframe
+        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3988.818244714745!2d36.8132143157539!3d-1.282635899063954!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x182f10d4d6e3a3a1%3A0x5e3c2b3a3a3a3a3a!2sBritam%20Towers!5e0!3m2!1sen!2ske!4v1620000000000!5m2!1sen!2ske"
+        width="100%" 
+        height="100%" 
+        style="border:0;" 
+        allowfullscreen="" 
+        loading="lazy"
+        referrerpolicy="no-referrer-when-downgrade">
+      </iframe>
+    </div>
+  </div>
+</main>
+
+<!-- Contact Form Modal -->
+<div class="modal" id="contactModal">
+  <div class="modal-content">
+    <span class="close" id="closeModal">&times;</span>
+    <h3>Send us a message</h3>
+    <form id="contactForm" method="POST">
+      <div class="form-group">
+        <label for="name">Your Name</label>
+        <input type="text" id="name" name="name" placeholder="John Doe" required />
+      </div>
+      <div class="form-group">
+        <label for="email">Email Address</label>
+        <input type="email" id="email" name="email" placeholder="john@example.com" required />
+      </div>
+      <div class="form-group">
+        <label for="subject">Subject</label>
+        <select id="subject" name="subject" required>
+          <option value="" disabled selected>Select a subject</option>
+          <option value="General Inquiry">General Inquiry</option>
+          <option value="Legal Consultation">Legal Consultation</option>
+          <option value="Case Evaluation">Case Evaluation</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="message">Your Message</label>
+        <textarea id="message" name="message" placeholder="How can we help you?" required></textarea>
+      </div>
+      <button type="submit" class="submit-btn">Send Message</button>
+    </form>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  // Modal functionality
+  const modal = document.getElementById("contactModal");
+  const emailIcon = document.getElementById("emailIcon");
+  const closeBtn = document.getElementById("closeModal");
+  const contactForm = document.getElementById("contactForm");
+
+  emailIcon.addEventListener("click", () => {
+    modal.style.display = "flex";
+    document.body.style.overflow = "hidden";
+  });
+
+  closeBtn.addEventListener("click", () => {
+    modal.style.display = "none";
+    document.body.style.overflow = "auto";
+  });
+
+  window.addEventListener("click", (e) => {
+    if (e.target === modal) {
+      modal.style.display = "none";
+      document.body.style.overflow = "auto";
+    }
+  });
+
+  // Form submission handling
+  contactForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    
+    const formData = new FormData(contactForm);
+    const submitBtn = contactForm.querySelector("button[type='submit']");
+    
+    try {
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
+      
+      await new Promise(resolve => setTimeout(resolve, 1500));
+      
+      alert("Thank you for your message! We'll get back to you soon.");
+      contactForm.reset();
+      modal.style.display = "none";
+      document.body.style.overflow = "auto";
+    } catch (error) {
+      alert("There was an error sending your message. Please try again.");
+      console.error(error);
+    } finally {
+      submitBtn.disabled = false;
+      submitBtn.textContent = "Send Message";
+    }
+  });
+
+  // Close modal with ESC key
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && modal.style.display === "flex") {
+      modal.style.display = "none";
+      document.body.style.overflow = "auto";
+    }
+  });
+</script>
+{% endblock %}

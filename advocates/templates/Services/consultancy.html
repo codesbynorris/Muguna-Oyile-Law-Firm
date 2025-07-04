@@ -1,538 +1,513 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Consultancy Services | Muguna & Oyile Advocates</title>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <style>
-     :root {
-        --primary-color: #182942;
-        --primary-accent: #ebd19e;
-        --light-5: #ffffff;
-        --border-radius: 8px;
-        --transition: all 0.3s ease;
-        --box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-        --text-light: #f8f9fa;
-        --text-muted: #6c757d;
-      }
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Consultancy Services | {{ block.super }}{% endblock %}
+
+{% block extra_css %}
+<style>
+  :root {
+    --primary-color: #182942;
+    --primary-dark: #1a3a6a;
+    --primary-accent: #ebd19e;
+    --light-5: #ffffff;
+    --border-radius: 8px;
+    --transition: all 0.3s ease;
+    --box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    --text-light: #f8f9fa;
+    --text-muted: #6c757d;
+  }
+
+  /* Enhanced Centered Header */
+  .section-header.centered-header {
+    text-align: center;
+    max-width: 800px;
+    margin: 50px auto;
+    padding: 2.5rem;
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+    color: var(--light-5);
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .section-header.centered-header::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><rect fill="%23ebd19e" fill-opacity="0.05" width="50" height="50" x="50" y="50"/></svg>');
+    background-size: 20px 20px;
+    opacity: 0.3;
+  }
+  
+  .section-header.centered-header h1 {
+    font-size: 2.5rem;
+    color: var(--primary-accent);
+    margin-bottom: 15px;
+    position: relative;
+    font-family: var(--heading-font);
+  }
+  
+  .section-header.centered-header .header-subtitle {
+    color: rgba(255, 255, 255, 0.85);
+    font-size: 1.1rem;
+    position: relative;
+  }
+  
+  /* Optional: Add a subtle gold accent to the header */
+  .section-header.centered-header::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100px;
+    height: 4px;
+    background: var(--primary-accent);
+    border-radius: 2px;
+  }
+
+  /* Rest of your CSS styles from the original */
+  .service-intro {
+    text-align: center;
+    max-width: 800px;
+    margin: 0 auto 80px;
+    font-size: 1.1rem;
+    line-height: 1.8;
+    color: var(--text-muted);
+  }
+
+  .services-container {
+    display: flex;
+    gap: 40px;
+    margin-bottom: 80px;
+  }
+
+  .services-list {
+    width: 45%;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .service-card {
+    background: var(--light-5);
+    padding: 25px;
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+    transition: var(--transition);
+    border-left: 3px solid transparent;
+    cursor: pointer;
+  }
+
+  .service-card:hover, .service-card.active {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    border-left-color: var(--primary-accent);
+  }
+
+  .service-card.active {
+    background-color: rgba(235, 209, 158, 0.1);
+  }
+
+  .service-card-header {
+    display: flex;
+    align-items: center;
+  }
+
+  .service-icon {
+    flex-shrink: 0;
+    margin-right: 20px;
+  }
+
+  .service-icon i {
+    font-size: 1.5rem;
+    color: var(--primary-accent);
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(24, 41, 66, 0.05);
+    transition: var(--transition);
+  }
+
+  .service-card:hover .service-icon i,
+  .service-card.active .service-icon i {
+    background: var(--primary-accent);
+    color: var(--primary-color);
+  }
+
+  .service-title {
+    font-size: 1.3rem;
+    font-weight: 500;
+    color: var(--primary-color);
+    margin: 0;
+    font-family: var(--body-font);
+  }
+
+  .service-detail-container {
+    width: 55%;
+    position: sticky;
+    top: 20px;
+    align-self: flex-start;
+    height: fit-content;
+  }
+
+  .service-detail {
+    background: var(--light-5);
+    padding: 40px;
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+    display: none;
+    height: 100%;
+  }
+
+  .service-detail.active {
+    display: block;
+  }
+
+  .service-detail h3 {
+    font-size: 1.8rem;
+    color: var(--primary-color);
+    margin-top: 0;
+    margin-bottom: 20px;
+    font-family: var(--heading-font);
+  }
+
+  .service-detail p {
+    color: var(--text-muted);
+    line-height: 1.8;
+    margin-bottom: 20px;
+    font-family: var(--body-font);
+  }
+
+  .service-features {
+    margin-top: 30px;
+  }
+
+  .service-features li {
+    margin-bottom: 15px;
+    position: relative;
+    padding-left: 25px;
+    font-family: var(--body-font);
+  }
+
+  .service-features li:before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 8px;
+    width: 12px;
+    height: 12px;
+    background-color: var(--primary-accent);
+    border-radius: 50%;
+  }
+
+  /* Mobile-specific styles */
+  .mobile-service-detail {
+    display: none;
+    padding: 20px 0 0 0;
+    color: var(--text-muted);
+    line-height: 1.8;
+    font-family: var(--body-font);
+  }
+
+  .mobile-service-detail.active {
+    display: block;
+  }
+
+  .mobile-service-features {
+    margin-top: 15px;
+    padding-left: 20px;
+  }
+
+  .mobile-service-features li {
+    margin-bottom: 10px;
+    position: relative;
+    padding-left: 20px;
+  }
+
+  .mobile-service-features li:before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 8px;
+    width: 10px;
+    height: 10px;
+    background-color: var(--primary-accent);
+    border-radius: 50%;
+  }
+
+  
+
+  @media (max-width: 992px) {
+    .services-container {
+      flex-direction: column;
+    }
+    
+    .services-list,
+    .service-detail-container {
+      width: 100%;
+    }
+    
+    .service-detail-container {
+      position: relative;
+      top: auto;
+      margin-top: 40px;
+    }
+
+    /* Hide desktop details on mobile */
+    .service-detail {
+      display: none !important;
+    }
+
+    .service-card {
+      margin-bottom: 10px;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .section-header.centered-header h1 {
+      font-size: 2.2rem;
+    }
+    
+    .service-detail {
+      padding: 30px;
+    }
+
+    .service-icon i {
+      width: 50px;
+      height: 50px;
+      font-size: 1.3rem;
+    }
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="container">
+  <div class="section-header centered-header">
+    <h1>Consultancy Services</h1>
+    <p class="header-subtitle">Expert advisory solutions across specialized legal domains</p>
+  </div>
+</section>
+
+<main class="container">
+  <div class="service-intro">
+    <p>Our consultancy services provide targeted legal guidance to help clients navigate complex regulatory environments and protect their rights.</p>
+  </div>
+
+  <div class="services-container">
+    <div class="services-list">
+      <div class="service-card active" onclick="toggleService(this, 'tax')">
+        <div class="service-card-header">
+          <div class="service-icon">
+            <i class="fas fa-file-invoice-dollar"></i>
+          </div>
+          <h3 class="service-title">Tax Advisory</h3>
+        </div>
+        <div class="mobile-service-detail active" id="mobile-tax-detail">
+          <p>Comprehensive tax consultancy and representation services to ensure compliance and optimize your tax position.</p>
+          <div class="mobile-service-features">
+            <ul>
+              <li>Tax planning and compliance advisory</li>
+              <li>Representation before tax authorities</li>
+              <li>Tax dispute resolution</li>
+              <li>Transfer pricing documentation</li>
+              <li>Tax due diligence for transactions</li>
+              <li>Customs and excise duty advisory</li>
+            </ul>
+          </div>
+        </div>
+      </div>
       
-      body {
-        font-family: 'Montserrat', sans-serif;
-        line-height: 1.6;
-        color: var(--primary-color);
-        margin: 0;
-        padding: 0;
-        background-color: #f9f9f9;
-      }
-
-      .container {
-        max-width: 1200px;
-        margin: 0 auto;
-        padding: 0 20px;
-      }
-
-      header {
-        background: linear-gradient(135deg, var(--primary-color) 0%, #1a3a6a 100%);
-        color: var(--text-light);
-        padding: 100px 0 60px;
-        text-align: center;
-        position: relative;
-      }
-
-      header::after {
-        content: '';
-        position: absolute;
-        bottom: -40px;
-        left: 0;
-        width: 100%;
-        height: 80px;
-        background: var(--light-5);
-        transform: skewY(-2deg);
-        z-index: 1;
-      }
-
-      h1 {
-        font-size: 2.8rem;
-        font-weight: 600;
-        margin-bottom: 15px;
-        position: relative;
-        z-index: 2;
-      }
-
-      .header-subtitle {
-        font-size: 1.2rem;
-        font-weight: 300;
-        max-width: 700px;
-        margin: 0 auto;
-        opacity: 0.9;
-        position: relative;
-        z-index: 2;
-      }
-
-      .service-intro {
-        text-align: center;
-        max-width: 800px;
-        margin: 80px auto;
-        font-size: 1.1rem;
-        line-height: 1.8;
-        color: var(--text-muted);
-      }
-
-      .services-container {
-        display: flex;
-        gap: 40px;
-        margin-bottom: 80px;
-      }
-
-      .services-list {
-        width: 45%;
-        display: flex;
-        flex-direction: column;
-        gap: 20px;
-      }
-
-      .service-card {
-        background: var(--light-5);
-        padding: 25px;
-        border-radius: var(--border-radius);
-        box-shadow: var(--box-shadow);
-        transition: var(--transition);
-        border-left: 3px solid transparent;
-        cursor: pointer;
-      }
-
-      .service-card:hover, .service-card.active {
-        transform: translateY(-3px);
-        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
-        border-left-color: var(--primary-accent);
-      }
-
-      .service-card.active {
-        background-color: rgba(235, 209, 158, 0.1);
-      }
-
-      .service-card-header {
-        display: flex;
-        align-items: center;
-      }
-
-      .service-icon {
-        flex-shrink: 0;
-        margin-right: 20px;
-      }
-
-      .service-icon i {
-        font-size: 1.5rem;
-        color: var(--primary-accent);
-        width: 60px;
-        height: 60px;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        background: rgba(24, 41, 66, 0.05);
-        transition: var(--transition);
-      }
-
-      .service-card:hover .service-icon i,
-      .service-card.active .service-icon i {
-        background: var(--primary-accent);
-        color: var(--primary-color);
-      }
-
-      .service-title {
-        font-size: 1.3rem;
-        font-weight: 500;
-        color: var(--primary-color);
-        margin: 0;
-      }
-
-      .service-detail-container {
-        width: 55%;
-        position: sticky;
-        top: 20px;
-        align-self: flex-start;
-        height: fit-content;
-      }
-
-      .service-detail {
-        background: var(--light-5);
-        padding: 40px;
-        border-radius: var(--border-radius);
-        box-shadow: var(--box-shadow);
-        display: none;
-        height: 100%;
-      }
-
-      .service-detail.active {
-        display: block;
-      }
-
-      .service-detail h3 {
-        font-size: 1.8rem;
-        color: var(--primary-color);
-        margin-top: 0;
-        margin-bottom: 20px;
-      }
-
-      .service-detail p {
-        color: var(--text-muted);
-        line-height: 1.8;
-        margin-bottom: 20px;
-      }
-
-      .service-features {
-        margin-top: 30px;
-      }
-
-      .service-features li {
-        margin-bottom: 15px;
-        position: relative;
-        padding-left: 25px;
-      }
-
-      .service-features li:before {
-        content: '';
-        position: absolute;
-        left: 0;
-        top: 8px;
-        width: 12px;
-        height: 12px;
-        background-color: var(--primary-accent);
-        border-radius: 50%;
-      }
-
-      /* Mobile-specific styles */
-      .mobile-service-detail {
-        display: none;
-        padding: 20px 0 0 0;
-        color: var(--text-muted);
-        line-height: 1.8;
-      }
-
-      .mobile-service-detail.active {
-        display: block;
-      }
-
-      .mobile-service-features {
-        margin-top: 15px;
-        padding-left: 20px;
-      }
-
-      .mobile-service-features li {
-        margin-bottom: 10px;
-        position: relative;
-        padding-left: 20px;
-      }
-
-      .mobile-service-features li:before {
-        content: '';
-        position: absolute;
-        left: 0;
-        top: 8px;
-        width: 10px;
-        height: 10px;
-        background-color: var(--primary-accent);
-        border-radius: 50%;
-      }
-
-      footer {
-        background-color: var(--primary-color);
-        color: var(--text-light);
-        text-align: center;
-        padding: 40px 0;
-        margin-top: 80px;
-      }
-
-      .footer-content {
-        max-width: 800px;
-        margin: 0 auto;
-      }
-
-      .footer-content p {
-        margin: 10px 0;
-        opacity: 0.8;
-        font-size: 0.9rem;
-      }
-
-      @media (max-width: 992px) {
-        .services-container {
-          flex-direction: column;
-        }
-        
-        .services-list,
-        .service-detail-container {
-          width: 100%;
-        }
-        
-        .service-detail-container {
-          position: relative;
-          top: auto;
-          margin-top: 40px;
-        }
-
-        /* Hide desktop details on mobile */
-        .service-detail {
-          display: none !important;
-        }
-
-        /* Show mobile details */
-        .mobile-service-detail {
-          display: none;
-        }
-
-        .service-card {
-          margin-bottom: 10px;
-        }
-      }
-
-      @media (max-width: 768px) {
-        h1 {
-          font-size: 2.2rem;
-        }
-        
-        header {
-          padding: 80px 0 40px;
-        }
-        
-        .service-detail {
-          padding: 30px;
-        }
-
-        .service-icon i {
-          width: 50px;
-          height: 50px;
-          font-size: 1.3rem;
-        }
-      }
-    </style>
-</head>
-<body>
-    <header>
-        <div class="container">
-            <h1>Consultancy Services</h1>
-            <p class="header-subtitle">Expert advisory solutions across specialized legal domains</p>
+      <div class="service-card" onclick="toggleService(this, 'data')">
+        <div class="service-card-header">
+          <div class="service-icon">
+            <i class="fas fa-database"></i>
+          </div>
+          <h3 class="service-title">Data Protection</h3>
         </div>
-    </header>
-
-    <main class="container">
-        <div class="service-intro">
-            <p>Our consultancy services provide targeted legal guidance to help clients navigate complex regulatory environments and protect their rights.</p>
+        <div class="mobile-service-detail" id="mobile-data-detail">
+          <p>Guidance on data privacy laws and implementation of robust data protection frameworks.</p>
+          <div class="mobile-service-features">
+            <ul>
+              <li>Data protection compliance audits</li>
+              <li>Privacy policy drafting</li>
+              <li>Data processing agreements</li>
+              <li>Data breach response planning</li>
+              <li>Employee training programs</li>
+              <li>Representation before data commissioner</li>
+            </ul>
+          </div>
         </div>
-
-        <div class="services-container">
-            <div class="services-list">
-                <div class="service-card active" onclick="toggleService(this, 'tax')">
-                    <div class="service-card-header">
-                        <div class="service-icon">
-                            <i class="fas fa-file-invoice-dollar"></i>
-                        </div>
-                        <h3 class="service-title">Tax Advisory</h3>
-                    </div>
-                    <div class="mobile-service-detail active" id="mobile-tax-detail">
-                        <p>Comprehensive tax consultancy and representation services to ensure compliance and optimize your tax position.</p>
-                        <div class="mobile-service-features">
-                            <ul>
-                                <li>Tax planning and compliance advisory</li>
-                                <li>Representation before tax authorities</li>
-                                <li>Tax dispute resolution</li>
-                                <li>Transfer pricing documentation</li>
-                                <li>Tax due diligence for transactions</li>
-                                <li>Customs and excise duty advisory</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="service-card" onclick="toggleService(this, 'data')">
-                    <div class="service-card-header">
-                        <div class="service-icon">
-                            <i class="fas fa-database"></i>
-                        </div>
-                        <h3 class="service-title">Data Protection</h3>
-                    </div>
-                    <div class="mobile-service-detail" id="mobile-data-detail">
-                        <p>Guidance on data privacy laws and implementation of robust data protection frameworks.</p>
-                        <div class="mobile-service-features">
-                            <ul>
-                                <li>Data protection compliance audits</li>
-                                <li>Privacy policy drafting</li>
-                                <li>Data processing agreements</li>
-                                <li>Data breach response planning</li>
-                                <li>Employee training programs</li>
-                                <li>Representation before data commissioner</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="service-card" onclick="toggleService(this, 'immigration')">
-                    <div class="service-card-header">
-                        <div class="service-icon">
-                            <i class="fas fa-passport"></i>
-                        </div>
-                        <h3 class="service-title">Immigration</h3>
-                    </div>
-                    <div class="mobile-service-detail" id="mobile-immigration-detail">
-                        <p>End-to-end support for work permits, visas, and citizenship matters.</p>
-                        <div class="mobile-service-features">
-                            <ul>
-                                <li>Work permit applications</li>
-                                <li>Dependent pass processing</li>
-                                <li>Citizenship and naturalization</li>
-                                <li>Immigration appeals</li>
-                                <li>Employer compliance advisory</li>
-                                <li>Expatriate tax planning</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="service-card" onclick="toggleService(this, 'ip')">
-                    <div class="service-card-header">
-                        <div class="service-icon">
-                            <i class="fas fa-copyright"></i>
-                        </div>
-                        <h3 class="service-title">Intellectual Property</h3>
-                    </div>
-                    <div class="mobile-service-detail" id="mobile-ip-detail">
-                        <p>Protection and enforcement of intellectual property rights.</p>
-                        <div class="mobile-service-features">
-                            <ul>
-                                <li>Trademark registration</li>
-                                <li>Patent filing and prosecution</li>
-                                <li>Copyright protection</li>
-                                <li>Industrial design registration</li>
-                                <li>IP licensing agreements</li>
-                                <li>Anti-counterfeiting measures</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="service-detail-container">
-                <div class="service-detail active" id="tax-detail">
-                    <h3>Tax Advisory Services</h3>
-                    <p>Comprehensive tax consultancy and representation services to ensure compliance and optimize your tax position.</p>
-                    
-                    <div class="service-features">
-                        <ul>
-                            <li>Tax planning and compliance advisory</li>
-                            <li>Representation before tax authorities</li>
-                            <li>Tax dispute resolution</li>
-                            <li>Transfer pricing documentation</li>
-                            <li>Tax due diligence for transactions</li>
-                            <li>Customs and excise duty advisory</li>
-                        </ul>
-                    </div>
-                </div>
-                
-                <div class="service-detail" id="data-detail">
-                    <h3>Data Protection Compliance</h3>
-                    <p>Guidance on data privacy laws and implementation of robust data protection frameworks.</p>
-                    
-                    <div class="service-features">
-                        <ul>
-                            <li>Data protection compliance audits</li>
-                            <li>Privacy policy drafting</li>
-                            <li>Data processing agreements</li>
-                            <li>Data breach response planning</li>
-                            <li>Employee training programs</li>
-                            <li>Representation before data commissioner</li>
-                        </ul>
-                    </div>
-                </div>
-                
-                <div class="service-detail" id="immigration-detail">
-                    <h3>Immigration Services</h3>
-                    <p>End-to-end support for work permits, visas, and citizenship matters.</p>
-                    
-                    <div class="service-features">
-                        <ul>
-                            <li>Work permit applications</li>
-                            <li>Dependent pass processing</li>
-                            <li>Citizenship and naturalization</li>
-                            <li>Immigration appeals</li>
-                            <li>Employer compliance advisory</li>
-                            <li>Expatriate tax planning</li>
-                        </ul>
-                    </div>
-                </div>
-                
-                <div class="service-detail" id="ip-detail">
-                    <h3>Intellectual Property</h3>
-                    <p>Protection and enforcement of intellectual property rights.</p>
-                    
-                    <div class="service-features">
-                        <ul>
-                            <li>Trademark registration</li>
-                            <li>Patent filing and prosecution</li>
-                            <li>Copyright protection</li>
-                            <li>Industrial design registration</li>
-                            <li>IP licensing agreements</li>
-                            <li>Anti-counterfeiting measures</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
+      </div>
+      
+      <div class="service-card" onclick="toggleService(this, 'immigration')">
+        <div class="service-card-header">
+          <div class="service-icon">
+            <i class="fas fa-passport"></i>
+          </div>
+          <h3 class="service-title">Immigration</h3>
         </div>
-    </main>
-
-    <footer>
-        <div class="footer-content">
-            <p>&copy; 2024 Muguna & Oyile Advocates. All rights reserved.</p>
-            <p>Nairobi | Meru, Kenya</p>
+        <div class="mobile-service-detail" id="mobile-immigration-detail">
+          <p>End-to-end support for work permits, visas, and citizenship matters.</p>
+          <div class="mobile-service-features">
+            <ul>
+              <li>Work permit applications</li>
+              <li>Dependent pass processing</li>
+              <li>Citizenship and naturalization</li>
+              <li>Immigration appeals</li>
+              <li>Employer compliance advisory</li>
+              <li>Expatriate tax planning</li>
+            </ul>
+          </div>
         </div>
-    </footer>
+      </div>
+      
+      <div class="service-card" onclick="toggleService(this, 'ip')">
+        <div class="service-card-header">
+          <div class="service-icon">
+            <i class="fas fa-copyright"></i>
+          </div>
+          <h3 class="service-title">Intellectual Property</h3>
+        </div>
+        <div class="mobile-service-detail" id="mobile-ip-detail">
+          <p>Protection and enforcement of intellectual property rights.</p>
+          <div class="mobile-service-features">
+            <ul>
+              <li>Trademark registration</li>
+              <li>Patent filing and prosecution</li>
+              <li>Copyright protection</li>
+              <li>Industrial design registration</li>
+              <li>IP licensing agreements</li>
+              <li>Anti-counterfeiting measures</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
 
-    <script>
-        function toggleService(card, serviceId) {
-            // For desktop view
-            if (window.innerWidth > 992) {
-                document.querySelectorAll('.service-detail').forEach(detail => {
-                    detail.classList.remove('active');
-                });
-                
-                document.querySelectorAll('.service-card').forEach(card => {
-                    card.classList.remove('active');
-                });
-                
-                document.getElementById(serviceId + '-detail').classList.add('active');
-                card.classList.add('active');
-            } 
-            // For mobile view
-            else {
-                // Close all other mobile details
-                document.querySelectorAll('.mobile-service-detail').forEach(detail => {
-                    if (detail.id !== 'mobile-' + serviceId + '-detail') {
-                        detail.classList.remove('active');
-                    }
-                });
-                
-                // Toggle clicked card's mobile detail
-                const mobileDetail = document.getElementById('mobile-' + serviceId + '-detail');
-                mobileDetail.classList.toggle('active');
-                
-                // Toggle active state for styling
-                document.querySelectorAll('.service-card').forEach(card => {
-                    card.classList.remove('active');
-                });
-                card.classList.toggle('active');
-            }
-        }
+    <div class="service-detail-container">
+      <div class="service-detail active" id="tax-detail">
+        <h3>Tax Advisory Services</h3>
+        <p>Comprehensive tax consultancy and representation services to ensure compliance and optimize your tax position.</p>
         
-        // Handle window resize to maintain proper state
-        window.addEventListener('resize', function() {
-            if (window.innerWidth > 992) {
-                // Reset mobile details when switching back to desktop
-                document.querySelectorAll('.mobile-service-detail').forEach(detail => {
-                    detail.classList.remove('active');
-                });
-            }
-        });
-    </script>
-</body>
-</html>
+        <div class="service-features">
+          <ul>
+            <li>Tax planning and compliance advisory</li>
+            <li>Representation before tax authorities</li>
+            <li>Tax dispute resolution</li>
+            <li>Transfer pricing documentation</li>
+            <li>Tax due diligence for transactions</li>
+            <li>Customs and excise duty advisory</li>
+          </ul>
+        </div>
+      </div>
+      
+      <div class="service-detail" id="data-detail">
+        <h3>Data Protection Compliance</h3>
+        <p>Guidance on data privacy laws and implementation of robust data protection frameworks.</p>
+        
+        <div class="service-features">
+          <ul>
+            <li>Data protection compliance audits</li>
+            <li>Privacy policy drafting</li>
+            <li>Data processing agreements</li>
+            <li>Data breach response planning</li>
+            <li>Employee training programs</li>
+            <li>Representation before data commissioner</li>
+          </ul>
+        </div>
+      </div>
+      
+      <div class="service-detail" id="immigration-detail">
+        <h3>Immigration Services</h3>
+        <p>End-to-end support for work permits, visas, and citizenship matters.</p>
+        
+        <div class="service-features">
+          <ul>
+            <li>Work permit applications</li>
+            <li>Dependent pass processing</li>
+            <li>Citizenship and naturalization</li>
+            <li>Immigration appeals</li>
+            <li>Employer compliance advisory</li>
+            <li>Expatriate tax planning</li>
+          </ul>
+        </div>
+      </div>
+      
+      <div class="service-detail" id="ip-detail">
+        <h3>Intellectual Property</h3>
+        <p>Protection and enforcement of intellectual property rights.</p>
+        
+        <div class="service-features">
+          <ul>
+            <li>Trademark registration</li>
+            <li>Patent filing and prosecution</li>
+            <li>Copyright protection</li>
+            <li>Industrial design registration</li>
+            <li>IP licensing agreements</li>
+            <li>Anti-counterfeiting measures</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  function toggleService(card, serviceId) {
+    // For desktop view
+    if (window.innerWidth > 992) {
+      document.querySelectorAll('.service-detail').forEach(detail => {
+        detail.classList.remove('active');
+      });
+      
+      document.querySelectorAll('.service-card').forEach(card => {
+        card.classList.remove('active');
+      });
+      
+      document.getElementById(serviceId + '-detail').classList.add('active');
+      card.classList.add('active');
+    } 
+    // For mobile view
+    else {
+      // Close all other mobile details
+      document.querySelectorAll('.mobile-service-detail').forEach(detail => {
+        if (detail.id !== 'mobile-' + serviceId + '-detail') {
+          detail.classList.remove('active');
+        }
+      });
+      
+      // Toggle clicked card's mobile detail
+      const mobileDetail = document.getElementById('mobile-' + serviceId + '-detail');
+      mobileDetail.classList.toggle('active');
+      
+      // Toggle active state for styling
+      document.querySelectorAll('.service-card').forEach(card => {
+        card.classList.remove('active');
+      });
+      card.classList.toggle('active');
+    }
+  }
+  
+  // Handle window resize to maintain proper state
+  window.addEventListener('resize', function() {
+    if (window.innerWidth > 992) {
+      // Reset mobile details when switching back to desktop
+      document.querySelectorAll('.mobile-service-detail').forEach(detail => {
+        detail.classList.remove('active');
+      });
+    }
+  });
+</script>
+{% endblock %}

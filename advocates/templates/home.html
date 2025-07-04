@@ -1,9 +1,227 @@
 {% extends "base.html" %}
-
+{% load static %}
 {% block title %}Home | Muguna & Oyile{% endblock %}
 
+{% block extra_css %}
+<style>
+    /* Services Section Specific Styles */
+    :root {
+      --primary-color: #182942;
+      --primary-accent: #ebd19e;
+      --light-5: #ffffff;
+      --border-radius: 8px;
+      --transition: all 0.3s ease;
+      --box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+    
+    /* Centered Header */
+    .section-header.centered-header {
+      text-align: center;
+      max-width: 800px;
+      margin: 0 auto 50px;
+    }
+    
+    .section-header.centered-header h2 {
+      font-size: 2.5rem;
+      color: var(--primary-color);
+      margin-bottom: 15px;
+    }
+    
+    .section-subtitle {
+      color: #666;
+      font-size: 1.1rem;
+    }
+    
+    /* Services Layout */
+    .services-column-layout {
+      display: flex;
+      gap: 40px;
+      align-items: flex-start;
+    }
+    
+    .services-content-container {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .services-intro-text {
+      margin-bottom: 30px;
+      color: #555;
+      line-height: 1.7;
+      text-align: center;
+      padding: 0 20px;
+      font-size: 1.1rem;
+    }
+    
+    .services-image-container {
+      width: 45%;
+      flex-shrink: 0;
+      position: sticky;
+      top: 20px;
+      align-self: stretch;
+    }
+    
+    /* Services List */
+    .services-list-minimal {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+    
+    .service-item-minimal {
+      display: flex;
+      align-items: center;
+      padding: 25px;
+      min-height: 120px;
+      border-radius: var(--border-radius);
+      background: var(--light-5);
+      transition: var(--transition);
+      text-decoration: none;
+      color: inherit;
+      box-shadow: var(--box-shadow);
+      border-left: 3px solid transparent;
+    }
+    
+    .service-item-minimal:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+      border-left-color: var(--primary-accent);
+    }
+    
+    .service-icon-minimal {
+      flex-shrink: 0;
+    }
+    
+    .service-icon-minimal i {
+      font-size: 1.5rem;
+      color: var(--primary-accent);
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(24, 41, 66, 0.05);
+      transition: var(--transition);
+    }
+    
+    .service-item-minimal:hover .service-icon-minimal i {
+      background: var(--primary-accent);
+      color: var(--primary-color);
+    }
+    
+    .service-title-minimal {
+      flex-grow: 1;
+      margin: 0 25px;
+      text-align: center;
+      font-weight: 500;
+      color: var(--primary-color);
+      font-size: 1.2rem;
+      font-family: var(--body-font);
+    }
+    
+    .service-toggle {
+      flex-shrink: 0;
+    }
+    
+    .service-toggle i {
+      color: var(--primary-accent);
+      font-size: 1.2rem;
+      transition: var(--transition);
+    }
+    
+    .service-item-minimal:hover .service-toggle i {
+      transform: translateX(5px);
+    }
+    
+    /* Image Styles */
+    .services-image {
+      height: 100%;
+      min-height: 500px;
+      border-radius: var(--border-radius);
+      overflow: hidden;
+      box-shadow: var(--box-shadow);
+    }
+    
+    .services-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.5s ease;
+    }
+    
+    .services-image:hover img {
+      transform: scale(1.03);
+    }
+    
+    /* Responsive Layout */
+    @media (max-width: 992px) {
+      .services-column-layout {
+        flex-direction: column;
+      }
+      
+      .services-image-container {
+        width: 100%;
+        margin-bottom: 40px;
+        position: relative;
+        top: auto;
+      }
+      
+      .services-image {
+        min-height: 400px;
+      }
+      
+      .service-item-minimal {
+        min-height: 100px;
+      }
+    }
+    
+    @media (max-width: 768px) {
+      .section-header.centered-header h2 {
+        font-size: 2rem;
+      }
+      
+      .service-item-minimal {
+        padding: 20px;
+        min-height: 90px;
+      }
+      
+      .service-icon-minimal i {
+        width: 50px;
+        height: 50px;
+        font-size: 1.3rem;
+      }
+      
+      .service-title-minimal {
+        font-size: 1.1rem;
+        margin: 0 15px;
+      }
+    }
+    
+    @media (max-width: 576px) {
+      .services-image {
+        min-height: 300px;
+      }
+      
+      .service-item-minimal {
+        min-height: 80px;
+      }
+      
+      .service-title-minimal {
+        font-size: 1rem;
+      }
+      
+      .services-intro-text {
+        font-size: 1rem;
+      }
+    }
+</style>
+{% endblock %}
+
 {% block content %}
-  <!-- Hero Section -->
+ <!-- Hero Section -->
   <section class="hero" id="home" aria-labelledby="hero-heading">
     <div class="container">
       <h1 id="hero-heading">Expert Legal Solutions You Can Trust</h1>
@@ -18,82 +236,76 @@
   <!-- Services Section -->
   <section class="services section-padding" id="services" aria-labelledby="services-heading">
     <div class="container">
-      <div class="section-header">
+      <!-- Centered Header -->
+      <div class="section-header centered-header">
         <h2 id="services-heading">Our Legal Services</h2>
-        <p class="section-subtitle">Expert legal solutions tailored to your specific needs</p>
+        <p class="section-subtitle">Expert legal solutions tailored to your needs</p>
       </div>
-      <div class="services-grid">
-        <!-- Consultancy Services -->
-        <article class="service-card">
-          <div class="service-icon">
-            <i class="fas fa-handshake"></i>
-          </div>
-          <div class="service-content">
-            <h3>Consultancy Services</h3>
-            <p class="service-description">Strategic legal advice and guidance to help you navigate complex legal landscapes and make informed decisions.</p>
-            <ul class="service-features">
-              <li><i class="fas fa-check-circle"></i> Legal risk assessment</li>
-              <li><i class="fas fa-check-circle"></i> Regulatory compliance</li>
-              <li><i class="fas fa-check-circle"></i> Contract review & drafting</li>
-              <li><i class="fas fa-check-circle"></i> Due diligence</li>
-            </ul>
-            <a href="{% url 'contact' %}" class="btn btn-outline">Request Consultation</a>
-          </div>
-        </article>
 
-        <!-- Corporate & Commercial Law -->
-        <article class="service-card">
-          <div class="service-icon">
-            <i class="fas fa-briefcase"></i>
-          </div>
-          <div class="service-content">
-            <h3>Corporate & Commercial Law</h3>
-            <p class="service-description">Comprehensive legal support for businesses at every stage of their lifecycle.</p>
-            <ul class="service-features">
-              <li><i class="fas fa-check-circle"></i> Company formation</li>
-              <li><i class="fas fa-check-circle"></i> Mergers & acquisitions</li>
-              <li><i class="fas fa-check-circle"></i> Corporate governance</li>
-              <li><i class="fas fa-check-circle"></i> Commercial contracts</li>
-            </ul>
-            <a href="{% url 'contact' %}" class="btn btn-outline">Discuss Your Needs</a>
-          </div>
-        </article>
+      <div class="services-column-layout">
+        <!-- Left Column - Content -->
+        <div class="services-content-container">
+          <p class="services-intro-text">
+            At our law firm, we provide comprehensive legal services across various practice areas. 
+            Our experienced attorneys are dedicated to delivering personalized solutions that meet 
+            your specific legal needs and objectives.
+          </p>
+          
+          <div class="services-list-minimal">
+            <!-- Consultancy Services -->
+            <a href="{% url 'consultancy' %}" class="service-item-minimal">
+              <div class="service-icon-minimal">
+                <i class="fas fa-handshake"></i>
+              </div>
+              <h3 class="service-title-minimal">Consultancy Services</h3>
+              <div class="service-toggle">
+                <i class="fas fa-arrow-right"></i>
+              </div>
+            </a>
 
-        <!-- Property & Real Estate Law -->
-        <article class="service-card">
-          <div class="service-icon">
-            <i class="fas fa-home"></i>
-          </div>
-          <div class="service-content">
-            <h3>Property & Real Estate Law</h3>
-            <p class="service-description">Expert guidance through all aspects of property transactions and disputes.</p>
-            <ul class="service-features">
-              <li><i class="fas fa-check-circle"></i> Conveyancing</li>
-              <li><i class="fas fa-check-circle"></i> Title disputes</li>
-              <li><i class="fas fa-check-circle"></i> Lease agreements</li>
-              <li><i class="fas fa-check-circle"></i> Development projects</li>
-            </ul>
-            <a href="{% url 'contact' %}" class="btn btn-outline">Get Started</a>
-          </div>
-        </article>
+            <!-- Corporate & Commercial Law -->
+            <a href="{% url 'corporate' %}" class="service-item-minimal">
+              <div class="service-icon-minimal">
+                <i class="fas fa-briefcase"></i>
+              </div>
+              <h4 class="service-title-minimal">Corporate & Commercial Law</h4>
+              <div class="service-toggle">
+                <i class="fas fa-arrow-right"></i>
+              </div>
+            </a>
 
-        <!-- Dispute Resolution -->
-        <article class="service-card">
-          <div class="service-icon">
-            <i class="fas fa-balance-scale"></i>
+            <!-- Property & Real Estate Law -->
+            <a href="{% url 'property' %}" class="service-item-minimal">
+              <div class="service-icon-minimal">
+                <i class="fas fa-home"></i>
+              </div>
+              <h4 class="service-title-minimal">Property & Real Estate Law</h4>
+              <div class="service-toggle">
+                <i class="fas fa-arrow-right"></i>
+              </div>
+            </a>
+
+            <!-- Dispute Resolution -->
+            <a href="{% url 'dispute_resolution' %}" class="service-item-minimal">
+              <div class="service-icon-minimal">
+                <i class="fas fa-balance-scale"></i>
+              </div>
+              <h4 class="service-title-minimal">Dispute Resolution</h4>
+              <div class="service-toggle">
+                <i class="fas fa-arrow-right"></i>
+              </div>
+            </a>
           </div>
-          <div class="service-content">
-            <h3>Dispute Resolution</h3>
-            <p class="service-description">Effective strategies for resolving conflicts through negotiation, mediation, or litigation.</p>
-            <ul class="service-features">
-              <li><i class="fas fa-check-circle"></i> Commercial disputes</li>
-              <li><i class="fas fa-check-circle"></i> Employment disputes</li>
-              <li><i class="fas fa-check-circle"></i> Contract disputes</li>
-              <li><i class="fas fa-check-circle"></i> Alternative dispute resolution</li>
-            </ul>
-            <a href="{% url 'contact' %}" class="btn btn-outline">Resolve Your Matter</a>
+        </div>
+
+        <!-- Right Column - Image (ALWAYS on right) -->
+        <div class="services-image-container">
+          <div class="services-image">
+            <img src="{% static 'images/homepage.jpg' %}" 
+                 alt="Professional lawyers in a meeting" 
+                 loading="lazy">
           </div>
-        </article>
+        </div>
       </div>
     </div>
   </section>

@@ -1,563 +1,523 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Property Law | Muguna & Oyile Advocates</title>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <style>
-      :root {
-        --primary-color: #182942;
-        --primary-accent: #ebd19e;
-        --light-5: #ffffff;
-        --border-radius: 8px;
-        --transition: all 0.3s ease;
-        --box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-        --text-light: #f8f9fa;
-        --text-muted: #6c757d;
-      }
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Property & Real Estate Law | {{ block.super }}{% endblock %}
+
+{% block extra_css %}
+<style>
+  :root {
+    --primary-color: #182942;
+    --primary-dark: #1a3a6a;
+    --primary-accent: #ebd19e;
+    --light-5: #ffffff;
+    --border-radius: 8px;
+    --transition: all 0.3s ease;
+    --box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    --text-light: #f8f9fa;
+    --text-muted: #6c757d;
+  }
+
+  /* Enhanced Centered Header */
+  .section-header.centered-header {
+    text-align: center;
+    max-width: 800px;
+    margin: 0 auto 50px;
+    padding: 2.5rem;
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+    color: var(--light-5);
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .section-header.centered-header::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><rect fill="%23ebd19e" fill-opacity="0.05" width="50" height="50" x="50" y="50"/></svg>');
+    background-size: 20px 20px;
+    opacity: 0.3;
+  }
+  
+  .section-header.centered-header h1 {
+    font-size: 2.5rem;
+    color: var(--primary-accent);
+    margin-bottom: 15px;
+    position: relative;
+    font-family: var(--heading-font);
+  }
+  
+  .section-header.centered-header .header-subtitle {
+    color: rgba(255, 255, 255, 0.85);
+    font-size: 1.1rem;
+    position: relative;
+  }
+  
+  /* Optional: Add a subtle gold accent to the header */
+  .section-header.centered-header::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100px;
+    height: 4px;
+    background: var(--primary-accent);
+    border-radius: 2px;
+  }
+
+  /* Rest of your CSS styles from the original */
+  .service-intro {
+    text-align: center;
+    max-width: 800px;
+    margin: 80px auto;
+    font-size: 1.1rem;
+    line-height: 1.8;
+    color: var(--text-muted);
+  }
+
+  .services-container {
+    display: flex;
+    gap: 40px;
+    margin-bottom: 80px;
+  }
+
+  .services-list {
+    width: 45%;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .service-card {
+    background: var(--light-5);
+    padding: 25px;
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+    transition: var(--transition);
+    border-left: 3px solid transparent;
+    cursor: pointer;
+  }
+
+  .service-card:hover, .service-card.active {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    border-left-color: var(--primary-accent);
+  }
+
+  .service-card.active {
+    background-color: rgba(235, 209, 158, 0.1);
+  }
+
+  .service-card-header {
+    display: flex;
+    align-items: center;
+  }
+
+  .service-icon {
+    flex-shrink: 0;
+    margin-right: 20px;
+  }
+
+  .service-icon i {
+    font-size: 1.5rem;
+    color: var(--primary-accent);
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(24, 41, 66, 0.05);
+    transition: var(--transition);
+  }
+
+  .service-card:hover .service-icon i,
+  .service-card.active .service-icon i {
+    background: var(--primary-accent);
+    color: var(--primary-color);
+  }
+
+  .service-title {
+    font-size: 1.3rem;
+    font-weight: 500;
+    color: var(--primary-color);
+    margin: 0;
+    font-family: var(--body-font);
+  }
+
+  .service-detail-container {
+    width: 55%;
+    position: sticky;
+    top: 20px;
+    align-self: flex-start;
+    height: fit-content;
+  }
+
+  .service-detail {
+    background: var(--light-5);
+    padding: 40px;
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+    display: none;
+    height: 100%;
+  }
+
+  .service-detail.active {
+    display: block;
+  }
+
+  .service-detail h3 {
+    font-size: 1.8rem;
+    color: var(--primary-color);
+    margin-top: 0;
+    margin-bottom: 20px;
+    font-family: var(--heading-font);
+  }
+
+  .service-detail p {
+    color: var(--text-muted);
+    line-height: 1.8;
+    margin-bottom: 20px;
+    font-family: var(--body-font);
+  }
+
+  .service-features {
+    margin-top: 30px;
+  }
+
+  .service-features li {
+    margin-bottom: 15px;
+    position: relative;
+    padding-left: 25px;
+    font-family: var(--body-font);
+  }
+
+  .service-features li:before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 8px;
+    width: 12px;
+    height: 12px;
+    background-color: var(--primary-accent);
+    border-radius: 50%;
+  }
+
+  /* Mobile-specific styles */
+  .mobile-service-detail {
+    display: none;
+    padding: 20px 0 0 0;
+    color: var(--text-muted);
+    line-height: 1.8;
+    font-family: var(--body-font);
+  }
+
+  .mobile-service-detail.active {
+    display: block;
+  }
+
+  .mobile-service-features {
+    margin-top: 15px;
+    padding-left: 20px;
+  }
+
+  .mobile-service-features li {
+    margin-bottom: 10px;
+    position: relative;
+    padding-left: 20px;
+  }
+
+  .mobile-service-features li:before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 8px;
+    width: 10px;
+    height: 10px;
+    background-color: var(--primary-accent);
+    border-radius: 50%;
+  }
+
+  @media (max-width: 992px) {
+    .services-container {
+      flex-direction: column;
+    }
+    
+    .services-list,
+    .service-detail-container {
+      width: 100%;
+    }
+    
+    .service-detail-container {
+      position: relative;
+      top: auto;
+      margin-top: 40px;
+    }
+
+    /* Hide desktop details on mobile */
+    .service-detail {
+      display: none !important;
+    }
+
+    .service-card {
+      margin-bottom: 10px;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .section-header.centered-header h1 {
+      font-size: 2.2rem;
+    }
+    
+    .service-detail {
+      padding: 30px;
+    }
+
+    .service-icon i {
+      width: 50px;
+      height: 50px;
+      font-size: 1.3rem;
+    }
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="container">
+  <div class="section-header centered-header">
+    <h1>Property & Real Estate</h1>
+    <p class="header-subtitle">Comprehensive legal services for all property transactions and disputes</p>
+  </div>
+</section>
+
+<main class="container">
+  <div class="service-intro">
+    <p>Our property practice provides expert guidance through all aspects of real estate transactions and land matters.</p>
+  </div>
+
+  <div class="services-container">
+    <div class="services-list">
+      <div class="service-card active" onclick="toggleService(this, 'conveyancing')">
+        <div class="service-card-header">
+          <div class="service-icon">
+            <i class="fas fa-file-contract"></i>
+          </div>
+          <h3 class="service-title">Conveyancing</h3>
+        </div>
+        <div class="mobile-service-detail" id="mobile-conveyancing-detail">
+          <p>Expert handling of property transfers and title documentation.</p>
+          <div class="mobile-service-features">
+            <ul>
+              <li>Sale and purchase agreements</li>
+              <li>Title searches and due diligence</li>
+              <li>Transfer documentation</li>
+              <li>Stamp duty assessment</li>
+              <li>Registration with lands registry</li>
+              <li>Sectional properties transactions</li>
+            </ul>
+          </div>
+        </div>
+      </div>
       
-      body {
-        font-family: 'Montserrat', sans-serif;
-        line-height: 1.6;
-        color: var(--primary-color);
-        margin: 0;
-        padding: 0;
-        background-color: #f9f9f9;
-      }
-
-      .container {
-        max-width: 1200px;
-        margin: 0 auto;
-        padding: 0 20px;
-      }
-
-      header {
-        background: linear-gradient(135deg, var(--primary-color) 0%, #1a3a6a 100%);
-        color: var(--text-light);
-        padding: 100px 0 60px;
-        text-align: center;
-        position: relative;
-      }
-
-      header::after {
-        content: '';
-        position: absolute;
-        bottom: -40px;
-        left: 0;
-        width: 100%;
-        height: 80px;
-        background: var(--light-5);
-        transform: skewY(-2deg);
-        z-index: 1;
-      }
-
-      h1 {
-        font-size: 2.8rem;
-        font-weight: 600;
-        margin-bottom: 15px;
-        position: relative;
-        z-index: 2;
-      }
-
-      .header-subtitle {
-        font-size: 1.2rem;
-        font-weight: 300;
-        max-width: 700px;
-        margin: 0 auto;
-        opacity: 0.9;
-        position: relative;
-        z-index: 2;
-      }
-
-      .service-toggle {
-        color: var(--primary-accent);
-        font-size: 1.2rem;
-        margin-left: 15px;
-        transition: var(--transition);
-        display: flex;
-        align-items: center;
-      }
-
-      .service-toggle i {
-        transition: var(--transition);
-      }
-
-      .service-card.active .service-toggle i {
-        transform: rotate(180deg);
-      }
-
-      .service-intro {
-        text-align: center;
-        max-width: 800px;
-        margin: 80px auto;
-        font-size: 1.1rem;
-        line-height: 1.8;
-        color: var(--text-muted);
-      }
-
-      .services-container {
-        display: flex;
-        gap: 40px;
-        margin-bottom: 80px;
-      }
-
-      .services-list {
-        width: 45%;
-        display: flex;
-        flex-direction: column;
-        gap: 20px;
-      }
-
-      .service-card {
-        background: var(--light-5);
-        padding: 25px;
-        border-radius: var(--border-radius);
-        box-shadow: var(--box-shadow);
-        transition: var(--transition);
-        border-left: 3px solid transparent;
-        cursor: pointer;
-      }
-
-      .service-card:hover, .service-card.active {
-        transform: translateY(-3px);
-        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
-        border-left-color: var(--primary-accent);
-      }
-
-      .service-card.active {
-        background-color: rgba(235, 209, 158, 0.1);
-      }
-
-      .service-card-header {
-        display: flex;
-        align-items: center;
-      }
-
-      .service-icon {
-        flex-shrink: 0;
-        margin-right: 20px;
-      }
-
-      .service-icon i {
-        font-size: 1.5rem;
-        color: var(--primary-accent);
-        width: 60px;
-        height: 60px;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        background: rgba(24, 41, 66, 0.05);
-        transition: var(--transition);
-      }
-
-      .service-card:hover .service-icon i,
-      .service-card.active .service-icon i {
-        background: var(--primary-accent);
-        color: var(--primary-color);
-      }
-
-      .service-title {
-        font-size: 1.3rem;
-        font-weight: 500;
-        color: var(--primary-color);
-        margin: 0;
-      }
-
-      .service-detail-container {
-        width: 55%;
-        position: sticky;
-        top: 20px;
-        align-self: flex-start;
-        height: fit-content;
-      }
-
-      .service-detail {
-        background: var(--light-5);
-        padding: 40px;
-        border-radius: var(--border-radius);
-        box-shadow: var(--box-shadow);
-        display: none;
-        height: 100%;
-      }
-
-      .service-detail.active {
-        display: block;
-      }
-
-      .service-detail h3 {
-        font-size: 1.8rem;
-        color: var(--primary-color);
-        margin-top: 0;
-        margin-bottom: 20px;
-      }
-
-      .service-detail p {
-        color: var(--text-muted);
-        line-height: 1.8;
-        margin-bottom: 20px;
-      }
-
-      .service-features {
-        margin-top: 30px;
-      }
-
-      .service-features li {
-        margin-bottom: 15px;
-        position: relative;
-        padding-left: 25px;
-      }
-
-      .service-features li:before {
-        content: '';
-        position: absolute;
-        left: 0;
-        top: 8px;
-        width: 12px;
-        height: 12px;
-        background-color: var(--primary-accent);
-        border-radius: 50%;
-      }
-
-      /* Mobile-specific styles */
-      .mobile-service-detail {
-        display: none;
-        padding: 20px 0 0 0;
-        color: var(--text-muted);
-        line-height: 1.8;
-      }
-
-      .mobile-service-detail.active {
-        display: block;
-      }
-
-      .mobile-service-features {
-        margin-top: 15px;
-        padding-left: 20px;
-      }
-
-      .mobile-service-features li {
-        margin-bottom: 10px;
-        position: relative;
-        padding-left: 20px;
-      }
-
-      .mobile-service-features li:before {
-        content: '';
-        position: absolute;
-        left: 0;
-        top: 8px;
-        width: 10px;
-        height: 10px;
-        background-color: var(--primary-accent);
-        border-radius: 50%;
-      }
-
-      footer {
-        background-color: var(--primary-color);
-        color: var(--text-light);
-        text-align: center;
-        padding: 40px 0;
-        margin-top: 80px;
-      }
-
-      .footer-content {
-        max-width: 800px;
-        margin: 0 auto;
-      }
-
-      .footer-content p {
-        margin: 10px 0;
-        opacity: 0.8;
-        font-size: 0.9rem;
-      }
-
-      @media (max-width: 992px) {
-        .services-container {
-          flex-direction: column;
-        }
-        
-        .services-list,
-        .service-detail-container {
-          width: 100%;
-        }
-        
-        .service-detail-container {
-          position: relative;
-          top: auto;
-          margin-top: 40px;
-        }
-
-        /* Hide desktop details on mobile */
-        .service-detail {
-          display: none !important;
-        }
-
-        .service-card {
-          margin-bottom: 10px;
-        }
-      }
-
-      @media (max-width: 768px) {
-        h1 {
-          font-size: 2.2rem;
-        }
-        
-        header {
-          padding: 80px 0 40px;
-        }
-        
-        .service-detail {
-          padding: 30px;
-        }
-
-        .service-icon i {
-          width: 50px;
-          height: 50px;
-          font-size: 1.3rem;
-        }
-      }
-    </style>
-</head>
-<body>
-    <header>
-        <div class="container">
-            <h1>Property & Real Estate</h1>
-            <p class="header-subtitle">Comprehensive legal services for all property transactions and disputes</p>
+      <div class="service-card" onclick="toggleService(this, 'leases')">
+        <div class="service-card-header">
+          <div class="service-icon">
+            <i class="fas fa-home"></i>
+          </div>
+          <h3 class="service-title">Leases & Tenancies</h3>
         </div>
-    </header>
-
-    <main class="container">
-        <div class="service-intro">
-            <p>Our property practice provides expert guidance through all aspects of real estate transactions and land matters.</p>
+        <div class="mobile-service-detail" id="mobile-leases-detail">
+          <p>Comprehensive lease documentation and tenancy management.</p>
+          <div class="mobile-service-features">
+            <ul>
+              <li>Commercial lease preparation</li>
+              <li>Residential tenancy agreements</li>
+              <li>Lease registration</li>
+              <li>Rent review advisory</li>
+              <li>Forfeiture proceedings</li>
+              <li>Tenant eviction services</li>
+            </ul>
+          </div>
         </div>
-
-        <div class="services-container">
-            <div class="services-list">
-                <div class="service-card active" onclick="toggleService(this, 'conveyancing')">
-                    <div class="service-card-header">
-                        <div class="service-icon">
-                            <i class="fas fa-file-contract"></i>
-                        </div>
-                        <h3 class="service-title">Conveyancing</h3>
-                    </div>
-                    <div class="mobile-service-detail" id="mobile-conveyancing-detail">
-                        <p>Expert handling of property transfers and title documentation.</p>
-                        <div class="mobile-service-features">
-                            <ul>
-                                <li>Sale and purchase agreements</li>
-                                <li>Title searches and due diligence</li>
-                                <li>Transfer documentation</li>
-                                <li>Stamp duty assessment</li>
-                                <li>Registration with lands registry</li>
-                                <li>Sectional properties transactions</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="service-card" onclick="toggleService(this, 'leases')">
-                    <div class="service-card-header">
-                        <div class="service-icon">
-                            <i class="fas fa-home"></i>
-                        </div>
-                        <h3 class="service-title">Leases & Tenancies</h3>
-                    </div>
-                    <div class="mobile-service-detail" id="mobile-leases-detail">
-                        <p>Comprehensive lease documentation and tenancy management.</p>
-                        <div class="mobile-service-features">
-                            <ul>
-                                <li>Commercial lease preparation</li>
-                                <li>Residential tenancy agreements</li>
-                                <li>Lease registration</li>
-                                <li>Rent review advisory</li>
-                                <li>Forfeiture proceedings</li>
-                                <li>Tenant eviction services</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="service-card" onclick="toggleService(this, 'finance')">
-                    <div class="service-card-header">
-                        <div class="service-icon">
-                            <i class="fas fa-hand-holding-usd"></i>
-                        </div>
-                        <h3 class="service-title">Property Finance</h3>
-                    </div>
-                    <div class="mobile-service-detail" id="mobile-finance-detail">
-                        <p>Legal support for property financing transactions.</p>
-                        <div class="mobile-service-features">
-                            <ul>
-                                <li>Mortgage documentation</li>
-                                <li>Charge and debenture preparation</li>
-                                <li>Loan security perfection</li>
-                                <li>Foreclosure proceedings</li>
-                                <li>Refinancing advisory</li>
-                                <li>Construction financing</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="service-card" onclick="toggleService(this, 'disputes')">
-                    <div class="service-card-header">
-                        <div class="service-icon">
-                            <i class="fas fa-landmark"></i>
-                        </div>
-                        <h3 class="service-title">Land Disputes</h3>
-                    </div>
-                    <div class="mobile-service-detail" id="mobile-disputes-detail">
-                        <p>Resolution of complex land and property conflicts.</p>
-                        <div class="mobile-service-features">
-                            <ul>
-                                <li>Boundary disputes</li>
-                                <li>Adverse possession claims</li>
-                                <li>Title rectification</li>
-                                <li>Easement and right of way</li>
-                                <li>Compulsory acquisition</li>
-                                <li>Environmental court matters</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="service-detail-container">
-                <div class="service-detail active" id="conveyancing-detail">
-                    <h3>Conveyancing Services</h3>
-                    <p>Expert handling of property transfers and title documentation.</p>
-                    
-                    <div class="service-features">
-                        <ul>
-                            <li>Sale and purchase agreements</li>
-                            <li>Title searches and due diligence</li>
-                            <li>Transfer documentation</li>
-                            <li>Stamp duty assessment</li>
-                            <li>Registration with lands registry</li>
-                            <li>Sectional properties transactions</li>
-                        </ul>
-                    </div>
-                </div>
-                
-                <div class="service-detail" id="leases-detail">
-                    <h3>Leases & Tenancies</h3>
-                    <p>Comprehensive lease documentation and tenancy management.</p>
-                    
-                    <div class="service-features">
-                        <ul>
-                            <li>Commercial lease preparation</li>
-                            <li>Residential tenancy agreements</li>
-                            <li>Lease registration</li>
-                            <li>Rent review advisory</li>
-                            <li>Forfeiture proceedings</li>
-                            <li>Tenant eviction services</li>
-                        </ul>
-                    </div>
-                </div>
-                
-                <div class="service-detail" id="finance-detail">
-                    <h3>Property Finance</h3>
-                    <p>Legal support for property financing transactions.</p>
-                    
-                    <div class="service-features">
-                        <ul>
-                            <li>Mortgage documentation</li>
-                            <li>Charge and debenture preparation</li>
-                            <li>Loan security perfection</li>
-                            <li>Foreclosure proceedings</li>
-                            <li>Refinancing advisory</li>
-                            <li>Construction financing</li>
-                        </ul>
-                    </div>
-                </div>
-                
-                <div class="service-detail" id="disputes-detail">
-                    <h3>Land Disputes</h3>
-                    <p>Resolution of complex land and property conflicts.</p>
-                    
-                    <div class="service-features">
-                        <ul>
-                            <li>Boundary disputes</li>
-                            <li>Adverse possession claims</li>
-                            <li>Title rectification</li>
-                            <li>Easement and right of way</li>
-                            <li>Compulsory acquisition</li>
-                            <li>Environmental court matters</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
+      </div>
+      
+      <div class="service-card" onclick="toggleService(this, 'finance')">
+        <div class="service-card-header">
+          <div class="service-icon">
+            <i class="fas fa-hand-holding-usd"></i>
+          </div>
+          <h3 class="service-title">Property Finance</h3>
         </div>
-    </main>
-
-    <footer>
-        <div class="footer-content">
-            <p>&copy; 2024 Muguna & Oyile Advocates. All rights reserved.</p>
-            <p>Nairobi | Meru, Kenya</p>
+        <div class="mobile-service-detail" id="mobile-finance-detail">
+          <p>Legal support for property financing transactions.</p>
+          <div class="mobile-service-features">
+            <ul>
+              <li>Mortgage documentation</li>
+              <li>Charge and debenture preparation</li>
+              <li>Loan security perfection</li>
+              <li>Foreclosure proceedings</li>
+              <li>Refinancing advisory</li>
+              <li>Construction financing</li>
+            </ul>
+          </div>
         </div>
-    </footer>
+      </div>
+      
+      <div class="service-card" onclick="toggleService(this, 'disputes')">
+        <div class="service-card-header">
+          <div class="service-icon">
+            <i class="fas fa-landmark"></i>
+          </div>
+          <h3 class="service-title">Land Disputes</h3>
+        </div>
+        <div class="mobile-service-detail" id="mobile-disputes-detail">
+          <p>Resolution of complex land and property conflicts.</p>
+          <div class="mobile-service-features">
+            <ul>
+              <li>Boundary disputes</li>
+              <li>Adverse possession claims</li>
+              <li>Title rectification</li>
+              <li>Easement and right of way</li>
+              <li>Compulsory acquisition</li>
+              <li>Environmental court matters</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
 
-    <script>
-        function toggleService(card, serviceId) {
-            // For desktop view
-            if (window.innerWidth > 992) {
-                document.querySelectorAll('.service-detail').forEach(detail => {
-                    detail.classList.remove('active');
-                });
-                
-                document.querySelectorAll('.service-card').forEach(card => {
-                    card.classList.remove('active');
-                });
-                
-                document.getElementById(serviceId + '-detail').classList.add('active');
-                card.classList.add('active');
-            } 
-            // For mobile view
-            else {
-                // Close all other mobile details
-                document.querySelectorAll('.mobile-service-detail').forEach(detail => {
-                    if (detail.id !== 'mobile-' + serviceId + '-detail') {
-                        detail.classList.remove('active');
-                    }
-                });
-                
-                // Toggle clicked card's mobile detail
-                const mobileDetail = document.getElementById('mobile-' + serviceId + '-detail');
-                mobileDetail.classList.toggle('active');
-                
-                // Toggle active state for styling
-                document.querySelectorAll('.service-card').forEach(card => {
-                    card.classList.remove('active');
-                });
-                card.classList.toggle('active');
-            }
-        }
+    <div class="service-detail-container">
+      <div class="service-detail active" id="conveyancing-detail">
+        <h3>Conveyancing Services</h3>
+        <p>Expert handling of property transfers and title documentation.</p>
         
-        // Initialize first card as active on mobile
-        document.addEventListener('DOMContentLoaded', function() {
-            if (window.innerWidth <= 992) {
-                document.getElementById('mobile-conveyancing-detail').classList.add('active');
-            }
-        });
+        <div class="service-features">
+          <ul>
+            <li>Sale and purchase agreements</li>
+            <li>Title searches and due diligence</li>
+            <li>Transfer documentation</li>
+            <li>Stamp duty assessment</li>
+            <li>Registration with lands registry</li>
+            <li>Sectional properties transactions</li>
+          </ul>
+        </div>
+      </div>
+      
+      <div class="service-detail" id="leases-detail">
+        <h3>Leases & Tenancies</h3>
+        <p>Comprehensive lease documentation and tenancy management.</p>
+        
+        <div class="service-features">
+          <ul>
+            <li>Commercial lease preparation</li>
+            <li>Residential tenancy agreements</li>
+            <li>Lease registration</li>
+            <li>Rent review advisory</li>
+            <li>Forfeiture proceedings</li>
+            <li>Tenant eviction services</li>
+          </ul>
+        </div>
+      </div>
+      
+      <div class="service-detail" id="finance-detail">
+        <h3>Property Finance</h3>
+        <p>Legal support for property financing transactions.</p>
+        
+        <div class="service-features">
+          <ul>
+            <li>Mortgage documentation</li>
+            <li>Charge and debenture preparation</li>
+            <li>Loan security perfection</li>
+            <li>Foreclosure proceedings</li>
+            <li>Refinancing advisory</li>
+            <li>Construction financing</li>
+          </ul>
+        </div>
+      </div>
+      
+      <div class="service-detail" id="disputes-detail">
+        <h3>Land Disputes</h3>
+        <p>Resolution of complex land and property conflicts.</p>
+        
+        <div class="service-features">
+          <ul>
+            <li>Boundary disputes</li>
+            <li>Adverse possession claims</li>
+            <li>Title rectification</li>
+            <li>Easement and right of way</li>
+            <li>Compulsory acquisition</li>
+            <li>Environmental court matters</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+{% endblock %}
 
-        // Handle window resize to maintain proper state
-        window.addEventListener('resize', function() {
-            if (window.innerWidth > 992) {
-                // Reset mobile details when switching back to desktop
-                document.querySelectorAll('.mobile-service-detail').forEach(detail => {
-                    detail.classList.remove('active');
-                });
-            } else {
-                // Ensure the first card is active when switching to mobile
-                if (!document.querySelector('.mobile-service-detail.active')) {
-                    document.getElementById('mobile-conveyancing-detail').classList.add('active');
-                    document.querySelector('.service-card').classList.add('active');
-                }
-            }
-        });
-    </script>
-</body>
-</html>
+{% block extra_js %}
+<script>
+  function toggleService(card, serviceId) {
+    // For desktop view
+    if (window.innerWidth > 992) {
+      document.querySelectorAll('.service-detail').forEach(detail => {
+        detail.classList.remove('active');
+      });
+      
+      document.querySelectorAll('.service-card').forEach(card => {
+        card.classList.remove('active');
+      });
+      
+      document.getElementById(serviceId + '-detail').classList.add('active');
+      card.classList.add('active');
+    } 
+    // For mobile view
+    else {
+      // Close all other mobile details
+      document.querySelectorAll('.mobile-service-detail').forEach(detail => {
+        if (detail.id !== 'mobile-' + serviceId + '-detail') {
+          detail.classList.remove('active');
+        }
+      });
+      
+      // Toggle clicked card's mobile detail
+      const mobileDetail = document.getElementById('mobile-' + serviceId + '-detail');
+      mobileDetail.classList.toggle('active');
+      
+      // Toggle active state for styling
+      document.querySelectorAll('.service-card').forEach(card => {
+        card.classList.remove('active');
+      });
+      card.classList.toggle('active');
+    }
+  }
+  
+  // Initialize first card as active on mobile
+  document.addEventListener('DOMContentLoaded', function() {
+    if (window.innerWidth <= 992) {
+      document.getElementById('mobile-conveyancing-detail').classList.add('active');
+    }
+  });
+
+  // Handle window resize to maintain proper state
+  window.addEventListener('resize', function() {
+    if (window.innerWidth > 992) {
+      // Reset mobile details when switching back to desktop
+      document.querySelectorAll('.mobile-service-detail').forEach(detail => {
+        detail.classList.remove('active');
+      });
+    } else {
+      // Ensure the first card is active when switching to mobile
+      if (!document.querySelector('.mobile-service-detail.active')) {
+        document.getElementById('mobile-conveyancing-detail').classList.add('active');
+        document.querySelector('.service-card').classList.add('active');
+      }
+    }
+  });
+</script>
+{% endblock %}
