@@ -1,0 +1,76 @@
+{% extends 'team_base.html' %}
+
+{% block title %}Property & Real Estate Law | {{ block.super }}{% endblock %}
+
+{% block content %}
+<div class="tm-wrapper">
+  <!-- Header with Portrait -->
+  <div class="tm-header-container">
+    <header class="tm-section-header tm-centered-header">
+      <h1>Tony Muguna</h1>
+      <span class="tm-header-subtitle">24 Years of Legal Excellence</span>
+
+      <div class="tm-profile-img-container">
+        <div class="tm-profile-title">Senior Advocate</div>
+        <img src="https://images.unsplash.com/photo-1580894732444-8ecded7900cd?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80" alt="Tony Muguna" class="tm-profile-img">
+      </div>
+    </header>
+  </div>
+
+  <!-- Intro Section -->
+  <section class="tm-intro">
+    <div class="tm-container">
+      <div class="tm-stats-container">
+        <div class="tm-stat-item">
+          <div class="tm-stat-number tm-animated-counter" id="tm-cases-counter">0</div>
+          <div class="tm-stat-label">Cases Handled</div>
+        </div>
+        <div class="tm-stat-item">
+          <div class="tm-stat-number">24</div>
+          <div class="tm-stat-label">Years Experience</div>
+        </div>
+        <div class="tm-stat-item">
+          <div class="tm-stat-number tm-animated-counter" id="tm-success-counter">0</div>
+          <div class="tm-stat-label">Success Rate</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- About -->
+  <section class="tm-about">
+    <div class="tm-container">
+      <h2>Legal Excellence Personified</h2>
+      <p>Tony Muguna's practice is defined by strategic brilliance and uncompromising ethics. His landmark victory in <em>Onyango v. National Bank</em> reshaped corporate liability standards across East Africa.</p>
+      <p>With a <strong>95% success rate</strong> in high-stakes litigation, Tony combines courtroom mastery with a scholar's understanding of legal theory, having lectured at the Kenya School of Law and published three influential papers on constitutional interpretation.</p>
+
+      <div class="tm-signature">
+        <p>Tony Muguna</p>
+        <p>Senior Advocate</p>
+      </div>
+    </div>
+  </section>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  const caseCounter = document.getElementById('tm-cases-counter');
+  const successCounter = document.getElementById('tm-success-counter');
+  const animateCounter = (el, target, suffix = "") => {
+    let frame = 0, total = 72, interval = 1000 / 60;
+    const ease = t => t * (2 - t);
+    const tick = () => {
+      frame++;
+      let val = Math.round(target * ease(frame / total));
+      el.textContent = frame >= total ? `${target}${suffix}` : `${val}${suffix}`;
+      if (frame < total) requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
+  };
+  window.addEventListener('load', () => {
+    animateCounter(caseCounter, 127);
+    setTimeout(() => animateCounter(successCounter, 95, "%"), 300);
+  });
+</script>
+{% endblock %}

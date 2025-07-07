@@ -22,8 +22,8 @@ def propertyservices(request):
     return render(request, 'Services/property.html')
 
 
-def attorneys(request):
-    return render(request, 'attorneys.html')
+def team(request):
+    return render(request, 'team.html')
 
 def contact(request):
     return render(request, 'contact.html')
