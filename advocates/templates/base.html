@@ -50,20 +50,23 @@
       </div>
       <nav>
         <ul id="navMenu">
-          <li><a href="{% url 'home' %}" {% if request.path == '/' %}class="active"{% endif %}>Home</a></li>
-          <li class="dropdown">
-            <a href="#" class="dropdown-toggle">Services <i class="fas fa-caret-down"></i></a>
-            <ul class="dropdown-menu">
-              <li><a href="{% url 'consultancy' %}#consultancy">Consultancy</a></li>
-              <li><a href="{% url 'property' %}#property">Property & Real Estate</a></li>
-              <li><a href="{% url 'dispute_resolution' %}#dispute">Dispute Resolution</a></li>
-              <li><a href="{% url 'corporate' %}#corporate">Corporate & Commercial</a></li>
-            </ul>
-          </li>
-          <li><a href="{% url 'about' %}" {% if request.path == '/about/' %}class="active"{% endif %}>About</a></li>
-          <li><a href="{% url 'team' %}" {% if request.path == '/team/' %}class="active"{% endif %}>Team</a></li>
-          <li><a href="{% url 'contact' %}" {% if request.path == '/contact/' %}class="active"{% endif %}>Contact</a></li>
-        </ul>
+  <li><a href="{% url 'home' %}"><i class="fas fa-home"></i> Home</a></li>
+
+  <li class="dropdown">
+    <a href="#" class="dropdown-toggle"><i class="fas fa-gavel"></i> Services <i class="fas fa-caret-down"></i></a>
+    <ul class="dropdown-menu">
+      <li><a href="{% url 'consultancy' %}#consultancy"><i class="fas fa-lightbulb"></i> Consultancy</a></li>
+      <li><a href="{% url 'property' %}#property"><i class="fas fa-building"></i> Property & Real Estate</a></li>
+      <li><a href="{% url 'dispute_resolution' %}#dispute"><i class="fas fa-balance-scale-left"></i> Dispute Resolution</a></li>
+      <li><a href="{% url 'corporate' %}#corporate"><i class="fas fa-briefcase"></i> Corporate & Commercial</a></li>
+    </ul>
+  </li>
+
+      <li><a href="{% url 'about' %}"><i class="fas fa-user-tie"></i> About</a></li>
+      <li><a href="{% url 'team' %}"><i class="fas fa-users"></i> Team</a></li>
+      <li><a href="{% url 'contact' %}"><i class="fas fa-envelope"></i> Contact</a></li>
+    </ul>
+
       </nav>
       <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Toggle navigation menu" aria-expanded="false">
         <span class="menu-icon"></span>

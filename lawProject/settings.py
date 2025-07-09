@@ -140,3 +140,4 @@ EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'codesbynorris@gmail.com'
 EMAIL_HOST_PASSWORD = 'qpav zbde vtwz bwba'  # paste the 16-character app password
 DEFAULT_FROM_EMAIL = 'codesbynorris@gmail.com'
+CONTACT_RECEIVER_EMAIL = 'susankereere@gmail.com'

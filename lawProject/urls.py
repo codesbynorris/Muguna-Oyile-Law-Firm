@@ -34,11 +34,11 @@ urlpatterns = [
     path('privacy-policy/', views.privacy_policy, name='privacy_policy'),
     path('terms-of-service/', views.terms_of_service, name='terms_of_service'),
 
-    path('services/consultancy-services/', views.consultancyservices, name='consultancy'),
-    path('services/corporate/', views.corporateservices, name='corporate'),
-    path('services/dispute-resolution/', views.disputeresolutionservices, name='dispute_resolution'),
-    path('services/property/', views.propertyservices, name='property'),
-
+    path('services/consultancy-services/', views.consultancy_services, name='consultancy'),
+    path('services/corporate-services/', views.corporate_commercial, name='corporate'),
+    path('services/dispute-resolution/', views.dispute_resolution, name='dispute_resolution'),
+    path('services/property-law/', views.property_law, name='property'),
+    path('send-contact-email/', views.send_contact_email, name='send_contact_email'),
 ]
 
 if settings.DEBUG:

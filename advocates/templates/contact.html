@@ -53,7 +53,7 @@
         <p>Sunday: Closed</p>
       </div>
     </div>
-    
+  
     <div class="map-container">
       <iframe
         src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3988.818244714745!2d36.8132143157539!3d-1.282635899063954!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x182f10d4d6e3a3a1%3A0x5e3c2b3a3a3a3a3a!2sBritam%20Towers!5e0!3m2!1sen!2ske!4v1620000000000!5m2!1sen!2ske"
@@ -138,8 +138,56 @@ contactForm.addEventListener("submit", async (e) => {
     submitBtn.disabled = true;
     submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
     
-    await new Promise(resolve => setTimeout(resolve, 1500));
-    
+function getCookie(name) {
+  let cookieValue = null;
+  if (document.cookie && document.cookie !== '') {
+    const cookies = document.cookie.split(';');
+    for (let i = 0; i < cookies.length; i++) {
+      const cookie = cookies[i].trim();
+      // Does this cookie string begin with the name we want?
+      if (cookie.substring(0, name.length + 1) === (name + '=')) {
+        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+        break;
+      }
+    }
+  }
+  return cookieValue;
+}
+   
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+      const cookies = document.cookie.split(';');
+      for (let cookie of cookies) {
+        cookie = cookie.trim();
+        if (cookie.substring(0, name.length + 1) === (name + '=')) {
+          cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+          break;
+        }
+      }
+    }
+    return cookieValue;
+  }
+
+    // Validate form data
+const response = await fetch('/send-contact-email/', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+    'X-CSRFToken': getCookie('csrftoken')  // if using CSRF protection
+  },
+  body: JSON.stringify({
+    name: formData.get("name"),
+    email: formData.get("email"),
+    subject: formData.get("subject"),
+    message: formData.get("message")
+  }),
+});
+
+const result = await response.json();
+if (!response.ok || result.status !== "success") {
+  throw new Error("Email failed to send");
+}    
     // Show success alert instead of default alert
     showAlert('success', 'Message Sent', "Thank you for your message! We'll get back to you soon.");
     
@@ -227,3 +275,4 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 {% endblock %}
+

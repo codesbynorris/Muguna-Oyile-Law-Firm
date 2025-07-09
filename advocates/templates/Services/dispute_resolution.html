@@ -1,546 +1,136 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Corporate Law | Muguna & Oyile Advocates</title>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <style>
-      :root {
-        --primary-color: #182942;
-        --primary-accent: #ebd19e;
-        --light-5: #ffffff;
-        --border-radius: 8px;
-        --transition: all 0.3s ease;
-        --box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-        --text-light: #f8f9fa;
-        --text-muted: #6c757d;
-      }
-      
-      body {
-        font-family: 'Montserrat', sans-serif;
-        line-height: 1.6;
-        color: var(--primary-color);
-        margin: 0;
-        padding: 0;
-        background-color: #f9f9f9;
-      }
+{% extends 'services-base.html' %}
+{% load static %}
 
-      .container {
-        max-width: 1200px;
-        margin: 0 auto;
-        padding: 0 20px;
-      }
+{% block title %}Dispute Resolution | {{ block.super }}{% endblock %}
 
-      header {
-        background: linear-gradient(135deg, var(--primary-color) 0%, #1a3a6a 100%);
-        color: var(--text-light);
-        padding: 100px 0 60px;
-        text-align: center;
-        position: relative;
-      }
+{% block content %}
+<section class="container">
+  <div class="section-header centered-header">
+    <h1>Dispute Resolution</h1>
+    <p class="header-subtitle">Expert guidance and peaceful resolution strategies tailored for you.</p>
+  </div>
+</section>
 
-      header::after {
-        content: '';
-        position: absolute;
-        bottom: -40px;
-        left: 0;
-        width: 100%;
-        height: 80px;
-        background: var(--light-5);
-        transform: skewY(-2deg);
-        z-index: 1;
-      }
+<main class="container">
+  <div class="service-intro">
+    <p>At Muguna Oyile Law Firm, we believe in resolving disputes with integrity, efficiency, and minimal disruption. Our dispute resolution team is experienced in negotiation, mediation, arbitration, and litigation where necessary.</p>
+  </div>
 
-      h1 {
-        font-size: 2.8rem;
-        font-weight: 600;
-        margin-bottom: 15px;
-        position: relative;
-        z-index: 2;
-      }
-
-      .header-subtitle {
-        font-size: 1.2rem;
-        font-weight: 300;
-        max-width: 700px;
-        margin: 0 auto;
-        opacity: 0.9;
-        position: relative;
-        z-index: 2;
-      }
-
-      .service-intro {
-        text-align: center;
-        max-width: 800px;
-        margin: 80px auto;
-        font-size: 1.1rem;
-        line-height: 1.8;
-        color: var(--text-muted);
-      }
-
-      .services-container {
-        display: flex;
-        gap: 40px;
-        margin-bottom: 80px;
-      }
-
-      .services-list {
-        width: 45%;
-        display: flex;
-        flex-direction: column;
-        gap: 20px;
-      }
-
-      .service-card {
-        background: var(--light-5);
-        padding: 25px;
-        border-radius: var(--border-radius);
-        box-shadow: var(--box-shadow);
-        transition: var(--transition);
-        border-left: 3px solid transparent;
-        cursor: pointer;
-      }
-
-      .service-card:hover, .service-card.active {
-        transform: translateY(-3px);
-        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
-        border-left-color: var(--primary-accent);
-      }
-
-      .service-card.active {
-        background-color: rgba(235, 209, 158, 0.1);
-      }
-
-      .service-card-header {
-        display: flex;
-        align-items: center;
-      }
-
-      .service-icon {
-        flex-shrink: 0;
-        margin-right: 20px;
-      }
-
-      .service-icon i {
-        font-size: 1.5rem;
-        color: var(--primary-accent);
-        width: 60px;
-        height: 60px;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        background: rgba(24, 41, 66, 0.05);
-        transition: var(--transition);
-      }
-
-      .service-card:hover .service-icon i,
-      .service-card.active .service-icon i {
-        background: var(--primary-accent);
-        color: var(--primary-color);
-      }
-
-      .service-title {
-        font-size: 1.3rem;
-        font-weight: 500;
-        color: var(--primary-color);
-        margin: 0;
-      }
-
-      .service-detail-container {
-        width: 55%;
-        position: sticky;
-        top: 20px;
-        align-self: flex-start;
-        height: fit-content;
-      }
-
-      .service-detail {
-        background: var(--light-5);
-        padding: 40px;
-        border-radius: var(--border-radius);
-        box-shadow: var(--box-shadow);
-        display: none;
-        height: 100%;
-      }
-
-      .service-detail.active {
-        display: block;
-      }
-
-      .service-detail h3 {
-        font-size: 1.8rem;
-        color: var(--primary-color);
-        margin-top: 0;
-        margin-bottom: 20px;
-      }
-
-      .service-detail p {
-        color: var(--text-muted);
-        line-height: 1.8;
-        margin-bottom: 20px;
-      }
-
-      .service-features {
-        margin-top: 30px;
-      }
-
-      .service-features li {
-        margin-bottom: 15px;
-        position: relative;
-        padding-left: 25px;
-      }
-
-      .service-features li:before {
-        content: '';
-        position: absolute;
-        left: 0;
-        top: 8px;
-        width: 12px;
-        height: 12px;
-        background-color: var(--primary-accent);
-        border-radius: 50%;
-      }
-
-      /* Mobile-specific styles */
-      .mobile-service-detail {
-        display: none;
-        padding: 20px 0 0 0;
-        color: var(--text-muted);
-        line-height: 1.8;
-      }
-
-      .mobile-service-detail.active {
-        display: block;
-      }
-
-      .mobile-service-features {
-        margin-top: 15px;
-        padding-left: 20px;
-      }
-
-      .mobile-service-features li {
-        margin-bottom: 10px;
-        position: relative;
-        padding-left: 20px;
-      }
-
-      .mobile-service-features li:before {
-        content: '';
-        position: absolute;
-        left: 0;
-        top: 8px;
-        width: 10px;
-        height: 10px;
-        background-color: var(--primary-accent);
-        border-radius: 50%;
-      }
-
-      footer {
-        background-color: var(--primary-color);
-        color: var(--text-light);
-        text-align: center;
-        padding: 40px 0;
-        margin-top: 80px;
-      }
-
-      .footer-content {
-        max-width: 800px;
-        margin: 0 auto;
-      }
-
-      .footer-content p {
-        margin: 10px 0;
-        opacity: 0.8;
-        font-size: 0.9rem;
-      }
-
-      @media (max-width: 992px) {
-        .services-container {
-          flex-direction: column;
-        }
-        
-        .services-list,
-        .service-detail-container {
-          width: 100%;
-        }
-        
-        .service-detail-container {
-          position: relative;
-          top: auto;
-          margin-top: 40px;
-        }
-
-        /* Hide desktop details on mobile */
-        .service-detail {
-          display: none !important;
-        }
-
-        .service-card {
-          margin-bottom: 10px;
-        }
-      }
-
-      @media (max-width: 768px) {
-        h1 {
-          font-size: 2.2rem;
-        }
-        
-        header {
-          padding: 80px 0 40px;
-        }
-        
-        .service-detail {
-          padding: 30px;
-        }
-
-        .service-icon i {
-          width: 50px;
-          height: 50px;
-          font-size: 1.3rem;
-        }
-      }
-    </style>
-</head>
-<body>
-    <header>
-        <div class="container">
-            <h1>Corporate & Commercial Law</h1>
-            <p class="header-subtitle">Strategic legal solutions for business formation, governance, and commercial transactions</p>
-        </div>
-    </header>
-
-    <main class="container">
-        <div class="service-intro">
-            <p>We provide end-to-end corporate legal services that help businesses navigate regulatory requirements while pursuing growth opportunities with confidence.</p>
-        </div>
-
-        <div class="services-container">
-            <div class="services-list">
-                <div class="service-card active" onclick="toggleService(this, 'entity')">
-                    <div class="service-card-header">
-                        <div class="service-icon">
-                            <i class="fas fa-building"></i>
-                        </div>
-                        <h3 class="service-title">Entity Formation</h3>
-                    </div>
-                    <div class="mobile-service-detail" id="mobile-entity-detail">
-                        <p>We provide comprehensive legal support for establishing various business entities, ensuring compliance with all regulatory requirements from inception.</p>
-                        <div class="mobile-service-features">
-                            <ul>
-                                <li>Company incorporation (private and public limited)</li>
-                                <li>Registration of public benefit organizations</li>
-                                <li>Cooperative society formation</li>
-                                <li>Trust and foundation establishment</li>
-                                <li>Ongoing secretarial services and compliance</li>
-                                <li>Corporate governance structuring</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="service-card" onclick="toggleService(this, 'contracts')">
-                    <div class="service-card-header">
-                        <div class="service-icon">
-                            <i class="fas fa-handshake"></i>
-                        </div>
-                        <h3 class="service-title">Commercial Contracts</h3>
-                    </div>
-                    <div class="mobile-service-detail" id="mobile-contracts-detail">
-                        <p>Our team drafts, reviews, and negotiates commercial agreements that protect your interests while facilitating successful business relationships.</p>
-                        <div class="mobile-service-features">
-                            <ul>
-                                <li>Shareholder and partnership agreements</li>
-                                <li>Joint venture documentation</li>
-                                <li>Supply and distribution contracts</li>
-                                <li>Service level agreements</li>
-                                <li>Confidentiality and non-disclosure agreements</li>
-                                <li>Contract dispute resolution</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="service-card" onclick="toggleService(this, 'compliance')">
-                    <div class="service-card-header">
-                        <div class="service-icon">
-                            <i class="fas fa-search"></i>
-                        </div>
-                        <h3 class="service-title">Regulatory Compliance</h3>
-                    </div>
-                    <div class="mobile-service-detail" id="mobile-compliance-detail">
-                        <p>We help businesses navigate complex regulatory landscapes with comprehensive compliance solutions tailored to your industry.</p>
-                        <div class="mobile-service-features">
-                            <ul>
-                                <li>Compliance audits and gap analysis</li>
-                                <li>Regulatory risk assessments</li>
-                                <li>Policy and procedure development</li>
-                                <li>Industry-specific compliance training</li>
-                                <li>Licensing and permit applications</li>
-                                <li>Ongoing compliance monitoring</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="service-card" onclick="toggleService(this, 'mergers')">
-                    <div class="service-card-header">
-                        <div class="service-icon">
-                            <i class="fas fa-random"></i>
-                        </div>
-                        <h3 class="service-title">Mergers & Acquisitions</h3>
-                    </div>
-                    <div class="mobile-service-detail" id="mobile-mergers-detail">
-                        <p>Our end-to-end M&A services ensure smooth business combinations while mitigating legal and financial risks.</p>
-                        <div class="mobile-service-features">
-                            <ul>
-                                <li>Due diligence investigations</li>
-                                <li>Deal structuring and valuation</li>
-                                <li>Transaction documentation</li>
-                                <li>Competition law compliance</li>
-                                <li>Post-merger integration</li>
-                                <li>Dispute resolution in M&A transactions</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
+  <div class="services-container">
+    <!-- Left Column: Service Cards -->
+    <div class="services-list">
+      {% for service in services %}
+        <div class="service-card {% if forloop.first %}active{% endif %}" 
+             data-service="service-{{ service.id }}">
+          <div class="service-card-header">
+            <div class="service-icon">
+              <i class="{{ service.icon }}"></i>
             </div>
-
-            <div class="service-detail-container">
-                <div class="service-detail active" id="entity-detail">
-                    <h3>Entity Formation Services</h3>
-                    <p>We provide comprehensive legal support for establishing various business entities, ensuring compliance with all regulatory requirements from inception.</p>
-                    
-                    <div class="service-features">
-                        <ul>
-                            <li>Company incorporation (private and public limited)</li>
-                            <li>Registration of public benefit organizations</li>
-                            <li>Cooperative society formation</li>
-                            <li>Trust and foundation establishment</li>
-                            <li>Ongoing secretarial services and compliance</li>
-                            <li>Corporate governance structuring</li>
-                        </ul>
-                    </div>
-                </div>
-                
-                <div class="service-detail" id="contracts-detail">
-                    <h3>Commercial Contracts</h3>
-                    <p>Our team drafts, reviews, and negotiates commercial agreements that protect your interests while facilitating successful business relationships.</p>
-                    
-                    <div class="service-features">
-                        <ul>
-                            <li>Shareholder and partnership agreements</li>
-                            <li>Joint venture documentation</li>
-                            <li>Supply and distribution contracts</li>
-                            <li>Service level agreements</li>
-                            <li>Confidentiality and non-disclosure agreements</li>
-                            <li>Contract dispute resolution</li>
-                        </ul>
-                    </div>
-                </div>
-                
-                <div class="service-detail" id="compliance-detail">
-                    <h3>Regulatory Compliance</h3>
-                    <p>We help businesses navigate complex regulatory landscapes with comprehensive compliance solutions tailored to your industry.</p>
-                    
-                    <div class="service-features">
-                        <ul>
-                            <li>Compliance audits and gap analysis</li>
-                            <li>Regulatory risk assessments</li>
-                            <li>Policy and procedure development</li>
-                            <li>Industry-specific compliance training</li>
-                            <li>Licensing and permit applications</li>
-                            <li>Ongoing compliance monitoring</li>
-                        </ul>
-                    </div>
-                </div>
-                
-                <div class="service-detail" id="mergers-detail">
-                    <h3>Mergers & Acquisitions</h3>
-                    <p>Our end-to-end M&A services ensure smooth business combinations while mitigating legal and financial risks.</p>
-                    
-                    <div class="service-features">
-                        <ul>
-                            <li>Due diligence investigations</li>
-                            <li>Deal structuring and valuation</li>
-                            <li>Transaction documentation</li>
-                            <li>Competition law compliance</li>
-                            <li>Post-merger integration</li>
-                            <li>Dispute resolution in M&A transactions</li>
-                        </ul>
-                    </div>
-                </div>
+            <h3 class="service-title">{{ service.title }}</h3>
+            <i class="fas fa-chevron-down toggle-arrow"></i>
+          </div>
+          <div class="mobile-service-detail">
+            <p>{{ service.summary }}</p>
+            <div class="mobile-service-features">
+              <ul>
+                {% for item in service.details %}
+                  <li>{{ item }}</li>
+                {% endfor %}
+              </ul>
             </div>
+          </div>
         </div>
-    </main>
+      {% endfor %}
+    </div>
 
-    <footer>
-        <div class="footer-content">
-            <p>&copy; 2024 Muguna & Oyile Advocates. All rights reserved.</p>
-            <p>Nairobi | Meru, Kenya</p>
+    <!-- Right Column: Desktop Detail Panel -->
+    <div class="service-detail-container">
+      {% for service in services %}
+        <div class="service-detail {% if forloop.first %}active{% endif %}" 
+             id="service-{{ service.id }}">
+          <h3>{{ service.title }}</h3>
+          <p>{{ service.summary }}</p>
+          <div class="service-features">
+            <ul>
+              {% for item in service.details %}
+                <li>{{ item }}</li>
+              {% endfor %}
+            </ul>
+          </div>
         </div>
-    </footer>
+      {% endfor %}
+    </div>
+  </div>
+</main>
 
-    <script>
-        function toggleService(card, serviceId) {
-            // For desktop view
-            if (window.innerWidth > 992) {
-                document.querySelectorAll('.service-detail').forEach(detail => {
-                    detail.classList.remove('active');
-                });
-                
-                document.querySelectorAll('.service-card').forEach(card => {
-                    card.classList.remove('active');
-                });
-                
-                document.getElementById(serviceId + '-detail').classList.add('active');
-                card.classList.add('active');
-            } 
-            // For mobile view
-            else {
-                // Close all other mobile details
-                document.querySelectorAll('.mobile-service-detail').forEach(detail => {
-                    if (detail.id !== 'mobile-' + serviceId + '-detail') {
-                        detail.classList.remove('active');
-                    }
-                });
-                
-                // Toggle clicked card's mobile detail
-                const mobileDetail = document.getElementById('mobile-' + serviceId + '-detail');
-                mobileDetail.classList.toggle('active');
-                
-                // Toggle active state for styling
-                document.querySelectorAll('.service-card').forEach(card => {
-                    card.classList.remove('active');
-                });
-                card.classList.toggle('active');
-            }
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  const serviceCards = document.querySelectorAll('.service-card');
+  let currentView = window.innerWidth > 992 ? 'desktop' : 'mobile';
+
+  function activateService(serviceId) {
+    // Update UI for all cards
+    serviceCards.forEach(card => {
+      card.classList.remove('active');
+      if (card.dataset.service === serviceId) {
+        card.classList.add('active');
+      }
+    });
+
+    // Update desktop service detail visibility
+    document.querySelectorAll('.service-detail').forEach(detail => {
+      detail.classList.remove('active');
+      if (detail.id === serviceId) {
+        detail.classList.add('active');
+      }
+    });
+  }
+
+  serviceCards.forEach(card => {
+    card.addEventListener('click', function () {
+      const serviceId = this.dataset.service;
+      const isActive = this.classList.contains('active');
+
+      if (currentView === 'desktop') {
+        activateService(serviceId);
+      } else {
+        // Mobile behavior: toggle active state
+        if (isActive) {
+          this.classList.remove('active');
+        } else {
+          serviceCards.forEach(c => c.classList.remove('active'));
+          this.classList.add('active');
+
+          // Scroll into view after opening
+          setTimeout(() => {
+            this.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+          }, 300);
         }
-        
-        // Initialize first card as active on mobile
-        document.addEventListener('DOMContentLoaded', function() {
-            if (window.innerWidth <= 992) {
-                document.getElementById('mobile-entity-detail').classList.add('active');
-            }
-        });
+      }
+    });
+  });
 
-        // Handle window resize to maintain proper state
-        window.addEventListener('resize', function() {
-            if (window.innerWidth > 992) {
-                // Reset mobile details when switching back to desktop
-                document.querySelectorAll('.mobile-service-detail').forEach(detail => {
-                    detail.classList.remove('active');
-                });
-            } else {
-                // Ensure the first card is active when switching to mobile
-                if (!document.querySelector('.mobile-service-detail.active')) {
-                    document.getElementById('mobile-entity-detail').classList.add('active');
-                    document.querySelector('.service-card').classList.add('active');
-                }
-            }
-        });
-    </script>
-</body>
-</html>
+  window.addEventListener('resize', function () {
+    const newView = window.innerWidth > 992 ? 'desktop' : 'mobile';
+
+    if (newView !== currentView) {
+      currentView = newView;
+
+      // Reset view and activate first card on switch
+      const activeCard = document.querySelector('.service-card.active');
+      if (activeCard) {
+        activateService(activeCard.dataset.service);
+      } else if (serviceCards.length > 0) {
+        activateService(serviceCards[0].dataset.service);
+      }
+    }
+  });
+
+  // Initialize desktop first card
+  if (currentView === 'desktop' && serviceCards.length > 0) {
+    activateService(serviceCards[0].dataset.service);
+  }
+});
+
+</script>
+{% endblock %}
