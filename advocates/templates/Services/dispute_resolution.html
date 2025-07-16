@@ -3,6 +3,19 @@
 
 {% block title %}Dispute Resolution | {{ block.super }}{% endblock %}
 
+<<<<<<< HEAD
+=======
+{% block meta %}
+  <meta name="description" content="We offer expert dispute resolution through mediation, arbitration, litigation and negotiation.">
+  <meta name="keywords" content="dispute resolution Kenya, mediation, arbitration, litigation, Muguna Oyile Advocates">
+  <meta property="og:title" content="Dispute Resolution | Muguna & Oyile Advocates">
+  <meta property="og:description" content="Experienced lawyers helping you resolve disputes efficiently and peacefully.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://www.mugunaoyile.co.ke/services/dispute-resolution/">
+  <meta property="og:image" content="{% static 'images/og-dispute.jpg' %}">
+{% endblock %}
+
+>>>>>>> aec289d (SEO start)
 {% block content %}
 <section class="container">
   <div class="section-header centered-header">
@@ -20,8 +33,12 @@
     <!-- Left Column: Service Cards -->
     <div class="services-list">
       {% for service in services %}
+<<<<<<< HEAD
         <div class="service-card {% if forloop.first %}active{% endif %}" 
              data-service="service-{{ service.id }}">
+=======
+        <div class="service-card {% if forloop.first %}active{% endif %}" data-service="service-{{ service.id }}">
+>>>>>>> aec289d (SEO start)
           <div class="service-card-header">
             <div class="service-icon">
               <i class="{{ service.icon }}"></i>
@@ -33,8 +50,13 @@
             <p>{{ service.summary }}</p>
             <div class="mobile-service-features">
               <ul>
+<<<<<<< HEAD
                 {% for item in service.details %}
                   <li>{{ item }}</li>
+=======
+                {% for item in service.details.all %}
+                  <li>{{ item.detail_text }}</li>
+>>>>>>> aec289d (SEO start)
                 {% endfor %}
               </ul>
             </div>
@@ -46,14 +68,23 @@
     <!-- Right Column: Desktop Detail Panel -->
     <div class="service-detail-container">
       {% for service in services %}
+<<<<<<< HEAD
         <div class="service-detail {% if forloop.first %}active{% endif %}" 
              id="service-{{ service.id }}">
+=======
+        <div class="service-detail {% if forloop.first %}active{% endif %}" id="service-{{ service.id }}">
+>>>>>>> aec289d (SEO start)
           <h3>{{ service.title }}</h3>
           <p>{{ service.summary }}</p>
           <div class="service-features">
             <ul>
+<<<<<<< HEAD
               {% for item in service.details %}
                 <li>{{ item }}</li>
+=======
+              {% for item in service.details.all %}
+                <li>{{ item.detail_text }}</li>
+>>>>>>> aec289d (SEO start)
               {% endfor %}
             </ul>
           </div>
@@ -62,14 +93,23 @@
     </div>
   </div>
 </main>
+<<<<<<< HEAD
 
+=======
+{% endblock %}
+
+{% block extra_js %}
+>>>>>>> aec289d (SEO start)
 <script>
 document.addEventListener('DOMContentLoaded', function () {
   const serviceCards = document.querySelectorAll('.service-card');
   let currentView = window.innerWidth > 992 ? 'desktop' : 'mobile';
 
   function activateService(serviceId) {
+<<<<<<< HEAD
     // Update UI for all cards
+=======
+>>>>>>> aec289d (SEO start)
     serviceCards.forEach(card => {
       card.classList.remove('active');
       if (card.dataset.service === serviceId) {
@@ -77,7 +117,10 @@ document.addEventListener('DOMContentLoaded', function () {
       }
     });
 
+<<<<<<< HEAD
     // Update desktop service detail visibility
+=======
+>>>>>>> aec289d (SEO start)
     document.querySelectorAll('.service-detail').forEach(detail => {
       detail.classList.remove('active');
       if (detail.id === serviceId) {
@@ -94,14 +137,20 @@ document.addEventListener('DOMContentLoaded', function () {
       if (currentView === 'desktop') {
         activateService(serviceId);
       } else {
+<<<<<<< HEAD
         // Mobile behavior: toggle active state
+=======
+>>>>>>> aec289d (SEO start)
         if (isActive) {
           this.classList.remove('active');
         } else {
           serviceCards.forEach(c => c.classList.remove('active'));
           this.classList.add('active');
 
+<<<<<<< HEAD
           // Scroll into view after opening
+=======
+>>>>>>> aec289d (SEO start)
           setTimeout(() => {
             this.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
           }, 300);
@@ -115,8 +164,11 @@ document.addEventListener('DOMContentLoaded', function () {
 
     if (newView !== currentView) {
       currentView = newView;
+<<<<<<< HEAD
 
       // Reset view and activate first card on switch
+=======
+>>>>>>> aec289d (SEO start)
       const activeCard = document.querySelector('.service-card.active');
       if (activeCard) {
         activateService(activeCard.dataset.service);
@@ -126,11 +178,17 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   });
 
+<<<<<<< HEAD
   // Initialize desktop first card
+=======
+>>>>>>> aec289d (SEO start)
   if (currentView === 'desktop' && serviceCards.length > 0) {
     activateService(serviceCards[0].dataset.service);
   }
 });
+<<<<<<< HEAD
 
+=======
+>>>>>>> aec289d (SEO start)
 </script>
 {% endblock %}

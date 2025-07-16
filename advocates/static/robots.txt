@@ -1,0 +1,4 @@
+User-agent: *
+Disallow:
+
+Sitemap: https://www.mugunaoyile.co.ke/sitemap.xml

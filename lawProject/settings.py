@@ -38,6 +38,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+<<<<<<< HEAD
+=======
+    'django.contrib.sitemaps',
+    'django.contrib.sites',
+>>>>>>> aec289d (SEO start)
     'advocates',
 ]
 
@@ -140,4 +145,10 @@ EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'codesbynorris@gmail.com'
 EMAIL_HOST_PASSWORD = 'qpav zbde vtwz bwba'  # paste the 16-character app password
 DEFAULT_FROM_EMAIL = 'codesbynorris@gmail.com'
+<<<<<<< HEAD
 CONTACT_RECEIVER_EMAIL = 'susankereere@gmail.com'
+=======
+CONTACT_RECEIVER_EMAIL = 'susankereere@gmail.com'
+
+SITE_ID = 1
+>>>>>>> aec289d (SEO start)

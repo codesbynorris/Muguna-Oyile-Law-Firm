@@ -8,7 +8,11 @@ from django.views.decorators.http import require_POST
 from django.views.decorators.csrf import csrf_protect
 from django.core.mail import send_mail
 from django.conf import settings
+<<<<<<< HEAD
 from .models import ContactSubmission
+=======
+from .models import ContactSubmission, ConsultancyService, CorporateService, DisputeService, PropertyService
+>>>>>>> aec289d (SEO start)
 
 # ────────────────────────────────
 # BASIC PAGE VIEWS
@@ -41,6 +45,7 @@ def services(request):
     return render(request, 'testing/legal.html')
 
 def consultancy_services(request):
+<<<<<<< HEAD
     services = [
         {
             'slug': 'tax',
@@ -280,6 +285,23 @@ def dispute_resolution(request):
     return render(request, 'Services/dispute_resolution.html', {'services': services})
 
 
+=======
+    services = ConsultancyService.objects.filter(published=True).prefetch_related('details')
+    return render(request, 'Services/consultancy_services.html', {'services': services})
+
+def corporate_commercial(request):
+    services = CorporateService.objects.filter(published=True).prefetch_related('details')
+    return render(request, 'Services/corporate_commercial.html', {'services': services})
+
+def property_law(request):
+    services = PropertyService.objects.filter(published=True).prefetch_related('details')
+    return render(request, 'Services/property_law.html', {'services': services})
+
+def dispute_resolution(request):
+    services = DisputeService.objects.filter(published=True).prefetch_related('details')
+    return render(request, 'Services/dispute_resolution.html', {'services': services})
+
+>>>>>>> aec289d (SEO start)
 # ────────────────────────────────
 # NEWSLETTER SUBSCRIPTION
 # ────────────────────────────────

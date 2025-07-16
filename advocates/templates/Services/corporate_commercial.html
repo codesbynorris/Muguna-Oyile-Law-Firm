@@ -3,16 +3,34 @@
 
 {% block title %}Corporate & Commercial Law | {{ block.super }}{% endblock %}
 
+<<<<<<< HEAD
+=======
+{% block meta %}
+  <meta name="description" content="We provide legal support for business formation, commercial contracts, compliance, and mergers & acquisitions.">
+  <meta name="keywords" content="corporate law Kenya, business formation, commercial contracts, regulatory compliance, M&A lawyers, Muguna Oyile Advocates">
+  <meta property="og:title" content="Corporate & Commercial Law | Muguna & Oyile Advocates">
+  <meta property="og:description" content="Strategic legal services for startups, companies, and investors across Kenya.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://www.mugunaoyile.co.ke/services/corporate-law/">
+  <meta property="og:image" content="{% static 'images/og-corporate.jpg' %}">
+{% endblock %}
+
+>>>>>>> aec289d (SEO start)
 {% block content %}
 <section class="container">
   <div class="section-header centered-header">
     <h1>Corporate & Commercial Law</h1>
+<<<<<<< HEAD
     <p class="header-subtitle">Strategic legal solutions for business formation, governance, and commercial transactions</p>
+=======
+    <p class="header-subtitle">Legal foundation for thriving businesses</p>
+>>>>>>> aec289d (SEO start)
   </div>
 </section>
 
 <main class="container">
   <div class="service-intro">
+<<<<<<< HEAD
     <p>We provide end-to-end corporate legal services that help businesses navigate regulatory requirements while pursuing growth opportunities with confidence.</p>
   </div>
 
@@ -174,10 +192,61 @@
     </div>
   </div>
 </main>
+=======
+    <p>Our corporate & commercial law services are designed to support every stage of your business. From registering a company to drafting bulletproof contracts and navigating mergers — we've got you covered.</p>
+  </div>
+
+  <div class="services-container">
+    <!-- Left Column: Service Cards -->
+    <div class="services-list">
+      {% for service in services %}
+        <div class="service-card {% if forloop.first %}active{% endif %}" data-service="service-{{ service.id }}">
+          <div class="service-card-header">
+            <div class="service-icon">
+              <i class="{{ service.icon }}"></i>
+            </div>
+            <h3 class="service-title">{{ service.title }}</h3>
+            <i class="fas fa-chevron-down toggle-arrow"></i>
+          </div>
+          <div class="mobile-service-detail">
+            <p>{{ service.summary }}</p>
+            <div class="mobile-service-features">
+              <ul>
+                {% for item in service.details.all %}
+                  <li>{{ item.detail_text }}</li>
+                {% endfor %}
+              </ul>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+
+    <!-- Right Column: Desktop Detail Panel -->
+    <div class="service-detail-container">
+      {% for service in services %}
+        <div class="service-detail {% if forloop.first %}active{% endif %}" id="service-{{ service.id }}">
+          <h3>{{ service.title }}</h3>
+          <p>{{ service.summary }}</p>
+          <div class="service-features">
+            <ul>
+              {% for item in service.details.all %}
+                <li>{{ item.detail_text }}</li>
+              {% endfor %}
+            </ul>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</main>
+
+>>>>>>> aec289d (SEO start)
 {% endblock %}
 
 {% block extra_js %}
 <script>
+<<<<<<< HEAD
   function toggleService(card, serviceId) {
     // For desktop view
     if (window.innerWidth > 992) {
@@ -237,3 +306,67 @@
   });
 </script>
 {% endblock %}
+=======
+document.addEventListener('DOMContentLoaded', function () {
+  const serviceCards = document.querySelectorAll('.service-card');
+  let currentView = window.innerWidth > 992 ? 'desktop' : 'mobile';
+
+  function activateService(serviceId) {
+    serviceCards.forEach(card => {
+      card.classList.remove('active');
+      if (card.dataset.service === serviceId) {
+        card.classList.add('active');
+      }
+    });
+
+    document.querySelectorAll('.service-detail').forEach(detail => {
+      detail.classList.remove('active');
+      if (detail.id === serviceId) {
+        detail.classList.add('active');
+      }
+    });
+  }
+
+  serviceCards.forEach(card => {
+    card.addEventListener('click', function () {
+      const serviceId = this.dataset.service;
+      const isActive = this.classList.contains('active');
+
+      if (currentView === 'desktop') {
+        activateService(serviceId);
+      } else {
+        if (isActive) {
+          this.classList.remove('active');
+        } else {
+          serviceCards.forEach(c => c.classList.remove('active'));
+          this.classList.add('active');
+
+          setTimeout(() => {
+            this.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+          }, 300);
+        }
+      }
+    });
+  });
+
+  window.addEventListener('resize', function () {
+    const newView = window.innerWidth > 992 ? 'desktop' : 'mobile';
+
+    if (newView !== currentView) {
+      currentView = newView;
+      const activeCard = document.querySelector('.service-card.active');
+      if (activeCard) {
+        activateService(activeCard.dataset.service);
+      } else if (serviceCards.length > 0) {
+        activateService(serviceCards[0].dataset.service);
+      }
+    }
+  });
+
+  if (currentView === 'desktop' && serviceCards.length > 0) {
+    activateService(serviceCards[0].dataset.service);
+  }
+});
+</script>
+{% endblock %}
+>>>>>>> aec289d (SEO start)

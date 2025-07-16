@@ -4,60 +4,60 @@
 {% block title %}Consultancy Services | {{ block.super }}{% endblock %}
 
 {% block content %}
-    <section class="container">
-        <div class="section-header centered-header">
-            <h1>Consultancy Services</h1>
-            <p class="header-subtitle">Expert advisory solutions across specialized legal domains</p>
-        </div>
-    </section>
+<section class="container">
+    <div class="section-header centered-header">
+        <h1>Consultancy Services</h1>
+        <p class="header-subtitle">Expert advisory solutions across specialized legal domains</p>
+    </div>
+</section>
 
-    <main class="container">
-        <div class="service-intro">
-            <p>Our consultancy services provide targeted legal guidance to help clients navigate complex regulatory environments and protect their rights.</p>
-        </div>
+<main class="container">
+    <div class="service-intro">
+        <p>Our consultancy services provide targeted legal guidance to help clients navigate complex regulatory environments and protect their rights.</p>
+    </div>
 
-        <div class="services-container">
-            <div class="services-list">
-                {% for service in services %}
-                    <div class="service-card {% if forloop.first %}active{% endif %}" data-service="{{ service.slug }}">
-                        <div class="service-card-header">
-                            <div class="service-icon">
-                                <i class="{{ service.icon }}"></i>
-                            </div>
-                            <h3 class="service-title">{{ service.title }}</h3>
-                            <i class="fas fa-chevron-down toggle-arrow"></i>
+    <div class="services-container">
+        <div class="services-list">
+            {% for service in services %}
+                <div class="service-card {% if forloop.first %}active{% endif %}" data-service="{{ service.slug }}">
+                    <div class="service-card-header">
+                        <div class="service-icon">
+                            <i class="{{ service.icon }}"></i>
                         </div>
-                        <div class="mobile-service-detail">
-                            <p>{{ service.summary }}</p>
-                            <div class="mobile-service-features">
-                                <ul>
-                                    {% for item in service.details %}
-                                        <li>{{ item }}</li>
-                                    {% endfor %}
-                                </ul>
-                            </div>
-                        </div>
+                        <h3 class="service-title">{{ service.title }}</h3>
+                        <i class="fas fa-chevron-down toggle-arrow"></i>
                     </div>
-                {% endfor %}
-            </div>
-
-            <div class="service-detail-container">
-                {% for service in services %}
-                    <div class="service-detail {% if forloop.first %}active{% endif %}" id="{{ service.slug }}-detail">
-                        <h3>{{ service.title }}</h3>
+                    <div class="mobile-service-detail">
                         <p>{{ service.summary }}</p>
-                        <div class="service-features">
+                        <div class="mobile-service-features">
                             <ul>
-                                {% for item in service.details %}
-                                    <li>{{ item }}</li>
+                                {% for detail in service.details.all %}
+                                    <li>{{ detail }}</li>
                                 {% endfor %}
                             </ul>
                         </div>
                     </div>
-                {% endfor %}
-            </div>
+                </div>
+            {% endfor %}
         </div>
-    </main>
+
+        <div class="service-detail-container">
+            {% for service in services %}
+                <div class="service-detail {% if forloop.first %}active{% endif %}" id="{{ service.slug }}-detail">
+                    <h3>{{ service.title }}</h3>
+                    <p>{{ service.summary }}</p>
+                    <div class="service-features">
+                        <ul>
+                            {% for detail in service.details.all %}
+                                <li>{{ detail }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</main>
 {% endblock %}
 
 {% block extra_js %}
