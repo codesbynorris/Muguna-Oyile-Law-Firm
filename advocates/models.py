@@ -1,8 +1,5 @@
 from django.db import models
-<<<<<<< HEAD
-=======
 from django.utils.text import slugify
->>>>>>> aec289d (SEO start)
 
 # Create your models here.
 
@@ -17,8 +14,6 @@ class ContactSubmission(models.Model):
 
     def __str__(self):
         return f"{self.name} - {self.subject} @ {self.submitted_at:%Y-%m-%d %H:%M}"
-<<<<<<< HEAD
-=======
 
 class ConsultancyService(models.Model):
     title = models.CharField(max_length=255)
@@ -108,4 +103,3 @@ class PropertyDetail(models.Model):
 
     def __str__(self):
         return self.detail_text
->>>>>>> aec289d (SEO start)

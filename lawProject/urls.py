@@ -18,11 +18,8 @@ from django.conf import settings
 from django.contrib import admin
 from django.urls import path
 from django.conf.urls.static import static
-<<<<<<< HEAD
-=======
 from django.views.static import serve as static_serve
 from django.urls import re_path
->>>>>>> aec289d (SEO start)
 
 
 from advocates import views
@@ -46,13 +43,10 @@ urlpatterns = [
     path('send-contact-email/', views.send_contact_email, name='send_contact_email'),
 ]
 
-<<<<<<< HEAD
-=======
 urlpatterns += [
     re_path(r'^robots\.txt$', static_serve, {'path': 'robots.txt', 'document_root': settings.STATIC_ROOT}),
 ] 
 
->>>>>>> aec289d (SEO start)
 if settings.DEBUG:
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

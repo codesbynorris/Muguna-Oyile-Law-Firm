@@ -1,8 +1,4 @@
 from django.contrib import admin
-<<<<<<< HEAD
-
-# Register your models here.
-=======
 from .models import (
     ConsultancyService, ConsultancyDetail,
     CorporateService, CorporateDetail,
@@ -63,4 +59,3 @@ class PropertyServiceAdmin(admin.ModelAdmin):
     list_display = ('title', 'published')
     prepopulated_fields = {'slug': ('title',)}
     inlines = [PropertyDetailInline]
->>>>>>> aec289d (SEO start)
