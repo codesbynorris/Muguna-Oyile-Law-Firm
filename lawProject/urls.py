@@ -51,7 +51,8 @@ urlpatterns = [
     path('contact/', views.contact, name='contact'),
     path('subscribe/', views.newsletter_subscribe, name='newsletter_subscribe'),
     path('privacy-policy/', views.privacy_policy, name='privacy_policy'),
-    path('terms-of-service/', views.terms_of_service, name='terms_of_service'),
+    path('terms-of-services/', views.terms_of_service, name='terms_of_service'),
+
 
     path('services/consultancy-services/', views.consultancy_services, name='consultancy'),
     path('services/corporate-services/', views.corporate_commercial, name='corporate'),

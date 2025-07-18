@@ -39,13 +39,11 @@ def team(request):
 def contact(request):
     return render(request, 'contact.html')
 
-@cache_page(60 * 60)
 def privacy_policy(request):
-    return render(request, 'T&C/privacy-policy.html')
+    return render(request, 'T&C/privacypolicy.html')
 
-@cache_page(60 * 60)
 def terms_of_service(request):
-    return render(request, 'terms_of_service.html')
+    return render(request, 'T&C/termsofservice.html')
 
 
 # ────────────────────────────────
