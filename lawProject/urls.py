@@ -21,8 +21,25 @@ from django.conf.urls.static import static
 from django.views.static import serve as static_serve
 from django.urls import re_path
 
+from django.contrib.sitemaps.views import sitemap
+from advocates.sitemaps import (
+    StaticViewSitemap,
+    ConsultancySitemap,
+    CorporateSitemap,
+    DisputeSitemap,
+    PropertySitemap
+)
+
 
 from advocates import views
+
+sitemaps = {
+    'static': StaticViewSitemap,
+    'consultancy': ConsultancySitemap,
+    'corporate': CorporateSitemap,
+    'dispute': DisputeSitemap,
+    'property': PropertySitemap,
+}
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -41,10 +58,13 @@ urlpatterns = [
     path('services/dispute-resolution/', views.dispute_resolution, name='dispute_resolution'),
     path('services/property-law/', views.property_law, name='property'),
     path('send-contact-email/', views.send_contact_email, name='send_contact_email'),
+
+
 ]
 
 urlpatterns += [
     re_path(r'^robots\.txt$', static_serve, {'path': 'robots.txt', 'document_root': settings.STATIC_ROOT}),
+    path("sitemap.xml", sitemap, {"sitemaps": sitemaps}, name="sitemap"),
 ] 
 
 if settings.DEBUG:

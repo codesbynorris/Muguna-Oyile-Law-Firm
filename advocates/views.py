@@ -1,60 +1,129 @@
 import uuid
 import json
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.http import JsonResponse
 from django.utils.html import strip_tags
 from django.utils.timezone import now
 from django.views.decorators.http import require_POST
 from django.views.decorators.csrf import csrf_protect
+from django.views.decorators.cache import cache_page
+from django.core.cache import cache
 from django.core.mail import send_mail
 from django.conf import settings
-from .models import ContactSubmission, ConsultancyService, CorporateService, DisputeService, PropertyService
+
+from .models import (
+    ContactSubmission,
+    ConsultancyService,
+    CorporateService,
+    DisputeService,
+    PropertyService,
+)
 
 # ────────────────────────────────
-# BASIC PAGE VIEWS
+# STATIC PAGES (Cached)
 # ────────────────────────────────
 
+@cache_page(60 * 30)
 def home(request):
     return render(request, 'home.html')
 
+@cache_page(60 * 60)
 def about(request):
     return render(request, 'about.html')
 
+@cache_page(60 * 60)
 def team(request):
     return render(request, 'team.html')
 
+@cache_page(60 * 60)
 def contact(request):
     return render(request, 'contact.html')
 
+@cache_page(60 * 60)
 def privacy_policy(request):
-    return render(request, 'privacy_policy.html')
+    return render(request, 'T&C/privacy-policy.html')
 
+@cache_page(60 * 60)
 def terms_of_service(request):
     return render(request, 'terms_of_service.html')
 
 
 # ────────────────────────────────
-# SERVICE PAGES
+# SERVICES LANDING PAGE
 # ────────────────────────────────
 
+@cache_page(60 * 30)
 def services(request):
-    return render(request, 'testing/legal.html')
+    context = {
+        'consultancy_services': ConsultancyService.objects.filter(published=True),
+        'corporate_services': CorporateService.objects.filter(published=True),
+        'dispute_services': DisputeService.objects.filter(published=True),
+        'property_services': PropertyService.objects.filter(published=True),
+    }
+    return render(request, 'services/services_home.html', context)
 
+
+# ────────────────────────────────
+# SERVICE CATEGORY VIEWS (Cached + prefetch_related + cache.set)
+# ────────────────────────────────
+
+@cache_page(60 * 15)
 def consultancy_services(request):
-    services = ConsultancyService.objects.filter(published=True).prefetch_related('details')
-    return render(request, 'Services/consultancy_services.html', {'services': services})
+    services = cache.get('consultancy_services')
+    if not services:
+        services = ConsultancyService.objects.filter(published=True).prefetch_related('details')
+        cache.set('consultancy_services', services, 60 * 15)
+    return render(request, 'services/consultancy_services.html', {'services': services})
 
+@cache_page(60 * 15)
 def corporate_commercial(request):
-    services = CorporateService.objects.filter(published=True).prefetch_related('details')
-    return render(request, 'Services/corporate_commercial.html', {'services': services})
+    services = cache.get('corporate_services')
+    if not services:
+        services = CorporateService.objects.filter(published=True).prefetch_related('details')
+        cache.set('corporate_services', services, 60 * 15)
+    return render(request, 'services/corporate_commercial.html', {'services': services})
 
-def property_law(request):
-    services = PropertyService.objects.filter(published=True).prefetch_related('details')
-    return render(request, 'Services/property_law.html', {'services': services})
-
+@cache_page(60 * 15)
 def dispute_resolution(request):
-    services = DisputeService.objects.filter(published=True).prefetch_related('details')
-    return render(request, 'Services/dispute_resolution.html', {'services': services})
+    services = cache.get('dispute_services')
+    if not services:
+        services = DisputeService.objects.filter(published=True).prefetch_related('details')
+        cache.set('dispute_services', services, 60 * 15)
+    return render(request, 'services/dispute_resolution.html', {'services': services})
+
+@cache_page(60 * 15)
+def property_law(request):
+    services = cache.get('property_services')
+    if not services:
+        services = PropertyService.objects.filter(published=True).prefetch_related('details')
+        cache.set('property_services', services, 60 * 15)
+    return render(request, 'services/property_law.html', {'services': services})
+
+
+# ────────────────────────────────
+# SERVICE DETAIL VIEWS
+# ────────────────────────────────
+
+@cache_page(60 * 30)
+def consultancy_detail(request, slug):
+    service = get_object_or_404(ConsultancyService, slug=slug, published=True)
+    return render(request, 'services/consultancy_detail.html', {'service': service})
+
+@cache_page(60 * 30)
+def corporate_detail(request, slug):
+    service = get_object_or_404(CorporateService, slug=slug, published=True)
+    return render(request, 'services/corporate_detail.html', {'service': service})
+
+@cache_page(60 * 30)
+def dispute_detail(request, slug):
+    service = get_object_or_404(DisputeService, slug=slug, published=True)
+    return render(request, 'services/dispute_detail.html', {'service': service})
+
+@cache_page(60 * 30)
+def property_detail(request, slug):
+    service = get_object_or_404(PropertyService, slug=slug, published=True)
+    return render(request, 'services/property_detail.html', {'service': service})
+
 
 # ────────────────────────────────
 # NEWSLETTER SUBSCRIPTION
@@ -63,7 +132,7 @@ def dispute_resolution(request):
 def newsletter_subscribe(request):
     if request.method == 'POST':
         email = request.POST.get('email')
-        # TODO: Save email to model or 3rd-party tool
+        # Optional: Save to DB or third-party API
         return render(request, 'subscription_success.html')
     return redirect('home')
 
@@ -77,7 +146,6 @@ def newsletter_subscribe(request):
 def send_contact_email(request):
     try:
         data = json.loads(request.body)
-
         name = data.get('name')
         email = data.get('email')
         subject = data.get('subject')
@@ -87,7 +155,6 @@ def send_contact_email(request):
             return JsonResponse({'status': 'error', 'message': 'All fields are required.'}, status=400)
 
         ticket_id = f"M&O-{uuid.uuid4().hex[:8].upper()}"
-
         ip_address = request.META.get('HTTP_X_FORWARDED_FOR', request.META.get('REMOTE_ADDR', '')).split(',')[0]
 
         ContactSubmission.objects.create(
@@ -102,19 +169,16 @@ def send_contact_email(request):
         timestamp = now().strftime("%A, %d %B %Y at %I:%M %p")
         logo_url = "https://raw.githubusercontent.com/codesbynorris/Muguna-Oyile-Law-Firm/master/advocates/static/images/logo.png"
 
-        # ────── Admin Email ──────
+        # Admin Email
         html_admin = f"""
-        <html><body style="font-family: Arial, sans-serif; background: #f9f9f9; color: #0a1a30; padding: 30px;">
-          <div style="max-width: 600px; margin: auto; background: #fff; border-radius: 8px; padding: 30px; box-shadow: 0 8px 20px rgba(0,0,0,0.05);">
-            <div style="text-align: center;"><img src="{logo_url}" alt="Muguna & Oyile Advocates" style="max-width: 180px; margin-bottom: 20px;"></div>
-            <h2>📩 New Contact Submission</h2>
-            <p><strong>Subject:</strong> {subject}</p>
-            <p><strong>Ticket ID:</strong> {ticket_id}</p>
-            <p><strong>Name:</strong> {name}<br><strong>Email:</strong> {email}<br><strong>IP Address:</strong> {ip_address}<br><strong>Time:</strong> {timestamp}</p>
-            <hr style="margin: 20px 0;">
-            <p><strong>Message:</strong></p>
-            <p style="background: #f4f4f4; padding: 10px; border-left: 4px solid #c9a769;">{message}</p>
-          </div></body></html>
+        <html><body style="font-family: Arial, sans-serif;">
+        <div style="max-width:600px;margin:auto;background:#fff;padding:30px;border-radius:8px;">
+        <div style="text-align:center;"><img src="{logo_url}" alt="Logo" style="max-width:180px;"></div>
+        <h2>📩 New Contact Submission</h2>
+        <p><strong>Subject:</strong> {subject}</p>
+        <p><strong>Ticket ID:</strong> {ticket_id}</p>
+        <p><strong>Name:</strong> {name}<br><strong>Email:</strong> {email}<br><strong>IP:</strong> {ip_address}<br><strong>Time:</strong> {timestamp}</p>
+        <hr><p><strong>Message:</strong><br>{message}</p></div></body></html>
         """
 
         send_mail(
@@ -125,26 +189,18 @@ def send_contact_email(request):
             html_message=html_admin,
         )
 
-        # ────── Auto-reply to User ──────
+        # Auto-reply to user
         html_user = f"""
-        <html><body style="font-family: Arial, sans-serif; background-color: #f9f9f9; padding: 30px; color: #0a1a30;">
-          <div style="max-width: 600px; margin: auto; background: #fff; border-radius: 8px; padding: 30px; box-shadow: 0 8px 20px rgba(0,0,0,0.05);">
-            <div style="text-align: center;"><img src="{logo_url}" alt="Muguna & Oyile Advocates" style="max-width: 180px; margin-bottom: 20px;"></div>
-            <h2>Hello {name},</h2>
-            <p>Thank you for reaching out to <strong>Muguna & Oyile Advocates</strong>.</p>
-            <p>We’ve received your message regarding <em>{subject}</em> and will respond as soon as possible.</p>
-            <p style="background: #f2f2f2; padding: 10px; border-left: 4px solid #c9a769;">
-              🎫 <strong>Your Ticket ID:</strong> {ticket_id}
-            </p>
-            <p>If your matter is urgent, don’t hesitate to call or WhatsApp us directly.</p>
-            <hr style="margin: 30px 0; border-top: 1px solid #eee;">
-            <p><strong>Contact Details:</strong><br>
-              📍 24th Floor, Britam Towers, Nairobi<br>
-              📞 <a href="tel:+254103758354" style="color:#0a1a30;">+254 103 758 354</a><br>
-              ✉️ <a href="mailto:{settings.DEFAULT_FROM_EMAIL}" style="color:#0a1a30;">{settings.DEFAULT_FROM_EMAIL}</a>
-            </p>
-            <p style="margin-top: 40px;">Warm regards,<br><strong>The Muguna & Oyile Team</strong></p>
-          </div></body></html>
+        <html><body style="font-family: Arial, sans-serif;">
+        <div style="max-width:600px;margin:auto;background:#fff;padding:30px;border-radius:8px;">
+        <div style="text-align:center;"><img src="{logo_url}" alt="Logo" style="max-width:180px;"></div>
+        <h2>Hello {name},</h2>
+        <p>Thanks for contacting Muguna & Oyile Advocates.</p>
+        <p>Your ticket ID is <strong>{ticket_id}</strong>.</p>
+        <p>We’ll respond shortly. For urgent matters, reach out directly.</p>
+        <hr><p>📞 <a href="tel:+254103758354">+254 103 758 354</a><br>
+        ✉️ <a href="mailto:{settings.DEFAULT_FROM_EMAIL}">{settings.DEFAULT_FROM_EMAIL}</a></p>
+        <p>Warm regards,<br><strong>The M&O Team</strong></p></div></body></html>
         """
 
         send_mail(
@@ -158,5 +214,4 @@ def send_contact_email(request):
         return JsonResponse({'status': 'success'})
 
     except Exception as e:
-        print("EMAIL ERROR:", str(e))
         return JsonResponse({'status': 'error', 'message': str(e)}, status=500)

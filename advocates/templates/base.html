@@ -1,32 +1,9 @@
-<!DOCTYPE html>
 {% load static %}
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<<<<<<< HEAD
-  <meta name="description" content="Muguna & Oyile Law Firm - Expert legal services in business, real estate, and family law">
-  <title>{% block title %}Muguna & Oyile | Trusted Legal Services in Kenya{% endblock %}</title>
-  <!-- Favicon (Generic) -->
-<link rel="icon" href="{% static 'images/favicon/favicon.ico' %}" sizes="any">
-
-<!-- Favicon (Modern Browsers) -->
-<link rel="icon" href="{% static 'images/favicon/favicon-32x32.png' %}" type="image/png" sizes="32x32">
-<link rel="icon" href="{% static 'images/favicon/favicon-16x16.png' %}" type="image/png" sizes="16x16">
-
-<!-- Apple Touch Icon (iOS/Safari) -->
-<link rel="apple-touch-icon" href="{% static 'images/favicon/apple-touch-icon.png' %}" sizes="180x180">
-
-<!-- Web Manifest (Android/Chrome) -->
-<link rel="manifest" href="{% static 'images/favicon/site.webmanifest' %}">
-
-<!-- Safari Pinned Tab Icon -->
-<link rel="mask-icon" href="{% static 'images/favicon/safari-pinned-tab.svg' %}" color="#5bbad5">
-
-<!-- Microsoft Tiles (Windows) -->
-<meta name="msapplication-TileColor" content="#ffffff">
-<meta name="theme-color" content="#ffffff">
-=======
   <meta name="description" content="Muguna & Oyile Law Firm - Expert legal services in business, real estate, family law, and corporate law in Kenya. Trusted advocates for consultancy, dispute resolution, and legal advisory.">
   <meta name="keywords" content="law firm, legal services, advocates, Kenya, Nairobi, Meru, business law, real estate law, family law, consultancy, dispute resolution, corporate law, Muguna Oyile, legal consultancy, employment law, intellectual property law">
 
@@ -35,13 +12,13 @@
   <meta property="og:description" content="Expert legal services in business, real estate, family law, and corporate legal matters. Serving Nairobi, Meru, and across Kenya.">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://www.mugunaoyile.co.ke/">
-  <meta property="og:image" content="https://www.mugunaoyile.co.ke/static/images/logo.png">
+  <meta property="og:image" content="{% static 'images/logo.png' %}">
 
   <!-- Twitter Card Meta Tags -->
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Muguna & Oyile | Trusted Legal Services in Kenya">
   <meta name="twitter:description" content="Expert legal services in business, real estate, and family law. Serving Nairobi, Meru, and all of Kenya.">
-  <meta name="twitter:image" content="https://www.mugunaoyile.co.ke/static/images/logo.png">
+  <meta name="twitter:image" content="{% static 'images/logo.png' %}">
 
   <!-- Legal Service Schema (JSON-LD) -->
   <script type="application/ld+json">
@@ -50,8 +27,8 @@
     "@type": "LegalService",
     "name": "Muguna & Oyile Advocates",
     "url": "https://www.mugunaoyile.co.ke/",
-    "logo": "https://www.mugunaoyile.co.ke/static/images/logo.png",
-    "image": "https://www.mugunaoyile.co.ke/static/images/logo.png",
+    "logo": "{% static 'images/logo.png' %}",
+    "image": "{% static 'images/logo.png' %}",
     "description": "Muguna & Oyile Advocates is a top-tier law firm in Nairobi, Kenya, offering expert legal services in corporate and commercial law, real estate, family law, employment, dispute resolution, and legal consultancy. We deliver trusted legal representation and strategic advisory services for individuals, SMEs, and corporate clients.",
     "address": {
       "@type": "PostalAddress",
@@ -67,52 +44,23 @@
     "openingHoursSpecification": [
       {
         "@type": "OpeningHoursSpecification",
-        "dayOfWeek": [
-          "Monday",
-          "Tuesday",
-          "Wednesday",
-          "Thursday",
-          "Friday"
-        ],
+        "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
         "opens": "08:30",
         "closes": "17:30"
       }
     ],
     "founder": [
-      {
-        "@type": "Person",
-        "name": "Tony Muguna",
-        "jobTitle": "Managing Partner"
-      },
-      {
-        "@type": "Person",
-        "name": "Faith Oyile",
-        "jobTitle": "Senior Partner"
-      }
+      { "@type": "Person", "name": "Tony Muguna", "jobTitle": "Managing Partner" },
+      { "@type": "Person", "name": "Faith Oyile", "jobTitle": "Senior Partner" }
     ],
     "employee": [
-      {
-        "@type": "Person",
-        "name": "Jane Mwangi",
-        "jobTitle": "Associate Advocate"
-      },
-      {
-        "@type": "Person",
-        "name": "James Otieno",
-        "jobTitle": "Legal Consultant"
-      }
+      { "@type": "Person", "name": "Jane Mwangi", "jobTitle": "Associate Advocate" },
+      { "@type": "Person", "name": "James Otieno", "jobTitle": "Legal Consultant" }
     ],
     "review": {
       "@type": "Review",
-      "author": {
-        "@type": "Person",
-        "name": "Jane Wanjiku"
-      },
-      "reviewRating": {
-        "@type": "Rating",
-        "ratingValue": "5",
-        "bestRating": "5"
-      },
+      "author": { "@type": "Person", "name": "Jane Wanjiku" },
+      "reviewRating": { "@type": "Rating", "ratingValue": "5", "bestRating": "5" },
       "reviewBody": "Muguna & Oyile Advocates helped us navigate a complex land acquisition process with professionalism and precision. Highly recommended."
     },
     "knowsAbout": [
@@ -145,27 +93,22 @@
   <link rel="mask-icon" href="{% static 'images/favicon/safari-pinned-tab.svg' %}" color="#5bbad5">
   <meta name="msapplication-TileColor" content="#ffffff">
   <meta name="theme-color" content="#ffffff">
->>>>>>> aec289d (SEO start)
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Hoefler+Text&family=Montserrat:wght@300;400;500;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer">
   <link rel="stylesheet" href="{% static 'css/style.css' %}">
   {% block extra_css %}{% endblock %}
 </head>
-<<<<<<< HEAD
-=======
-
->>>>>>> aec289d (SEO start)
 <body>
   <!-- Skip to Content Link for Accessibility -->
   <a href="#main-content" class="skip-link">Skip to main content</a>
 
   <!-- Header -->
-  <header id="header">
+  <header id="header" role="banner">
     <div class="container header-container">
       <div class="logo">
-        <a href="{% url 'home' %}" aria-label="Home">
+        <a href="{% url 'home' %}" aria-label="Muguna & Oyile Home">
           <img src="{% static 'images/logo.png' %}" 
                alt="Muguna & Oyile Law Firm Logo" 
                width="180" 
@@ -173,25 +116,24 @@
                loading="eager">
         </a>
       </div>
-      <nav>
+      <nav role="navigation">
         <ul id="navMenu">
-  <li><a href="{% url 'home' %}"><i class="fas fa-home"></i> Home</a></li>
-
-  <li class="dropdown">
-    <a href="#" class="dropdown-toggle"><i class="fas fa-gavel"></i> Services <i class="fas fa-caret-down"></i></a>
-    <ul class="dropdown-menu">
-      <li><a href="{% url 'consultancy' %}#consultancy"><i class="fas fa-lightbulb"></i> Consultancy</a></li>
-      <li><a href="{% url 'property' %}#property"><i class="fas fa-building"></i> Property & Real Estate</a></li>
-      <li><a href="{% url 'dispute_resolution' %}#dispute"><i class="fas fa-balance-scale-left"></i> Dispute Resolution</a></li>
-      <li><a href="{% url 'corporate' %}#corporate"><i class="fas fa-briefcase"></i> Corporate & Commercial</a></li>
-    </ul>
-  </li>
-
-      <li><a href="{% url 'about' %}"><i class="fas fa-user-tie"></i> About</a></li>
-      <li><a href="{% url 'team' %}"><i class="fas fa-users"></i> Team</a></li>
-      <li><a href="{% url 'contact' %}"><i class="fas fa-envelope"></i> Contact</a></li>
-    </ul>
-
+          <li><a href="{% url 'home' %}"><i class="fas fa-home"></i> Home</a></li>
+          <li class="dropdown">
+            <a href="#" class="dropdown-toggle" aria-haspopup="true" aria-expanded="false">
+              <i class="fas fa-gavel"></i> Services <i class="fas fa-caret-down"></i>
+            </a>
+            <ul class="dropdown-menu">
+              <li><a href="{% url 'consultancy' %}#consultancy"><i class="fas fa-lightbulb"></i> Consultancy</a></li>
+              <li><a href="{% url 'property' %}#property"><i class="fas fa-building"></i> Property & Real Estate</a></li>
+              <li><a href="{% url 'dispute_resolution' %}#dispute"><i class="fas fa-balance-scale-left"></i> Dispute Resolution</a></li>
+              <li><a href="{% url 'corporate' %}#corporate"><i class="fas fa-briefcase"></i> Corporate & Commercial</a></li>
+            </ul>
+          </li>
+          <li><a href="{% url 'about' %}"><i class="fas fa-user-tie"></i> About</a></li>
+          <li><a href="{% url 'team' %}"><i class="fas fa-users"></i> Team</a></li>
+          <li><a href="{% url 'contact' %}"><i class="fas fa-envelope"></i> Contact</a></li>
+        </ul>
       </nav>
       <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Toggle navigation menu" aria-expanded="false">
         <span class="menu-icon"></span>
@@ -200,7 +142,7 @@
   </header>
 
   <!-- Main Content -->
-  <main id="main-content">
+  <main id="main-content" role="main">
     {% block content %}
     {% endblock %}
   </main>
@@ -213,10 +155,10 @@
           <h3 class="footer-logo">MUGUNA & OYILE <br>ADVOCATES</h3>
           <p>Providing exceptional legal services with integrity and professionalism since 2024.</p>
           <div class="footer-social">
-            <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
-            <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
-            <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
-            <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+            <a href="https://www.facebook.com/mugunaoyile" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+            <a href="https://twitter.com/mugunaoyile" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+            <a href="https://www.linkedin.com/company/mugunaoyileadvocates" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+            <a href="https://www.instagram.com/mugunaoyile" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
           </div>
         </div>
         <div class="footer-column">
@@ -234,7 +176,7 @@
           <ul>
             <li><a href="{% url 'consultancy' %}#consultancy">Consultancy Services</a></li>
             <li><a href="{% url 'property' %}#property">Property & Real Estate</a></li>
-            <li><a href="{% url 'dispute_resolution' %}#dispute">Dispute Resolution</a></li>            
+            <li><a href="{% url 'dispute_resolution' %}#dispute">Dispute Resolution</a></li>
             <li><a href="{% url 'corporate' %}#corporate">Corporate & Commercial</a></li>
           </ul>
         </div>
@@ -249,7 +191,7 @@
         </div>
       </div>
       <div class="footer-bottom">
-        <p>&copy; 2024 Muguna & Oyile Advocates. All Rights Reserved.</p>
+        <p>© 2024 Muguna & Oyile Advocates. All Rights Reserved.</p>
         <div class="footer-links">
           <a href="{% url 'privacy_policy' %}">Privacy Policy</a>
           <a href="{% url 'terms_of_service' %}">Terms of Service</a>

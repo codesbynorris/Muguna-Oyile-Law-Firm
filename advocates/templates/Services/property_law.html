@@ -3,8 +3,35 @@
 
 {% block title %}Property & Real Estate Law | {{ block.super }}{% endblock %}
 
-<<<<<<< HEAD
-=======
+{% block extra_head %}
+<link rel="canonical" href="https://www.yourdomain.com/services/property-law/" />
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "LegalService",
+  "name": "Muguna & Oyile Advocates",
+  "url": "https://www.mugunaoyile.co.ke/services/property-law/",
+  "image": "https://www.mugunaoyile.co.ke/static/images/og-property.jpg",
+  "description": "We provide legal guidance for property transactions, real estate contracts, land disputes and title transfers in Kenya.",
+  "address": {
+    "@type": "PostalAddress",
+    "addressLocality": "Nairobi",
+    "addressCountry": "KE"
+  },
+  "areaServed": {
+    "@type": "Country",
+    "name": "Kenya"
+  },
+  "serviceType": "Property & Real Estate Law",
+  "provider": {
+    "@type": "Organization",
+    "name": "Muguna & Oyile Advocates",
+    "url": "https://www.mugunaoyile.co.ke"
+  }
+}
+</script>
+{% endblock %}
+
 {% block meta %}
   <meta name="description" content="Legal guidance for property transactions, real estate contracts, land disputes and title transfers in Kenya.">
   <meta name="keywords" content="property law Kenya, land disputes, real estate lawyer, Muguna Oyile Advocates, title transfer">
@@ -15,7 +42,6 @@
   <meta property="og:image" content="{% static 'images/og-property.jpg' %}">
 {% endblock %}
 
->>>>>>> aec289d (SEO start)
 {% block content %}
 <section class="container">
   <div class="section-header centered-header">
@@ -25,175 +51,89 @@
 </section>
 
 <main class="container">
-  <div class="service-intro">
-<<<<<<< HEAD
-    <p>Our property practice provides expert guidance through all aspects of real estate transactions and land matters.</p>
-=======
+  <section class="service-intro">
     <p>Our property practice provides expert guidance through all aspects of real estate transactions and land matters, including transfers, leases, due diligence, and disputes.</p>
->>>>>>> aec289d (SEO start)
-  </div>
+  </section>
 
-  <div class="services-container">
+  <section class="services-container">
+    <!-- Left Column -->
     <div class="services-list">
       {% for service in services %}
-      <div class="service-card {% if forloop.first %}active{% endif %}" data-service="{{ service.slug }}">
-        <div class="service-card-header">
-          <div class="service-icon">
-            <i class="{{ service.icon }}"></i>
-          </div>
+      <article class="service-card {% if forloop.first %}active{% endif %}" data-service="{{ service.slug }}" role="button" tabindex="0" aria-expanded="{% if forloop.first %}true{% else %}false{% endif %}">
+        <header class="service-card-header">
+          <span class="service-icon"><i class="{{ service.icon }}"></i></span>
           <h3 class="service-title">{{ service.title }}</h3>
-          <i class="fas fa-chevron-down toggle-arrow"></i>
-        </div>
-        <div class="mobile-service-detail">
+          <i class="fas fa-chevron-down toggle-arrow" aria-hidden="true"></i>
+        </header>
+        <section class="mobile-service-detail" aria-hidden="true">
           <p>{{ service.summary }}</p>
-          <div class="mobile-service-features">
-            <ul>
-<<<<<<< HEAD
-              {% for item in service.details %}
-              <li>{{ item }}</li>
-=======
-              {% for item in service.details.all %}
+          <ul class="mobile-service-features">
+            {% for item in service.details.all %}
               <li>{{ item.detail_text }}</li>
->>>>>>> aec289d (SEO start)
-              {% endfor %}
-            </ul>
-          </div>
-        </div>
-      </div>
+            {% endfor %}
+          </ul>
+        </section>
+      </article>
       {% endfor %}
     </div>
 
-    <div class="service-detail-container">
+    <!-- Right Column -->
+    <aside class="service-detail-container">
       {% for service in services %}
-      <div class="service-detail {% if forloop.first %}active{% endif %}" id="{{ service.slug }}-detail">
-        <h3>{{ service.title }}</h3>
+      <div class="service-detail {% if forloop.first %}active{% endif %}" id="{{ service.slug }}-detail" role="region" aria-labelledby="title-{{ service.slug }}">
+        <h3 id="title-{{ service.slug }}">{{ service.title }}</h3>
         <p>{{ service.summary }}</p>
-        <div class="service-features">
-          <ul>
-<<<<<<< HEAD
-            {% for item in service.details %}
-            <li>{{ item }}</li>
-=======
-            {% for item in service.details.all %}
+        <ul class="service-features">
+          {% for item in service.details.all %}
             <li>{{ item.detail_text }}</li>
->>>>>>> aec289d (SEO start)
-            {% endfor %}
-          </ul>
-        </div>
+          {% endfor %}
+        </ul>
       </div>
       {% endfor %}
-    </div>
-  </div>
+    </aside>
+  </section>
 </main>
 {% endblock %}
 
 {% block extra_js %}
 <script>
-document.addEventListener('DOMContentLoaded', function () {
-<<<<<<< HEAD
-    const serviceCards = document.querySelectorAll('.service-card');
-    const details = document.querySelectorAll('.service-detail');
-    let currentView = window.innerWidth > 992 ? 'desktop' : 'mobile';
-
-    function closeAllMobileCards() {
-        serviceCards.forEach(card => {
-            card.classList.remove('active');
-            const content = card.querySelector('.mobile-service-detail');
-            if (content) {
-                content.style.maxHeight = null;
-                content.style.padding = '0';
-            }
-        });
-    }
-
-    function openMobileCard(card) {
-        card.classList.add('active');
-        const content = card.querySelector('.mobile-service-detail');
-        if (content) {
-            content.style.maxHeight = content.scrollHeight + 'px';
-            content.style.padding = '20px 15px';
-            setTimeout(() => {
-                card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-            }, 300);
-        }
-    }
-
-    function activateDesktopCard(serviceId) {
-        serviceCards.forEach(card => card.classList.remove('active'));
-        details.forEach(detail => detail.classList.remove('active'));
-
-        const card = document.querySelector(`.service-card[data-service="${serviceId}"]`);
-        const detail = document.getElementById(`${serviceId}-detail`);
-
-        if (card && detail) {
-            card.classList.add('active');
-            detail.classList.add('active');
-        }
-    }
-
-    serviceCards.forEach(card => {
-        card.addEventListener('click', function () {
-            const serviceId = this.dataset.service;
-
-            if (currentView === 'desktop') {
-                activateDesktopCard(serviceId);
-            } else {
-                const isActive = this.classList.contains('active');
-                closeAllMobileCards();
-                if (!isActive) openMobileCard(this);
-            }
-        });
-    });
-
-    window.addEventListener('resize', function () {
-        const newView = window.innerWidth > 992 ? 'desktop' : 'mobile';
-        if (newView !== currentView) {
-            currentView = newView;
-            if (newView === 'desktop') {
-                closeAllMobileCards();
-                const firstService = serviceCards[0]?.dataset.service;
-                if (firstService) activateDesktopCard(firstService);
-            } else {
-                details.forEach(d => d.classList.remove('active'));
-                closeAllMobileCards();
-            }
-        }
-    });
-
-    if (currentView === 'desktop' && serviceCards.length > 0) {
-        const firstService = serviceCards[0].dataset.service;
-        activateDesktopCard(firstService);
-    }
-=======
-  const serviceCards = document.querySelectorAll('.service-card');
+document.addEventListener('DOMContentLoaded', () => {
+  const cards = document.querySelectorAll('.service-card');
   const details = document.querySelectorAll('.service-detail');
   let currentView = window.innerWidth > 992 ? 'desktop' : 'mobile';
 
-  function closeAllMobileCards() {
-    serviceCards.forEach(card => {
+  const closeAllMobile = () => {
+    cards.forEach(card => {
       card.classList.remove('active');
+      card.setAttribute('aria-expanded', 'false');
       const content = card.querySelector('.mobile-service-detail');
       if (content) {
         content.style.maxHeight = null;
         content.style.padding = '0';
+        content.setAttribute('aria-hidden', 'true');
       }
     });
-  }
+  };
 
-  function openMobileCard(card) {
+  const openMobileCard = card => {
     card.classList.add('active');
+    card.setAttribute('aria-expanded', 'true');
     const content = card.querySelector('.mobile-service-detail');
     if (content) {
       content.style.maxHeight = content.scrollHeight + 'px';
       content.style.padding = '20px 15px';
+      content.setAttribute('aria-hidden', 'false');
       setTimeout(() => {
-        card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        card.scrollIntoView({ behavior: 'smooth' });
       }, 300);
     }
-  }
+  };
 
-  function activateDesktopCard(serviceId) {
-    serviceCards.forEach(card => card.classList.remove('active'));
+  const activateDesktop = serviceId => {
+    cards.forEach(card => {
+      card.classList.remove('active');
+      card.setAttribute('aria-expanded', 'false');
+    });
     details.forEach(detail => detail.classList.remove('active'));
 
     const card = document.querySelector(`.service-card[data-service="${serviceId}"]`);
@@ -201,44 +141,50 @@ document.addEventListener('DOMContentLoaded', function () {
 
     if (card && detail) {
       card.classList.add('active');
+      card.setAttribute('aria-expanded', 'true');
       detail.classList.add('active');
     }
-  }
+  };
 
-  serviceCards.forEach(card => {
-    card.addEventListener('click', function () {
-      const serviceId = this.dataset.service;
+  cards.forEach(card => {
+    card.addEventListener('click', () => {
+      const serviceId = card.dataset.service;
+      const isActive = card.classList.contains('active');
 
       if (currentView === 'desktop') {
-        activateDesktopCard(serviceId);
+        activateDesktop(serviceId);
       } else {
-        const isActive = this.classList.contains('active');
-        closeAllMobileCards();
-        if (!isActive) openMobileCard(this);
+        closeAllMobile();
+        if (!isActive) openMobileCard(card);
+      }
+    });
+
+    card.addEventListener('keydown', e => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        card.click();
       }
     });
   });
 
-  window.addEventListener('resize', function () {
+  window.addEventListener('resize', () => {
     const newView = window.innerWidth > 992 ? 'desktop' : 'mobile';
     if (newView !== currentView) {
       currentView = newView;
       if (newView === 'desktop') {
-        closeAllMobileCards();
-        const firstService = serviceCards[0]?.dataset.service;
-        if (firstService) activateDesktopCard(firstService);
+        closeAllMobile();
+        const first = cards[0]?.dataset.service;
+        if (first) activateDesktop(first);
       } else {
         details.forEach(d => d.classList.remove('active'));
-        closeAllMobileCards();
+        closeAllMobile();
       }
     }
   });
 
-  if (currentView === 'desktop' && serviceCards.length > 0) {
-    const firstService = serviceCards[0].dataset.service;
-    activateDesktopCard(firstService);
+  if (currentView === 'desktop' && cards.length > 0) {
+    activateDesktop(cards[0].dataset.service);
   }
->>>>>>> aec289d (SEO start)
 });
 </script>
 {% endblock %}

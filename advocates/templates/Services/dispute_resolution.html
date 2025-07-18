@@ -1,21 +1,72 @@
 {% extends 'services-base.html' %}
 {% load static %}
 
-{% block title %}Dispute Resolution | {{ block.super }}{% endblock %}
+{% block title %}Dispute Resolution | Muguna & Oyile Advocates{% endblock %}
 
-<<<<<<< HEAD
-=======
-{% block meta %}
-  <meta name="description" content="We offer expert dispute resolution through mediation, arbitration, litigation and negotiation.">
-  <meta name="keywords" content="dispute resolution Kenya, mediation, arbitration, litigation, Muguna Oyile Advocates">
-  <meta property="og:title" content="Dispute Resolution | Muguna & Oyile Advocates">
-  <meta property="og:description" content="Experienced lawyers helping you resolve disputes efficiently and peacefully.">
-  <meta property="og:type" content="website">
-  <meta property="og:url" content="https://www.mugunaoyile.co.ke/services/dispute-resolution/">
-  <meta property="og:image" content="{% static 'images/og-dispute.jpg' %}">
+{% block extra_head %}
+<link rel="canonical" href="https://www.mugunaoyile.co.ke/services/dispute-resolution/" />
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "LegalService",
+  "name": "Muguna & Oyile Advocates",
+  "url": "https://www.mugunaoyile.co.ke/services/dispute-resolution/",
+  "image": "https://www.mugunaoyile.co.ke/static/images/og-dispute.jpg",
+  "description": "Expert dispute resolution through mediation, arbitration, litigation and negotiation.",
+  "address": {
+    "@type": "PostalAddress",
+    "addressLocality": "Nairobi",
+    "addressCountry": "KE"
+  },
+  "areaServed": {
+    "@type": "Country",
+    "name": "Kenya"
+  },
+  "serviceType": "Dispute Resolution",
+  "provider": {
+    "@type": "Organization",
+    "name": "Muguna & Oyile Advocates",
+    "url": "https://www.mugunaoyile.co.ke"
+  }
+}
+</script>
+
+<!-- SEO Meta -->
+<meta name="description" content="We offer expert dispute resolution through mediation, arbitration, litigation, and negotiation.">
+<meta name="keywords" content="dispute resolution Kenya, mediation, arbitration, litigation, Muguna Oyile Advocates">
+
+<!-- Open Graph -->
+<meta property="og:title" content="Dispute Resolution | Muguna & Oyile Advocates">
+<meta property="og:description" content="Experienced lawyers helping you resolve disputes efficiently and peacefully.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://www.mugunaoyile.co.ke/services/dispute-resolution/">
+<meta property="og:image" content="{% static 'images/og-dispute.jpg' %}">
+
+<!-- Twitter -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Dispute Resolution | Muguna & Oyile">
+<meta name="twitter:description" content="Mediation, arbitration, and litigation services by Kenya's trusted dispute resolution lawyers.">
+<meta name="twitter:image" content="{% static 'images/og-dispute.jpg' %}">
+
+<!-- Schema Markup -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "LegalService",
+  "name": "Muguna & Oyile Advocates",
+  "serviceType": "Dispute Resolution",
+  "url": "https://www.mugunaoyile.co.ke/services/dispute-resolution/",
+  "description": "Expert legal services in dispute resolution including negotiation, arbitration, and litigation.",
+  "areaServed": {
+    "@type": "Country",
+    "name": "Kenya"
+  },
+  "image": "https://www.mugunaoyile.co.ke/static/images/og-dispute.jpg"
+}
+</script>
 {% endblock %}
 
->>>>>>> aec289d (SEO start)
 {% block content %}
 <section class="container">
   <div class="section-header centered-header">
@@ -25,170 +76,128 @@
 </section>
 
 <main class="container">
-  <div class="service-intro">
-    <p>At Muguna Oyile Law Firm, we believe in resolving disputes with integrity, efficiency, and minimal disruption. Our dispute resolution team is experienced in negotiation, mediation, arbitration, and litigation where necessary.</p>
-  </div>
+  <section class="service-intro">
+    <p>At Muguna & Oyile Advocates, we believe in resolving disputes with integrity, efficiency, and minimal disruption. Our team is seasoned in negotiation, mediation, arbitration, and litigation when necessary.</p>
+  </section>
 
-  <div class="services-container">
-    <!-- Left Column: Service Cards -->
+  <section class="services-container">
+    <!-- Mobile & Desktop: Cards -->
     <div class="services-list">
       {% for service in services %}
-<<<<<<< HEAD
-        <div class="service-card {% if forloop.first %}active{% endif %}" 
-             data-service="service-{{ service.id }}">
-=======
-        <div class="service-card {% if forloop.first %}active{% endif %}" data-service="service-{{ service.id }}">
->>>>>>> aec289d (SEO start)
-          <div class="service-card-header">
-            <div class="service-icon">
-              <i class="{{ service.icon }}"></i>
-            </div>
-            <h3 class="service-title">{{ service.title }}</h3>
-            <i class="fas fa-chevron-down toggle-arrow"></i>
-          </div>
-          <div class="mobile-service-detail">
-            <p>{{ service.summary }}</p>
-            <div class="mobile-service-features">
-              <ul>
-<<<<<<< HEAD
-                {% for item in service.details %}
-                  <li>{{ item }}</li>
-=======
-                {% for item in service.details.all %}
-                  <li>{{ item.detail_text }}</li>
->>>>>>> aec289d (SEO start)
-                {% endfor %}
-              </ul>
-            </div>
-          </div>
-        </div>
-      {% endfor %}
-    </div>
-
-    <!-- Right Column: Desktop Detail Panel -->
-    <div class="service-detail-container">
-      {% for service in services %}
-<<<<<<< HEAD
-        <div class="service-detail {% if forloop.first %}active{% endif %}" 
-             id="service-{{ service.id }}">
-=======
-        <div class="service-detail {% if forloop.first %}active{% endif %}" id="service-{{ service.id }}">
->>>>>>> aec289d (SEO start)
-          <h3>{{ service.title }}</h3>
+      <article class="service-card {% if forloop.first %}active{% endif %}" data-service="service-{{ service.id }}" role="button" tabindex="0" aria-expanded="{% if forloop.first %}true{% else %}false{% endif %}">
+        <header class="service-card-header">
+          <span class="service-icon"><i class="{{ service.icon }}"></i></span>
+          <h3 class="service-title">{{ service.title }}</h3>
+          <i class="fas fa-chevron-down toggle-arrow" aria-hidden="true"></i>
+        </header>
+        <section class="mobile-service-detail" aria-hidden="true">
           <p>{{ service.summary }}</p>
-          <div class="service-features">
-            <ul>
-<<<<<<< HEAD
-              {% for item in service.details %}
-                <li>{{ item }}</li>
-=======
-              {% for item in service.details.all %}
-                <li>{{ item.detail_text }}</li>
->>>>>>> aec289d (SEO start)
-              {% endfor %}
-            </ul>
-          </div>
-        </div>
+          <ul class="mobile-service-features">
+            {% for item in service.details.all %}
+              <li>{{ item.detail_text }}</li>
+            {% endfor %}
+          </ul>
+        </section>
+      </article>
       {% endfor %}
     </div>
-  </div>
-</main>
-<<<<<<< HEAD
 
-=======
+    <!-- Desktop: Detail Panel -->
+    <aside class="service-detail-container">
+      {% for service in services %}
+      <div class="service-detail {% if forloop.first %}active{% endif %}" id="service-{{ service.id }}" role="region" aria-labelledby="service-title-{{ service.id }}">
+        <h3 id="service-title-{{ service.id }}">{{ service.title }}</h3>
+        <p>{{ service.summary }}</p>
+        <ul class="service-features">
+          {% for item in service.details.all %}
+            <li>{{ item.detail_text }}</li>
+          {% endfor %}
+        </ul>
+      </div>
+      {% endfor %}
+    </aside>
+  </section>
+</main>
 {% endblock %}
 
 {% block extra_js %}
->>>>>>> aec289d (SEO start)
 <script>
-document.addEventListener('DOMContentLoaded', function () {
-  const serviceCards = document.querySelectorAll('.service-card');
+document.addEventListener('DOMContentLoaded', () => {
+  const cards = document.querySelectorAll('.service-card');
+  const details = document.querySelectorAll('.service-detail');
   let currentView = window.innerWidth > 992 ? 'desktop' : 'mobile';
 
   function activateService(serviceId) {
-<<<<<<< HEAD
-    // Update UI for all cards
-=======
->>>>>>> aec289d (SEO start)
-    serviceCards.forEach(card => {
+    cards.forEach(card => {
       card.classList.remove('active');
-      if (card.dataset.service === serviceId) {
-        card.classList.add('active');
-      }
+      card.setAttribute('aria-expanded', 'false');
     });
+    details.forEach(detail => detail.classList.remove('active'));
 
-<<<<<<< HEAD
-    // Update desktop service detail visibility
-=======
->>>>>>> aec289d (SEO start)
-    document.querySelectorAll('.service-detail').forEach(detail => {
-      detail.classList.remove('active');
-      if (detail.id === serviceId) {
-        detail.classList.add('active');
-      }
-    });
+    const activeCard = document.querySelector(`.service-card[data-service="${serviceId}"]`);
+    const activeDetail = document.getElementById(serviceId);
+
+    if (activeCard && activeDetail) {
+      activeCard.classList.add('active');
+      activeCard.setAttribute('aria-expanded', 'true');
+      activeDetail.classList.add('active');
+    }
   }
 
-  serviceCards.forEach(card => {
-    card.addEventListener('click', function () {
-      const serviceId = this.dataset.service;
-      const isActive = this.classList.contains('active');
+  function toggleMobile(card) {
+    const isActive = card.classList.contains('active');
+    cards.forEach(c => {
+      c.classList.remove('active');
+      c.setAttribute('aria-expanded', 'false');
+      c.querySelector('.mobile-service-detail').style.maxHeight = null;
+    });
 
-      if (currentView === 'desktop') {
-        activateService(serviceId);
-      } else {
-<<<<<<< HEAD
-        // Mobile behavior: toggle active state
-=======
->>>>>>> aec289d (SEO start)
-        if (isActive) {
-          this.classList.remove('active');
-        } else {
-          serviceCards.forEach(c => c.classList.remove('active'));
-          this.classList.add('active');
+    if (!isActive) {
+      card.classList.add('active');
+      card.setAttribute('aria-expanded', 'true');
+      const content = card.querySelector('.mobile-service-detail');
+      content.style.maxHeight = content.scrollHeight + 'px';
+      content.setAttribute('aria-hidden', 'false');
+      setTimeout(() => card.scrollIntoView({ behavior: 'smooth' }), 300);
+    }
+  }
 
-<<<<<<< HEAD
-          // Scroll into view after opening
-=======
->>>>>>> aec289d (SEO start)
-          setTimeout(() => {
-            this.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-          }, 300);
-        }
+  cards.forEach(card => {
+    card.addEventListener('click', () => {
+      const serviceId = card.dataset.service;
+      currentView === 'desktop' ? activateService(serviceId) : toggleMobile(card);
+    });
+    card.addEventListener('keydown', e => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        card.click();
       }
     });
   });
 
-  window.addEventListener('resize', function () {
+  window.addEventListener('resize', () => {
     const newView = window.innerWidth > 992 ? 'desktop' : 'mobile';
-
     if (newView !== currentView) {
       currentView = newView;
-<<<<<<< HEAD
-
-      // Reset view and activate first card on switch
-=======
->>>>>>> aec289d (SEO start)
-      const activeCard = document.querySelector('.service-card.active');
-      if (activeCard) {
-        activateService(activeCard.dataset.service);
-      } else if (serviceCards.length > 0) {
-        activateService(serviceCards[0].dataset.service);
+      if (currentView === 'desktop') {
+        const first = cards[0];
+        if (first) activateService(first.dataset.service);
+      } else {
+        cards.forEach(c => {
+          c.classList.remove('active');
+          c.setAttribute('aria-expanded', 'false');
+          const content = c.querySelector('.mobile-service-detail');
+          if (content) content.style.maxHeight = null;
+        });
+        details.forEach(d => d.classList.remove('active'));
       }
     }
   });
 
-<<<<<<< HEAD
-  // Initialize desktop first card
-=======
->>>>>>> aec289d (SEO start)
-  if (currentView === 'desktop' && serviceCards.length > 0) {
-    activateService(serviceCards[0].dataset.service);
+  // Initial load
+  if (currentView === 'desktop' && cards.length > 0) {
+    activateService(cards[0].dataset.service);
   }
 });
-<<<<<<< HEAD
-
-=======
->>>>>>> aec289d (SEO start)
 </script>
 {% endblock %}

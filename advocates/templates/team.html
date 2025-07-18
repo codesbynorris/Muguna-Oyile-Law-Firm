@@ -1,10 +1,59 @@
 {% extends 'team_base.html' %}
-<<<<<<< HEAD
-
-=======
 {% load static %}
->>>>>>> aec289d (SEO start)
-{% block title %}Property & Real Estate Law | {{ block.super }}{% endblock %}
+
+{% block title %}Tony Muguna – Senior Advocate | Muguna & Oyile Advocates{% endblock %}
+
+{% block extra_head %}
+<link rel="canonical" href="https://www.mugunaoyile.co.ke/team/tony-muguna/" />
+<meta name="description" content="Meet Tony Muguna, Senior Advocate with 24 years of legal excellence, a 95% success rate in litigation, and a landmark impact on corporate law in East Africa." />
+
+<!-- Open Graph -->
+<meta property="og:title" content="Tony Muguna – Senior Advocate | Muguna & Oyile Advocates" />
+<meta property="og:description" content="24 years of experience, 127 cases handled, 95% success rate. Learn more about Tony Muguna, Kenya's respected legal mind." />
+<meta property="og:image" content="https://www.mugunaoyile.co.ke/static/images/tony.jpg" />
+<meta property="og:url" content="https://www.mugunaoyile.co.ke/team/tony-muguna/" />
+<meta property="og:type" content="profile" />
+
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="Tony Muguna – Senior Advocate" />
+<meta name="twitter:description" content="Learn more about Tony Muguna’s litigation achievements and legal leadership." />
+<meta name="twitter:image" content="https://www.mugunaoyile.co.ke/static/images/tony.jpg" />
+
+<!-- Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXX"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){ dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-XXXXXXX', { page_path: window.location.pathname });
+</script>
+
+<!-- Schema.org Person -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Person",
+  "name": "Tony Muguna",
+  "jobTitle": "Senior Advocate",
+  "worksFor": {
+    "@type": "LegalService",
+    "name": "Muguna & Oyile Advocates"
+  },
+  "image": "https://www.mugunaoyile.co.ke/static/images/tony.jpg",
+  "url": "https://www.mugunaoyile.co.ke/team/tony-muguna/",
+  "sameAs": [
+    "https://www.linkedin.com/in/tony-muguna",
+    "https://www.mugunaoyile.co.ke"
+  ],
+  "alumniOf": {
+    "@type": "EducationalOrganization",
+    "name": "Kenya School of Law"
+  },
+  "description": "Tony Muguna is a Senior Advocate with 24 years of legal experience and a 95% litigation success rate. He is a published legal scholar and a former lecturer in constitutional law."
+}
+</script>
+{% endblock %}
 
 {% block content %}
 <div class="tm-wrapper">
@@ -13,24 +62,19 @@
     <header class="tm-section-header tm-centered-header">
       <h1>Tony Muguna</h1>
       <span class="tm-header-subtitle">24 Years of Legal Excellence</span>
-
       <div class="tm-profile-img-container">
         <div class="tm-profile-title">Senior Advocate</div>
-<<<<<<< HEAD
-        <img src="https://images.unsplash.com/photo-1580894732444-8ecded7900cd?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80" alt="Tony Muguna" class="tm-profile-img">
-=======
-        <img src="{% static 'images/tony.jpg' %}" alt="Tony Muguna" class="tm-profile-img">
->>>>>>> aec289d (SEO start)
+        <img src="{% static 'images/tony.jpg' %}" alt="Tony Muguna, Senior Advocate" class="tm-profile-img" loading="lazy">
       </div>
     </header>
   </div>
 
-  <!-- Intro Section -->
+  <!-- Stats Section -->
   <section class="tm-intro">
     <div class="tm-container">
       <div class="tm-stats-container">
         <div class="tm-stat-item">
-          <div class="tm-stat-number tm-animated-counter" id="tm-cases-counter">0</div>
+          <div class="tm-stat-number tm-animated-counter" id="casesCounter">0</div>
           <div class="tm-stat-label">Cases Handled</div>
         </div>
         <div class="tm-stat-item">
@@ -38,7 +82,7 @@
           <div class="tm-stat-label">Years Experience</div>
         </div>
         <div class="tm-stat-item">
-          <div class="tm-stat-number tm-animated-counter" id="tm-success-counter">0</div>
+          <div class="tm-stat-number tm-animated-counter" id="successCounter">0</div>
           <div class="tm-stat-label">Success Rate</div>
         </div>
       </div>
@@ -50,7 +94,7 @@
     <div class="tm-container">
       <h2>Legal Excellence Personified</h2>
       <p>Tony Muguna's practice is defined by strategic brilliance and uncompromising ethics. His landmark victory in <em>Onyango v. National Bank</em> reshaped corporate liability standards across East Africa.</p>
-      <p>With a <strong>95% success rate</strong> in high-stakes litigation, Tony combines courtroom mastery with a scholar's understanding of legal theory, having lectured at the Kenya School of Law and published three influential papers on constitutional interpretation.</p>
+      <p>With a <strong>95% success rate</strong> in high-stakes litigation, Tony combines courtroom mastery with a scholar’s depth, having lectured at the Kenya School of Law and published three influential papers on constitutional interpretation.</p>
 
       <div class="tm-signature">
         <p>Tony Muguna</p>
@@ -63,22 +107,24 @@
 
 {% block extra_js %}
 <script>
-  const caseCounter = document.getElementById('tm-cases-counter');
-  const successCounter = document.getElementById('tm-success-counter');
+document.addEventListener("DOMContentLoaded", () => {
   const animateCounter = (el, target, suffix = "") => {
-    let frame = 0, total = 72, interval = 1000 / 60;
-    const ease = t => t * (2 - t);
-    const tick = () => {
-      frame++;
-      let val = Math.round(target * ease(frame / total));
-      el.textContent = frame >= total ? `${target}${suffix}` : `${val}${suffix}`;
-      if (frame < total) requestAnimationFrame(tick);
+    let start = 0;
+    const duration = 1000;
+    const startTime = performance.now();
+
+    const step = now => {
+      const progress = Math.min((now - startTime) / duration, 1);
+      const value = Math.floor(progress * target);
+      el.textContent = progress < 1 ? `${value}${suffix}` : `${target}${suffix}`;
+      if (progress < 1) requestAnimationFrame(step);
     };
-    requestAnimationFrame(tick);
+
+    requestAnimationFrame(step);
   };
-  window.addEventListener('load', () => {
-    animateCounter(caseCounter, 127);
-    setTimeout(() => animateCounter(successCounter, 95, "%"), 300);
-  });
+
+  animateCounter(document.getElementById("casesCounter"), 127);
+  animateCounter(document.getElementById("successCounter"), 95, "%");
+});
 </script>
 {% endblock %}
