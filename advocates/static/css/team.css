@@ -248,3 +248,35 @@ h1, h2, .stat-number {
   border-radius: 2px;
 }
 
+#tony-highlights {
+  list-style: none;
+  padding: 0;
+  margin: 0.5rem auto;
+  max-width: 700px;
+  text-align: left;
+  line-height: 1.6;
+  border-radius: var(--border-radius);
+  box-shadow: 0 5px 20px rgba(10, 26, 48, 0.08);
+  padding: 1.5rem 2rem;
+  counter-reset: highlight-counter;
+}
+
+#tony-highlights li {
+  position: relative;
+  padding-left: 2.2rem;
+  margin-bottom: 1.2rem;
+  color: #444;
+  font-size: 0.95rem;
+}
+
+#tony-highlights li::before {
+  content: counter(highlight-counter) ".";
+  counter-increment: highlight-counter;
+  position: absolute;
+  left: 0;
+  top: 0;
+  font-weight: bold;
+  color: var(--primary-accent);
+  font-size: 1rem;
+}
+
