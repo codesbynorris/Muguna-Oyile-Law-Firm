@@ -1,0 +1,56 @@
+# Python cache and compiled files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environment folder
+venv/
+
+# Environment variables file
+.env
+
+# Django stuff
+*.log
+*.pot
+*.pyc
+db.sqlite3
+db.sqlite3-journal
+
+# Media and static files (collected)
+media/
+staticfiles/
+static/
+
+# VS Code workspace settings
+.vscode/
+
+# MacOS system files
+.DS_Store
+
+# PyCharm files
+.idea/
+
+# Coverage reports
+.coverage
+htmlcov/
+
+# mypy
+.mypy_cache/
+
+# pytest
+.pytest_cache/
+
+# pipenv
+Pipfile.lock
+
+# celery beat schedule file
+celerybeat-schedule
+
+# local config files
+local_settings.py
+
+# backup files
+*~
+*.bak
+*.swp
+
