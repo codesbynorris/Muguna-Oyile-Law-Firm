@@ -169,3 +169,114 @@ h1, h2, .stat-number {
   font-size: 1.1rem;
   text-align: center;
 }
+
+/*skills list*/
+/* Unified card styling for both skills & practice areas */
+.skills-list, .practice-areas-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 24px;
+  padding: 0;
+  margin-top: 2rem;
+  list-style: none;
+}
+
+.skills-list li, .practice-areas-list li {
+  background: #fff;
+  border-radius: 14px;
+  box-shadow: 0 8px 24px rgba(10, 26, 48, 0.07);
+  padding: 20px 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  transition: all 0.3s ease;
+  position: relative;
+  border-top: 4px solid var(--primary-accent);
+}
+
+.skills-list li:hover,
+.practice-areas-list li:hover {
+  transform: translateY(-5px);
+  background: var(--primary-light);
+  color: var(--light-5);
+}
+
+.skills-list li:hover i,
+.practice-areas-list li:hover i {
+  background-color: var(--primary-accent);
+  color: var(--light-5);
+}
+
+/* Icon bubble */
+.skills-list li i,
+.practice-areas-list li i {
+  background-color: #f2f2f2;
+  color: var(--primary-accent);
+  font-size: 1.5rem;
+  padding: 12px;
+  border-radius: 50%;
+  margin-bottom: 10px;
+  transition: background 0.3s ease, color 0.3s ease;
+}
+
+.skills-list li span,
+.practice-areas-list li span {
+  font-weight: 600;
+  font-size: 1rem;
+  color: var(--primary-color);
+}
+
+/* Heading styling */
+.skills-heading, .practice-areas-heading {
+  font-size: 1.8rem;
+  font-weight: 700;
+  text-align: center;
+  color: var(--primary-accent);
+  margin-bottom: 1.5rem;
+  position: relative;
+}
+
+.skills-heading::after, .practice-areas-heading::after {
+  content: '';
+  width: 60px;
+  height: 3px;
+  background-color: var(--primary-accent);
+  display: block;
+  margin: 10px auto 0;
+  border-radius: 2px;
+}
+
+#tony-highlights {
+  list-style: none;
+  padding: 0;
+  margin: 0.5rem auto;
+  max-width: 700px;
+  text-align: left;
+  line-height: 1.6;
+  border-radius: var(--border-radius);
+  box-shadow: 0 5px 20px rgba(10, 26, 48, 0.08);
+  padding: 1.5rem 2rem;
+  counter-reset: highlight-counter;
+}
+
+#tony-highlights li {
+  position: relative;
+  padding-left: 2.2rem;
+  margin-bottom: 1.2rem;
+  color: #444;
+  font-size: 0.95rem;
+}
+
+#tony-highlights li::before {
+  content: counter(highlight-counter) ".";
+  counter-increment: highlight-counter;
+  position: absolute;
+  left: 0;
+  top: 0;
+  font-weight: bold;
+  color: var(--primary-accent);
+  font-size: 1rem;
+}
+
