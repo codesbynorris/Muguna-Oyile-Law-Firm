@@ -33,17 +33,19 @@ h1, h2, .stat-number {
   padding: 0 2rem;
 }
 
-/* Header Section */
+/* ===============================
+   HEADER SECTION
+   =============================== */
 .tm-header-container {
   position: relative;
-  margin-bottom: 60px;
+  margin-bottom: 140px; /* space for floating image */
 }
 
 .tm-section-header.tm-centered-header {
   text-align: center;
   max-width: 800px;
   margin: 0 auto;
-  padding: 2.5rem 1rem 6rem; /* extra bottom padding for image space */
+  padding: 3rem 1rem 8rem; /* extra bottom padding for image */
   background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
   border-radius: var(--border-radius);
   box-shadow: var(--box-shadow);
@@ -70,7 +72,7 @@ h1, h2, .stat-number {
 .tm-section-header h1 {
   font-size: 2.5rem;
   color: var(--primary-accent);
-  margin-bottom: 10px;
+  margin-bottom: 50px;
 }
 
 .tm-header-subtitle {
@@ -80,39 +82,42 @@ h1, h2, .stat-number {
   color: rgba(255, 255, 255, 0.85);
 }
 
-/* Portrait Image at Bottom */
 .tm-profile-img-container {
   position: absolute;
-  bottom: -80px;
+  bottom: -90px;
   left: 50%;
   transform: translateX(-50%);
   text-align: center;
   z-index: 3;
-  width: 160px;
+  width: 180px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .tm-profile-title {
   color: var(--primary-accent);
-  font-size: 1.2rem;
+  font-size: 1rem;
   font-family: var(--heading-font);
+  margin-bottom: 50px;
+  font-style: italic;
   white-space: nowrap;
-  margin-bottom: 10px;
 }
 
 .tm-profile-img {
-  width: 160px;
-  height: 160px;
+  width: 180px;
+  height: 180px;
   border-radius: 50%;
   object-fit: cover;
   border: 5px solid var(--primary-accent);
-  box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+  box-shadow: 0 15px 40px rgba(0,0,0,0.25);
   background: var(--light-5);
-  display: block;
 }
 
-/* Intro Section */
+/* ===============================
+   STATS SECTION
+   =============================== */
 .tm-intro {
-  padding-top: 40px;
   text-align: center;
 }
 
@@ -143,7 +148,9 @@ h1, h2, .stat-number {
   color: var(--primary-color);
 }
 
-/* About Section */
+/* ===============================
+   ABOUT SECTION
+   =============================== */
 .tm-about {
   margin: 4rem 0;
   text-align: center;
@@ -170,9 +177,11 @@ h1, h2, .stat-number {
   text-align: center;
 }
 
-/*skills list*/
-/* Unified card styling for both skills & practice areas */
-.skills-list, .practice-areas-list {
+/* ===============================
+   SKILLS & PRACTICE AREAS
+   =============================== */
+.skills-list,
+.practice-areas-list {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   gap: 24px;
@@ -181,7 +190,8 @@ h1, h2, .stat-number {
   list-style: none;
 }
 
-.skills-list li, .practice-areas-list li {
+.skills-list li,
+.practice-areas-list li {
   background: #fff;
   border-radius: 14px;
   box-shadow: 0 8px 24px rgba(10, 26, 48, 0.07);
@@ -228,17 +238,20 @@ h1, h2, .stat-number {
   color: var(--primary-color);
 }
 
-/* Heading styling */
-.skills-heading, .practice-areas-heading {
+/* Headings */
+.skills-heading,
+.practice-areas-heading {
   font-size: 1.8rem;
   font-weight: 700;
   text-align: center;
   color: var(--primary-accent);
+  margin-top: 1.5rem;
   margin-bottom: 1.5rem;
   position: relative;
 }
 
-.skills-heading::after, .practice-areas-heading::after {
+.skills-heading::after,
+.practice-areas-heading::after {
   content: '';
   width: 60px;
   height: 3px;
@@ -248,16 +261,18 @@ h1, h2, .stat-number {
   border-radius: 2px;
 }
 
+/* ===============================
+   HIGHLIGHTS LIST
+   =============================== */
 #tony-highlights {
   list-style: none;
-  padding: 0;
+  padding: 1.5rem 2rem;
   margin: 0.5rem auto;
   max-width: 700px;
   text-align: left;
   line-height: 1.6;
   border-radius: var(--border-radius);
   box-shadow: 0 5px 20px rgba(10, 26, 48, 0.08);
-  padding: 1.5rem 2rem;
   counter-reset: highlight-counter;
 }
 
@@ -280,3 +295,39 @@ h1, h2, .stat-number {
   font-size: 1rem;
 }
 
+/* ===============================
+   RESPONSIVENESS
+   =============================== */
+@media (max-width: 768px) {
+  .tm-section-header h1 {
+    font-size: 2rem;
+  }
+
+  .tm-profile-img {
+    width: 150px;
+    height: 150px;
+  }
+
+  .tm-profile-img-container {
+    bottom: -75px;
+    width: 150px;
+  }
+
+  .tm-stats-container {
+    gap: 2rem;
+  }
+
+  .tm-container {
+    padding: 0 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .tm-section-header {
+    padding: 2rem 1rem 6rem;
+  }
+
+  .tm-header-container {
+    margin-bottom: 120px;
+  }
+}

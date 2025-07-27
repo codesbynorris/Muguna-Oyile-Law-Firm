@@ -23,6 +23,7 @@ from .models import (
 # STATIC PAGES (Cached)
 # ────────────────────────────────
 
+
 @cache_page(60 * 30)
 def home(request):
     return render(request, 'home.html')
@@ -31,7 +32,6 @@ def home(request):
 def about(request):
     return render(request, 'about.html')
 
-@cache_page(60 * 30)
 def team(request):
     return render(request, 'team.html')
 
@@ -52,7 +52,6 @@ def terms_of_service(request):
 # SERVICES LANDING PAGE
 # ────────────────────────────────
 
-@cache_page(60 * 30)
 def services(request):
     context = {
         'consultancy_services': ConsultancyService.objects.filter(published=True),
@@ -67,7 +66,6 @@ def services(request):
 # SERVICE CATEGORY VIEWS (Cached + prefetch_related + cache.set)
 # ────────────────────────────────
 
-@cache_page(60 * 15)
 def consultancy_services(request):
     services = cache.get('consultancy_services')
     if not services:
@@ -75,7 +73,6 @@ def consultancy_services(request):
         cache.set('consultancy_services', services, 60 * 15)
     return render(request, 'services/consultancy_services.html', {'services': services})
 
-@cache_page(60 * 15)
 def corporate_commercial(request):
     services = cache.get('corporate_services')
     if not services:
@@ -91,7 +88,6 @@ def dispute_resolution(request):
         cache.set('dispute_services', services, 60 * 15)
     return render(request, 'services/dispute_resolution.html', {'services': services})
 
-@cache_page(60 * 15)
 def property_law(request):
     services = cache.get('property_services')
     if not services:
@@ -104,22 +100,18 @@ def property_law(request):
 # SERVICE DETAIL VIEWS
 # ────────────────────────────────
 
-@cache_page(60 * 15)
 def consultancy_detail(request, slug):
     service = get_object_or_404(ConsultancyService, slug=slug, published=True)
     return render(request, 'services/consultancy_detail.html', {'service': service})
 
-@cache_page(60 * 15)
 def corporate_detail(request, slug):
     service = get_object_or_404(CorporateService, slug=slug, published=True)
     return render(request, 'services/corporate_detail.html', {'service': service})
 
-@cache_page(60 * 15)
 def dispute_detail(request, slug):
     service = get_object_or_404(DisputeService, slug=slug, published=True)
     return render(request, 'services/dispute_detail.html', {'service': service})
 
-@cache_page(60 * 15)
 def property_detail(request, slug):
     service = get_object_or_404(PropertyService, slug=slug, published=True)
     return render(request, 'services/property_detail.html', {'service': service})
