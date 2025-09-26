@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{% block title %}Admin Dashboard{% endblock %}</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet"> 
+<style>
+body, input, select, textarea { font-family: 'Poppins', sans-serif; margin:0; background:#f0f3f7; color:#1f2937; }
+.dashboard{display:flex;height:100vh;overflow:hidden;transition:0.3s;}
+.sidebar{width:280px;background:#111827;color:#fff;display:flex;flex-direction:column;transition:0.3s;z-index:20;}
+.sidebar h2{text-align:center;margin:2rem 0;font-size:1.8rem;font-weight:700;}
+.sidebar nav a{padding:1rem 2rem;display:block;color:#d1d5db;text-decoration:none;transition:0.3s;border-left:4px solid transparent;}
+.sidebar nav a:hover{background:#1f2937;color:#fff;border-left:4px solid #3B82F6;}
+.main{flex:1;overflow-y:auto;padding-bottom:2rem;transition:0.3s;}
+.topbar{height:70px;background:#fff;display:flex;justify-content:space-between;align-items:center;padding:0 2rem;box-shadow:0 2px 8px rgba(0,0,0,0.05);position:sticky;top:0;z-index:10;}
+.topbar input{padding:0.5rem 1rem;border-radius:10px;border:1px solid #e5e7eb;width:300px;}
+.hamburger{display:none;cursor:pointer;font-size:1.5rem;}
+.cards {
+    display: grid;
+    gap: 2rem;
+    padding: 2rem;
+    grid-template-columns: repeat(2, 1fr); /* small/medium devices: 2 columns */
+}
+@media(min-width:1024px){
+    .cards { grid-template-columns: repeat(4, 1fr); }
+}
+.card{background:rgba(255,255,255,0.85);backdrop-filter:blur(10px);padding:1.5rem;border-radius:15px;box-shadow:0 8px 20px rgba(0,0,0,0.05);}
+.card h3{font-weight:600;color:#6b7280;margin-bottom:0.5rem;}
+.card p{font-size:1.8rem;font-weight:700;color:#111827;}
+#calendar{width:calc(100% - 4rem); margin:2rem; background:#fff;padding:1rem;border-radius:15px;box-shadow:0 8px 20px rgba(0,0,0,0.05);height:650px;min-height:650px;max-height:650px; font-family:'Poppins',sans-serif;}
+.table-container{margin:2rem;background:#fff;border-radius:15px;padding:1rem;box-shadow:0 8px 20px rgba(0,0,0,0.05); max-height:250px; overflow-y:auto;}
+table{width:100%;border-collapse:separate;border-spacing:0 0.75rem;}
+th,td{text-align:left;padding:0.75rem;}
+th{color:#6b7280;font-weight:600;}
+tr{background:#f9fafb;border-radius:10px;}
+tr td{background:#fff;padding:0.75rem;border-radius:10px;}
+.recent-activities{margin:2rem;background:#fff;border-radius:15px;padding:1rem;box-shadow:0 8px 20px rgba(0,0,0,0.05); max-height:250px; overflow-y:auto;}
+.activity-item{padding:0.75rem;border-bottom:1px solid #e5e7eb;}
+.activity-item:last-child{border-bottom:none;}
+.avatar{width:40px;height:40px;border-radius:50%;object-fit:cover;}
+/* Scrollbars */
+.table-container::-webkit-scrollbar,
+.recent-activities::-webkit-scrollbar { width: 8px; }
+.table-container::-webkit-scrollbar-thumb,
+.recent-activities::-webkit-scrollbar-thumb { background-color:#3B82F6; border-radius:10px; }
+.table-container::-webkit-scrollbar-thumb:hover,
+.recent-activities::-webkit-scrollbar-thumb:hover { background-color:#2563eb; }
+/* Responsive */
+@media(max-width:1024px){#calendar{height:500px;min-height:500px;max-height:500px;}}
+@media(max-width:768px){
+    .dashboard{flex-direction:column;}
+    .sidebar{position:absolute;left:-280px;top:0;height:100%;transition:0.3s;}
+    .sidebar.active{left:0;}
+    .topbar input{width:150px;}
+    .hamburger{display:block;}
+    #calendar{width:calc(100% - 2rem);margin:1rem;height:450px;min-height:450px;max-height:450px;}
+    .cards{grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:1rem;padding:1rem;}
+}
+</style>
+</head>
+<body>
+
+<div class="dashboard">
+    <div class="sidebar" id="sidebar">
+        <h2>Admin Panel</h2>
+        <nav>
+            <a href="{% url 'admin_dashboard_home' %}" class="active">🏠 Dashboard</a>
+            <a href="{% url 'admin_dashboard_calls' %}">📅 Scheduled Calls</a>
+            <a href="{% url 'admin_dashboard_contacts' %}">✉️ Contact Messages</a>
+            <a href="{% url 'admin_dashboard_activity' %}">📝 Activity Log</a>
+            <a href="{% url 'red_flag_messages' %}" class="flex items-center justify-between text-red-500 hover:text-red-600">
+                <span>🚩 Red Flag Messages</span>
+                {% if red_flag_count and red_flag_count > 0 %}
+                    <span class="ml-2 bg-red-600 text-white text-xs font-semibold px-2 py-0.5 rounded-full">
+                        {{ red_flag_count }}
+                    </span>
+                {% endif %}
+            </a>
+            <a href="{% url 'all_notifications' %}" class="flex items-center justify-between hover:bg-gray-800 text-gray-300 px-4 py-2 rounded transition">
+                    <span>🔔 All Notifications</span>
+                        {% if total_notifications and total_notifications > 0 %}
+                    <span class="ml-2 bg-blue-600 text-white text-xs font-semibold px-2 py-0.5 rounded-full">
+                        {{ total_notifications }}
+                    </span>
+                        {% endif %}
+            </a>
+
+
+        </nav>
+    </div>
+
+    <div class="main">
+        <div class="topbar">
+            <div style="display:flex;align-items:center;gap:1rem;">
+                <span class="hamburger" id="hamburger">&#9776;</span>
+                <input type="text" placeholder="Search admin logs, users, etc...">
+            </div>
+            <div class="profile flex items-center gap-4">
+                
+                <!-- ✅ Updated Notification Bell -->
+                <div class="relative inline-block">
+                  <button id="notificationBell" class="relative p-2 rounded-full hover:bg-gray-200 focus:outline-none">
+                    <svg class="h-6 w-6 text-gray-700" xmlns="http://www.w3.org/2000/svg" fill="none"
+                         viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M15 17h5l-1.405-1.405C18.21 14.79 18 13.918 18 13V9a6 6 0 10-12 0v4c0 .918-.21 1.79-.595 2.595L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
+                    </svg>
+                    <span id="notificationDot"
+                          class="hidden absolute top-0 right-0 block h-2 w-2 rounded-full bg-red-600"></span>
+                  </button>
+
+                  <div id="notificationDropdown"
+                       class="hidden absolute right-0 mt-2 w-80 bg-white border border-gray-300 rounded-lg shadow-lg z-50">
+                    <div class="p-4" id="notificationList">
+                      <p class="text-gray-500 text-sm">Loading notifications...</p>
+                    </div>
+                    <div class="p-2 border-t text-center">
+                      <a href="{% url 'all_notifications' %}"
+                         class="text-blue-600 hover:underline text-sm">View all</a>
+                    </div>
+                  </div>
+                </div>
+
+                <span>{{ admin_name|default:"Admin User" }}</span>
+                <img src="https://i.pravatar.cc/40?img=1" alt="Profile" class="avatar"> 
+            </div>
+        </div>
+
+        <div class="content">
+            {% block dashboard_content %}{% endblock dashboard_content %}
+        </div>
+    </div>
+</div>
+
+<script>
+// Sidebar toggle
+const sidebar = document.getElementById('sidebar');
+const hamburger = document.getElementById('hamburger');
+hamburger.addEventListener('click', (e) => {
+  sidebar.classList.toggle('active');
+  e.stopPropagation();
+});
+document.addEventListener('click', (e) => {
+  if (window.innerWidth <= 768) {
+    if (!sidebar.contains(e.target) && !hamburger.contains(e.target)) {
+      sidebar.classList.remove('active');
+    }
+  }
+});
+
+// ✅ Notification bell dropdown + fetch
+document.addEventListener("DOMContentLoaded", function () {
+  const bell = document.getElementById("notificationBell");
+  const dropdown = document.getElementById("notificationDropdown");
+  const list = document.getElementById("notificationList");
+  const dot = document.getElementById("notificationDot");
+
+  // Toggle dropdown
+  bell.addEventListener("click", function (e) {
+    e.stopPropagation();
+    dropdown.classList.toggle("hidden");
+
+    // Fetch ALL notifications
+    fetch("{% url 'fetch_notifications' %}")
+      .then(response => response.json())
+      .then(data => {
+        list.innerHTML = "";
+
+        const notifications = data.notifications || [];
+        if (notifications.length === 0) {
+          list.innerHTML = "<p class='text-gray-500 text-sm'>No notifications 🎉</p>";
+          dot.classList.add("hidden");
+        } else {
+          dot.classList.remove("hidden");
+
+          notifications.forEach(item => {
+            const entry = document.createElement("div");
+            entry.classList.add("p-2", "border-b", "hover:bg-gray-50", "cursor-pointer");
+
+            // Different styles depending on type
+            let typeColor = "text-blue-600"; // default for messages
+            if (item.type === "call") typeColor = "text-green-600";
+            if (item.type === "red-flag") typeColor = "text-red-600";
+
+            entry.innerHTML = `
+              <p class="text-xs font-semibold ${typeColor}">${item.type.toUpperCase()}</p>
+              <p class="text-sm">${item.subject || "No subject"} — ${item.client}</p>
+              <p class="text-xs text-gray-500">${item.created_at}</p>
+            `;
+
+            // Click → redirect to correct section
+            entry.addEventListener("click", () => {
+              if (item.type === "message" || item.type === "red-flag") {
+                window.location.href = "{% url 'admin_dashboard_contacts' %}";
+              } else if (item.type === "call") {
+                window.location.href = "{% url 'admin_dashboard_calls' %}";
+              }
+            });
+
+            list.appendChild(entry);
+          });
+        }
+      })
+      .catch(err => {
+        console.error("Notification fetch failed:", err);
+        list.innerHTML = "<p class='text-red-500 text-sm'>Failed to load notifications</p>";
+      });
+  });
+
+  // Close dropdown if clicking outside
+  document.addEventListener("click", function (e) {
+    if (!dropdown.classList.contains("hidden") &&
+        !bell.contains(e.target) &&
+        !dropdown.contains(e.target)) {
+      dropdown.classList.add("hidden");
+    }
+  });
+
+  // Initial check → red dot
+  fetch("{% url 'fetch_notifications' %}")
+    .then(response => response.json())
+    .then(data => {
+      if ((data.notifications || []).length > 0) {
+        dot.classList.remove("hidden");
+      }
+    })
+    .catch(() => {});
+});
+</script>
+
+</body>
+</html>

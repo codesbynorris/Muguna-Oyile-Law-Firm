@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Call Request Received</title>
+  <style>
+    body { font-family: Arial, sans-serif; color: #333; }
+    .container { padding: 20px; }
+    .header { background-color: #0B3D91; color: white; padding: 10px; text-align: center; }
+    .content { margin-top: 20px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h2>Call Request Received</h2>
+    </div>
+    <div class="content">
+      <p>Hi {{ call.first_name }},</p>
+      <p>We have received your call request. Our team will review it and confirm or ask you to select another time.</p>
+      <p><strong>Requested Details:</strong></p>
+      <ul>
+        <li>Date: {{ call.date }}</li>
+        <li>Time: {{ call.time_slot }}</li>
+        <li>Subject: {{ call.get_subject_display }}</li>
+      </ul>
+      <p>Once confirmed, we will notify you immediately.</p>
+      <p>Best regards,<br>{{ firm_name }} Team</p>
+    </div>
+  </div>
+</body>
+</html>

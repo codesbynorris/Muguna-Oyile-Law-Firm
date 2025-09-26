@@ -1,0 +1,292 @@
+{% extends "admin_dashboard/base_admin.html" %}
+
+{% block title %}Admin Dashboard{% endblock %}
+
+{% block dashboard_content %}
+<div class="p-6">
+
+    <!-- Dashboard Cards -->
+    <div class="cards grid gap-6 grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4">
+        <div class="card">
+            <h3>Unread Messages</h3>
+            <p class="text-blue-900">{{ unread_messages|default:"0" }}</p>
+        </div>
+
+        <div class="card">
+            <h3>Pending Calls</h3>
+            <p class="text-blue-900">{{ pending_calls|default:"0" }}</p>
+        </div>
+
+        <div class="card">
+            <h3>Total Clients</h3>
+            <p>{{ total_clients|default:"0" }}</p>
+        </div>
+
+        <div class="card">
+            <h3>Active Cases</h3>
+            <p>{{ active_cases|default:"0" }}</p>
+        </div>
+    </div>
+
+    <!-- Calendar -->
+    <div id="calendar" class="mt-8"></div>
+
+    <!-- Upcoming Appointments Table -->
+    <div class="table-container mt-8">
+        <h3 class="sticky top-0 bg-white z-10 p-2">Upcoming Appointments</h3>
+        <table id="appointmentsTable" class="w-full" style="border-collapse:collapse;">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Client</th>
+                    <th>Case</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody style="display:block; max-height:250px; overflow-y:auto;">
+                <tr style="display:table; width:100%; table-layout:fixed;">
+                    <td>2025-09-25</td>
+                    <td>Alice Smith</td>
+                    <td>Contract Dispute</td>
+                    <td style="color:#3B82F6;">Scheduled</td>
+                </tr>
+                <tr style="display:table; width:100%; table-layout:fixed;">
+                    <td>2025-09-27</td>
+                    <td>Bob Johnson</td>
+                    <td>Property Case</td>
+                    <td style="color:#10B981;">Pending</td>
+                </tr>
+                <tr style="display:table; width:100%; table-layout:fixed;">
+                    <td>2025-09-30</td>
+                    <td>Mary Lee</td>
+                    <td>Family Case</td>
+                    <td style="color:#EF4444;">Urgent</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Recent Activities -->
+    <div class="recent-activities mt-8" id="recentActivities">
+        <h3 class="sticky top-0 bg-white z-10 p-2">Recent Activities</h3>
+        <div style="max-height:250px; overflow-y:auto;">
+            {% for log in recent_activity %}
+                <div class="activity-item">
+                    <span class="font-semibold">{{ log.admin_user.username }}:</span> {{ log.action }}
+                </div>
+            {% empty %}
+                <div class="activity-item text-gray-500">No recent activity</div>
+            {% endfor %}
+        </div>
+    </div>
+
+</div>
+
+<!-- Modal for adding events -->
+<div id="eventModal" class="modal">
+  <div class="modal-content">
+    <span class="close" id="closeModal">&times;</span>
+    <h3>Add New Event</h3>
+    <input type="text" id="eventTitle" placeholder="Event Title">
+    <input type="text" id="clientName" placeholder="Client Name">
+    <input type="text" id="caseName" placeholder="Case Name">
+    <select id="eventType">
+      <option value="meeting">Meeting</option>
+      <option value="call">Call</option>
+      <option value="deadline">Deadline</option>
+    </select>
+    <input type="date" id="eventDate">
+    <button id="addEventBtn">Add Event</button>
+  </div>
+</div>
+
+<link href="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.js"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const modal = document.getElementById('eventModal');
+    const closeModal = document.getElementById('closeModal');
+    const addEventBtn = document.getElementById('addEventBtn');
+    const eventTitle = document.getElementById('eventTitle');
+    const eventType = document.getElementById('eventType');
+    const eventDate = document.getElementById('eventDate');
+    const clientName = document.getElementById('clientName');
+    const caseName = document.getElementById('caseName');
+    const appointmentsTable = document.getElementById('appointmentsTable').getElementsByTagName('tbody')[0];
+    const recentActivities = document.getElementById('recentActivities').querySelector('div');
+
+    closeModal.onclick = () => modal.style.display = 'none';
+    window.onclick = e => { if(e.target === modal) modal.style.display = 'none'; }
+
+    const todayStr = new Date().toISOString().slice(0,10); // YYYY-MM-DD
+    const calendarEl = document.getElementById('calendar');
+
+    const calendar = new FullCalendar.Calendar(calendarEl, {
+        initialView: 'dayGridMonth',
+        height: window.innerWidth < 768 ? 400 : 650,
+        contentHeight: window.innerWidth < 768 ? 400 : 650,
+        selectable: true,
+        headerToolbar: window.innerWidth < 768 ?
+            { left:'', center:'', right:'' } :
+            { left:'prev,next today', center:'title', right:'dayGridMonth,timeGridWeek,timeGridDay' },
+
+        // Fetch events dynamically
+        events: function(fetchInfo, successCallback, failureCallback) {
+            fetch('/events/')
+                .then(res => res.json())
+                .then(data => {
+                    // Add time_slot to start and extendedProps
+                    data.forEach(event => {
+                        if(event.time_slot){
+                            event.start = event.start + "T" + event.time_slot + ":00";
+                            event.extendedProps = { time_slot: event.time_slot };
+                        }
+                        // Include client in title for display
+                        if(event.client) event.title = `${event.title} - ${event.client}`;
+                    });
+
+                    successCallback(data);
+
+                    // Alert for today's calls
+                    data.forEach(event => {
+                        const eventDateStr = event.start.slice(0,10);
+                        if(eventDateStr === todayStr && event.extendedProps?.time_slot){
+                            alert(`Today's call: ${event.title} at ${event.extendedProps.time_slot}`);
+                        }
+                    });
+                })
+                .catch(err => failureCallback(err));
+        },
+
+        select: function(info) {
+            const selectedDate = new Date(info.startStr + 'T00:00:00');
+            if(selectedDate < new Date()){ alert('Cannot add events on past dates.'); return; }
+            eventDate.value = info.startStr;
+            modal.style.display = 'block';
+        },
+
+        eventClick: function(info){
+            const eventObj = info.event;
+            const action = prompt(`Edit or Delete this event?\nType "edit" or "delete":`);
+            
+            if(action === 'delete'){
+                fetch(`/events/delete/${eventObj.id}/`, { 
+                    method:'POST', 
+                    headers:{ 'X-CSRFToken':'{{ csrf_token }}' }
+                }).then(res => { if(res.ok) eventObj.remove(); });
+            }
+            else if(action === 'edit'){
+                const newTitle = prompt('Enter new title:', eventObj.title);
+                if(newTitle){
+                    fetch(`/events/edit/${eventObj.id}/`, {
+                        method: 'POST',
+                        headers:{'Content-Type':'application/json','X-CSRFToken':'{{ csrf_token }}'},
+                        body: JSON.stringify({title: newTitle})
+                    })
+                    .then(res => res.json())
+                    .then(data => { eventObj.setProp('title', data.title); });
+                }
+            }
+        }
+    });
+
+    calendar.render();
+
+    // Manual event addition via modal
+    addEventBtn.onclick = () => {
+        const title = eventTitle.value.trim();
+        const client = clientName.value.trim();
+        const caseN = caseName.value.trim();
+        const type = eventType.value;
+        const date = eventDate.value;
+
+        if(!title || !client || !caseN){ alert('Fill all fields'); return; }
+
+        fetch('/events/add/', {
+            method:'POST',
+            headers:{'Content-Type':'application/json','X-CSRFToken':'{{ csrf_token }}'},
+            body: JSON.stringify({title, client, case_name: caseN, date, event_type: type})
+        })
+        .then(res => res.json())
+        .then(data => {
+            // Combine time if present
+            if(data.time_slot){
+                data.start = data.start + "T" + data.time_slot + ":00";
+                data.extendedProps = { time_slot: data.time_slot };
+            }
+            if(client) data.title = `${data.title} - ${client}`;
+
+            calendar.addEvent(data);
+
+            // Update appointments table
+            const row = appointmentsTable.insertRow(0);
+            row.insertCell(0).innerText = date;
+            row.insertCell(1).innerText = client;
+            row.insertCell(2).innerText = caseN;
+            const statusCell = row.insertCell(3);
+            statusCell.innerText = type.charAt(0).toUpperCase() + type.slice(1);
+            statusCell.style.color = data.color || '#000';
+
+            // Update recent activities
+            const actDiv = document.createElement('div');
+            actDiv.className = 'activity-item';
+            actDiv.innerText = `New ${type} added: ${title} for ${client} (${caseN}) on ${date}`;
+            recentActivities.insertBefore(actDiv, recentActivities.children[0]);
+
+            modal.style.display='none';
+            eventTitle.value=''; clientName.value=''; caseName.value=''; eventType.value='meeting';
+        })
+        .catch(err => console.error(err));
+    }
+});
+</script>
+
+
+
+
+
+<style>
+/* Sticky headers */
+.table-container h3,
+.recent-activities h3 {
+    position: sticky;
+    top: 0;
+    background: white;
+    z-index: 10;
+    padding: 0.5rem 0;
+}
+
+/* Make tbody scrollable and avoid double scrollbar */
+.table-container tbody {
+    display: block;
+    max-height: 250px;
+    overflow-y: auto;
+}
+.table-container thead, .table-container tbody tr {
+    display: table;
+    width: 100%;
+    table-layout: fixed;
+}
+
+/* Recent Activities scroll */
+.recent-activities > div {
+    max-height: 250px;
+    overflow-y: auto;
+}
+
+/* Responsive adjustments for small devices */
+@media(max-width:768px){
+    #calendar {
+        height: 400px !important;
+        min-height: 400px !important;
+        max-height: 400px !important;
+    }
+    .table-container tbody,
+    .recent-activities > div {
+        max-height: 200px;
+    }
+}
+</style>
+
+{% endblock dashboard_content %}

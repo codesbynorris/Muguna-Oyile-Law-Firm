@@ -1,0 +1,16 @@
+{% extends "emails/base_email.html" %}
+
+{% block title %}Your Scheduled Call Has Been Declined{% endblock %}
+
+{% block content %}
+<p>Hi {{ call.first_name }},</p>
+
+<p>We regret to inform you that your scheduled call on <strong>{{ call.date }}</strong> at <strong>{{ call.time_slot }}</strong> has been declined.</p>
+
+<p>We apologize for any inconvenience. You can <strong>book another time</strong> for the call that suits you best.</p>
+
+<a href="{{ booking_link }}" class="btn">Book a New Call</a>
+
+<p>Best regards,</p>
+<p>{{ firm_name }}</p>
+{% endblock %}

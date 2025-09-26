@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{{ article.title }} - Law Firm{% endblock %}
+
+{% block content %}
+    <article class="max-w-4xl mx-auto bg-white rounded-xl shadow-lg p-8">
+        <!-- Article Image -->
+        {% if article.image %}
+            <img src="{{ article.image.url }}" 
+                 alt="{{ article.title }}" 
+                 class="w-full h-72 object-cover rounded-lg mb-6">
+        {% else %}
+            <img src="{% static 'images/default-article.jpg' %}" 
+                 alt="{{ article.title }}" 
+                 class="w-full h-72 object-cover rounded-lg mb-6">
+        {% endif %}
+
+        <!-- Title -->
+        <h1 class="text-3xl sm:text-4xl font-extrabold text-blue-900 mb-4">
+            {{ article.title }}
+        </h1>
+
+        <!-- Metadata -->
+        <div class="flex items-center text-sm text-gray-500 mb-6 space-x-4">
+            <span>By {{ article.author }}</span>
+            <span>{{ article.created_at|date:"F d, Y" }}</span>
+            <span class="bg-amber-100 text-amber-700 px-2 py-1 rounded-full text-xs">
+                {{ article.category.name }}
+            </span>
+        </div>
+
+        <!-- Article Content -->
+        <div class="prose max-w-none text-gray-700 leading-relaxed">
+            {{ article.content|safe }}
+        </div>
+
+        <!-- Back Link -->
+        <div class="mt-10">
+            <a href="{% url 'article_list' %}" 
+               class="text-blue-900 hover:text-amber-500 font-medium">
+               ← Back to Articles
+            </a>
+        </div>
+    </article>
+
+    <!-- Sidebar with Categories -->
+    <aside class="max-w-4xl mx-auto mt-12">
+        <div class="bg-white p-6 rounded-xl shadow-lg">
+            <h3 class="text-lg font-semibold text-blue-900 border-b-2 border-amber-500 pb-2 mb-4">Categories</h3>
+            <ul class="space-y-2 text-sm">
+                {% for category in categories %}
+                    <li>
+                        <a href="{% url 'article_by_category' category.slug %}" 
+                           class="block text-gray-600 hover:text-amber-500">
+                            {{ category.name }} ({{ category.article_count }})
+                        </a>
+                    </li>
+                {% empty %}
+                    <li class="text-gray-400">No categories available.</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </aside>
+{% endblock %}

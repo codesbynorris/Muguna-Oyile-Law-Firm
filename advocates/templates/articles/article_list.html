@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Articles & Insights - Law Firm{% endblock %}
+
+{% block content %}
+    <section class="text-center mb-12 lg:mb-16">
+        <h1 class="text-4xl sm:text-5xl font-extrabold text-blue-900 tracking-tight mb-4">
+            Articles & Insights
+        </h1>
+        <p class="text-lg text-gray-600 max-w-3xl mx-auto leading-relaxed">
+            Stay informed with our expert legal analysis, insights, and commentary on the latest developments in law and business.
+        </p>
+    </section>
+
+    <div class="flex flex-col lg:flex-row gap-8 lg:gap-12">
+
+        <!-- Articles Grid -->
+        <section class="lg:w-3/4">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                {% for article in articles %}
+                    <article class="bg-white rounded-xl shadow-lg hover:shadow-2xl transition-all">
+                        <a href="{% url 'article_detail' article.slug %}">
+                            {% if article.image %}
+                                <img src="{{ article.image.url }}" alt="{{ article.title }}" class="w-full h-48 object-cover">
+                            {% else %}
+                                <img src="{% static 'images/default-article.jpg' %}" alt="{{ article.title }}" class="w-full h-48 object-cover">
+                            {% endif %}
+                        </a>
+                        <div class="p-6">
+                            <h3 class="font-semibold text-lg sm:text-xl text-blue-900 mb-2">
+                                <a href="{% url 'article_detail' article.slug %}" class="hover:text-amber-500">{{ article.title }}</a>
+                            </h3>
+                            <p class="text-sm text-gray-600 mb-4">
+                                {{ article.content|truncatewords:20 }}
+                            </p>
+                            <div class="text-xs text-gray-500 flex justify-between items-center">
+                                <span>By {{ article.author }}</span>
+                                <span>{{ article.created_at|date:"F d, Y" }}</span>
+                            </div>
+                            <a href="{% url 'article_detail' article.slug %}" class="mt-4 inline-block text-blue-900 hover:text-amber-500 font-medium">
+                                Read More →
+                            </a>
+                        </div>
+                    </article>
+                {% empty %}
+                    <p class="text-gray-600">No articles available.</p>
+                {% endfor %}
+            </div>
+        </section>
+
+        <!-- Sidebar -->
+        <aside class="lg:w-1/4 hidden lg:block space-y-8">
+            <!-- Categories -->
+            <div class="bg-white p-6 rounded-xl shadow-lg">
+                <h3 class="text-lg font-semibold text-blue-900 border-b-2 border-amber-500 pb-2 mb-4">Categories</h3>
+                <ul class="space-y-2 text-sm">
+                    {% for category in categories %}
+                        <li>
+                            <a href="{% url 'article_by_category' category.slug %}" 
+                               class="block text-gray-600 hover:text-amber-500">
+                                {{ category.name }} ({{ category.article_count }})
+                            </a>
+                        </li>
+                    {% empty %}
+                        <li class="text-gray-400">No categories available.</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </aside>
+
+    </div>
+{% endblock %}

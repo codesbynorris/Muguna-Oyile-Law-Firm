@@ -1,0 +1,91 @@
+{% extends "admin_dashboard/base_admin.html" %}
+
+{% block title %}All Notifications{% endblock %}
+
+{% block dashboard_content %}
+<div class="p-6">
+    <h1 class="text-2xl font-bold mb-4">All Notifications</h1>
+
+    <!-- Filter -->
+    <div class="mb-4 flex flex-wrap gap-2">
+        <button class="filter-btn bg-blue-500 text-white px-4 py-1 rounded" data-type="all">All</button>
+        <button class="filter-btn bg-green-500 text-white px-4 py-1 rounded" data-type="call">Calls</button>
+        <button class="filter-btn bg-blue-600 text-white px-4 py-1 rounded" data-type="message">Messages</button>
+    </div>
+
+    {% if notifications %}
+    <div class="overflow-x-auto border rounded shadow">
+        <table class="w-full table-auto border-collapse responsive-table">
+            <thead class="bg-gray-100 sticky top-0 z-10">
+                <tr>
+                    <th class="px-4 py-2 text-left">Type</th>
+                    <th class="px-4 py-2 text-left">Client</th>
+                    <th class="px-4 py-2 text-left">Subject / Info</th>
+                    <th class="px-4 py-2 text-left">Date</th>
+                </tr>
+            </thead>
+            <tbody id="notificationsTable">
+                {% for item in notifications %}
+                <tr class="hover:bg-gray-50 cursor-pointer notification-row" data-type="{{ item.type }}">
+                    <td class="px-4 py-2">
+                        {% if item.type == 'message' %}
+                            <span class="px-2 py-1 bg-blue-600 text-white rounded-full text-xs font-semibold">Message</span>
+                        {% elif item.type == 'call' %}
+                            <span class="px-2 py-1 bg-green-600 text-white rounded-full text-xs font-semibold">Call</span>
+                        {% endif %}
+                    </td>
+                    <td class="px-4 py-2">{{ item.client }}</td>
+                    <td class="px-4 py-2">{{ item.subject }}</td>
+                    <td class="px-4 py-2">{{ item.created_at|date:"Y-m-d H:i" }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+        <p class="text-gray-500 mt-4">No notifications to show 🎉</p>
+    {% endif %}
+</div>
+
+<script>
+// Make rows clickable
+document.querySelectorAll('.notification-row').forEach(row => {
+    row.addEventListener('click', () => {
+        const type = row.dataset.type;
+        if (type === 'message') {
+            window.location.href = "{% url 'admin_dashboard_contacts' %}";
+        } else if (type === 'call') {
+            window.location.href = "{% url 'admin_dashboard_calls' %}";
+        }
+    });
+});
+
+// Filter by type
+const filterBtns = document.querySelectorAll('.filter-btn');
+filterBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+        const type = btn.dataset.type;
+        document.querySelectorAll('.notification-row').forEach(row => {
+            if (type === 'all' || row.dataset.type === type) {
+                row.style.display = '';
+            } else {
+                row.style.display = 'none';
+            }
+        });
+    });
+});
+</script>
+
+<style>
+/* Responsive tweaks */
+@media(max-width:768px){
+    table.responsive-table {
+        min-width: 100%;
+    }
+    th, td {
+        padding: 0.5rem;
+        font-size: 0.875rem;
+    }
+}
+</style>
+{% endblock %}

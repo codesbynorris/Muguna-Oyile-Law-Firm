@@ -1,203 +1,80 @@
-{% extends 'services-base.html' %}
-{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Intellectual Property</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Inter:wght@100..900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;       /* full height */
+            display: flex;
+            flex-direction: column;  /* footer at bottom */
+        }
+        .hero-section {
+            background-image: url('https://i.postimg.cc/d0S3bphB/Create-a-realistic-background-image-for-a-law-firm-s-Dispute-Resolution-webpage-Depict-a-modern-cou.jpg');
+            background-size: cover;
+            background-position: center;
+            position: relative;
 
-{% block title %}Dispute Resolution | Muguna & Oyile Advocates{% endblock %}
+            /* Smart centering system */
+            flex-grow: 1;
+            display: flex;
+            align-items: center;     /* center if short */
+            justify-content: center;
+            padding: 4rem 1rem;
+            min-height: 60vh;
+        }
+        @media (min-width: 768px) {
+            .hero-section {
+                min-height: 70vh;
+                padding: 6rem 2rem;
+            }
+        }
+        .overlay {
+            background-color: rgba(0, 0, 0, 0.4);
+            filter: grayscale(100%);
+            position: absolute;
+            inset: 0;
+        }
+        .title-font {
+            font-family: 'Playfair Display', serif;
+        }
+        footer {
+            margin-top: auto;
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
 
-{% block extra_head %}
-<link rel="canonical" href="https://www.mugunaoyile.co.ke/services/dispute-resolution/" />
+    <!-- Hero Section -->
+    <div class="hero-section w-full relative">
+        <div class="overlay"></div>
 
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "LegalService",
-  "name": "Muguna & Oyile Advocates",
-  "url": "https://www.mugunaoyile.co.ke/services/dispute-resolution/",
-  "image": "https://www.mugunaoyile.co.ke/static/images/og-dispute.jpg",
-  "description": "Expert dispute resolution through mediation, arbitration, litigation and negotiation.",
-  "address": {
-    "@type": "PostalAddress",
-    "addressLocality": "Nairobi",
-    "addressCountry": "KE"
-  },
-  "areaServed": {
-    "@type": "Country",
-    "name": "Kenya"
-  },
-  "serviceType": "Dispute Resolution",
-  "provider": {
-    "@type": "Organization",
-    "name": "Muguna & Oyile Advocates",
-    "url": "https://www.mugunaoyile.co.ke"
-  }
-}
-</script>
+        <!-- Adaptive Content Box -->
+        <div class="relative z-10 bg-white/80 backdrop-blur-sm 
+            p-8 sm:p-12 md:p-16 rounded-3xl shadow-2xl 
+            w-full max-w-lg md:max-w-2xl lg:max-w-5xl mx-auto">
+          
+            <h1 class="title-font text-5xl sm:text-6xl font-normal text-gray-800 mb-6">Dispute Resolution</h1>
+            
+            <p class="text-gray-700 leading-relaxed mb-6">
+                We are dedicated to delivering seamless, efficient, and highly professional legal services in the areas of dispute resolution, litigation, and arbitration. Our expertise extends across both domestic and international courts and tribunals, where we consistently represent clients with precision and diligence while focusing on strategic litigation.
+            </p>
 
-<!-- SEO Meta -->
-<meta name="description" content="We offer expert dispute resolution through mediation, arbitration, litigation, and negotiation.">
-<meta name="keywords" content="dispute resolution Kenya, mediation, arbitration, litigation, Muguna Oyile Advocates">
+            <p class="text-gray-700 leading-relaxed mb-8">
+                Over the years, we have built and maintained an impressive track record of success, positioning us as the firm of choice for clients seeking representation in complex and high-stakes litigation and whether dealing with cross-border disputes, employment and labor disputes, commercial conflicts, or intricate arbitration proceedings, we are committed to providing solutions that are not only legally sound but also practical and result-oriented, serving the interests of our clients both regionally and globally.
+            </p>
 
-<!-- Open Graph -->
-<meta property="og:title" content="Dispute Resolution | Muguna & Oyile Advocates">
-<meta property="og:description" content="Experienced lawyers helping you resolve disputes efficiently and peacefully.">
-<meta property="og:type" content="website">
-<meta property="og:url" content="https://www.mugunaoyile.co.ke/services/dispute-resolution/">
-<meta property="og:image" content="{% static 'images/og-dispute.jpg' %}">
-
-<!-- Twitter -->
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Dispute Resolution | Muguna & Oyile">
-<meta name="twitter:description" content="Mediation, arbitration, and litigation services by Kenya's trusted dispute resolution lawyers.">
-<meta name="twitter:image" content="{% static 'images/og-dispute.jpg' %}">
-
-<!-- Schema Markup -->
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "LegalService",
-  "name": "Muguna & Oyile Advocates",
-  "serviceType": "Dispute Resolution",
-  "url": "https://www.mugunaoyile.co.ke/services/dispute-resolution/",
-  "description": "Expert legal services in dispute resolution including negotiation, arbitration, and litigation.",
-  "areaServed": {
-    "@type": "Country",
-    "name": "Kenya"
-  },
-  "image": "https://www.mugunaoyile.co.ke/static/images/og-dispute.jpg"
-}
-</script>
-{% endblock %}
-
-{% block content %}
-<section class="container">
-  <div class="section-header centered-header">
-    <h1>Dispute Resolution</h1>
-    <p class="header-subtitle">Expert guidance and peaceful resolution strategies tailored for you.</p>
-  </div>
-</section>
-
-<main class="container">
-  <section class="service-intro">
-    <p>At Muguna & Oyile Advocates, we believe in resolving disputes with integrity, efficiency, and minimal disruption. Our team is seasoned in negotiation, mediation, arbitration, and litigation when necessary.</p>
-  </section>
-
-  <section class="services-container">
-    <!-- Mobile & Desktop: Cards -->
-    <div class="services-list">
-      {% for service in services %}
-      <article class="service-card {% if forloop.first %}active{% endif %}" data-service="service-{{ service.id }}" role="button" tabindex="0" aria-expanded="{% if forloop.first %}true{% else %}false{% endif %}">
-        <header class="service-card-header">
-          <span class="service-icon"><i class="{{ service.icon }}"></i></span>
-          <h3 class="service-title">{{ service.title }}</h3>
-          <i class="fas fa-chevron-down toggle-arrow" aria-hidden="true"></i>
-        </header>
-        <section class="mobile-service-detail" aria-hidden="true">
-          <p>{{ service.summary }}</p>
-          <ul class="mobile-service-features">
-            {% for item in service.details.all %}
-              <li>{{ item.detail_text }}</li>
-            {% endfor %}
-          </ul>
-        </section>
-      </article>
-      {% endfor %}
+            <button class="bg-slate-800 text-white font-semibold py-3 px-8 rounded-full hover:bg-slate-700 transition-colors duration-300 shadow-md">
+                CONTACT US
+            </button>
+        </div>
     </div>
 
-    <!-- Desktop: Detail Panel -->
-    <aside class="service-detail-container">
-      {% for service in services %}
-      <div class="service-detail {% if forloop.first %}active{% endif %}" id="service-{{ service.id }}" role="region" aria-labelledby="service-title-{{ service.id }}">
-        <h3 id="service-title-{{ service.id }}">{{ service.title }}</h3>
-        <p>{{ service.summary }}</p>
-        <ul class="service-features">
-          {% for item in service.details.all %}
-            <li>{{ item.detail_text }}</li>
-          {% endfor %}
-        </ul>
-      </div>
-      {% endfor %}
-    </aside>
-  </section>
-</main>
-{% endblock %}
-
-{% block extra_js %}
-<script>
-document.addEventListener('DOMContentLoaded', () => {
-  const cards = document.querySelectorAll('.service-card');
-  const details = document.querySelectorAll('.service-detail');
-  let currentView = window.innerWidth > 992 ? 'desktop' : 'mobile';
-
-  function activateService(serviceId) {
-    cards.forEach(card => {
-      card.classList.remove('active');
-      card.setAttribute('aria-expanded', 'false');
-    });
-    details.forEach(detail => detail.classList.remove('active'));
-
-    const activeCard = document.querySelector(`.service-card[data-service="${serviceId}"]`);
-    const activeDetail = document.getElementById(serviceId);
-
-    if (activeCard && activeDetail) {
-      activeCard.classList.add('active');
-      activeCard.setAttribute('aria-expanded', 'true');
-      activeDetail.classList.add('active');
-    }
-  }
-
-  function toggleMobile(card) {
-    const isActive = card.classList.contains('active');
-    cards.forEach(c => {
-      c.classList.remove('active');
-      c.setAttribute('aria-expanded', 'false');
-      c.querySelector('.mobile-service-detail').style.maxHeight = null;
-    });
-
-    if (!isActive) {
-      card.classList.add('active');
-      card.setAttribute('aria-expanded', 'true');
-      const content = card.querySelector('.mobile-service-detail');
-      content.style.maxHeight = content.scrollHeight + 'px';
-      content.setAttribute('aria-hidden', 'false');
-      setTimeout(() => card.scrollIntoView({ behavior: 'smooth' }), 300);
-    }
-  }
-
-  cards.forEach(card => {
-    card.addEventListener('click', () => {
-      const serviceId = card.dataset.service;
-      currentView === 'desktop' ? activateService(serviceId) : toggleMobile(card);
-    });
-    card.addEventListener('keydown', e => {
-      if (e.key === 'Enter' || e.key === ' ') {
-        e.preventDefault();
-        card.click();
-      }
-    });
-  });
-
-  window.addEventListener('resize', () => {
-    const newView = window.innerWidth > 992 ? 'desktop' : 'mobile';
-    if (newView !== currentView) {
-      currentView = newView;
-      if (currentView === 'desktop') {
-        const first = cards[0];
-        if (first) activateService(first.dataset.service);
-      } else {
-        cards.forEach(c => {
-          c.classList.remove('active');
-          c.setAttribute('aria-expanded', 'false');
-          const content = c.querySelector('.mobile-service-detail');
-          if (content) content.style.maxHeight = null;
-        });
-        details.forEach(d => d.classList.remove('active'));
-      }
-    }
-  });
-
-  // Initial load
-  if (currentView === 'desktop' && cards.length > 0) {
-    activateService(cards[0].dataset.service);
-  }
-});
-</script>
-{% endblock %}
+</body>
+</html>

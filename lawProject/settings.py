@@ -1,18 +1,16 @@
 import os
 from pathlib import Path
-from dotenv import load_dotenv
 
 # Load environment variables from .env file
 BASE_DIR = Path(__file__).resolve().parent.parent
-load_dotenv(dotenv_path=BASE_DIR / '.env')
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', 'unsafe-default-key')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.getenv('DJANGO_DEBUG', 'False') == 'True'
+DEBUG = 'True'
 
-ALLOWED_HOSTS = os.getenv('DJANGO_ALLOWED_HOSTS', 'localhost').split(',') 
+ALLOWED_HOSTS = []
 
 # Application definition
 INSTALLED_APPS = [
@@ -27,6 +25,7 @@ INSTALLED_APPS = [
 
     # Your apps
     'advocates',
+    'users',
 ]
 
 MIDDLEWARE = [
@@ -98,15 +97,23 @@ STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-# Email settings
+# settings.py
+
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = os.getenv('EMAIL_HOST', 'smtp.gmail.com')
-EMAIL_PORT = int(os.getenv('EMAIL_PORT', 587))
-EMAIL_USE_TLS = os.getenv('EMAIL_USE_TLS', 'True') == 'True'
-EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
-EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
-DEFAULT_FROM_EMAIL = os.getenv('DEFAULT_FROM_EMAIL', 'webmaster@localhost')
-CONTACT_RECEIVER_EMAIL = os.getenv('CONTACT_RECEIVER_EMAIL', 'admin@example.com')
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_USE_SSL = False
+
+EMAIL_HOST_USER = 'codesbynorris@gmail.com'       # your Gmail
+EMAIL_HOST_PASSWORD = 'tton rbjn kaij goyj'       # your app password (not Gmail login password!)
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+
+# ✅ Use this consistently for admin notifications
+CONTACT_RECEIVER_EMAIL = 'susankereere@gmail.com'      # change to your real admin email
+
+LOGIN_URL = '/admin/login/'  # or your custom admin login page
+LOGIN_REDIRECT_URL = '/admin-dashboard/'  # optional: redirect after login
 
 # Site framework
 SITE_ID = int(os.getenv('SITE_ID', 1))

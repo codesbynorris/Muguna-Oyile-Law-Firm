@@ -1,0 +1,48 @@
+{% extends "admin_dashboard/base_admin.html" %}
+
+{% block title %}Scheduled Calls{% endblock %}
+{% block header %}Scheduled Calls{% endblock %}
+
+{% block content %}
+<table class="min-w-full bg-white shadow rounded overflow-hidden">
+    <thead class="bg-blue-900 text-white">
+        <tr>
+            <th class="py-2 px-4">Name</th>
+            <th>Email</th>
+            <th>Date</th>
+            <th>Time</th>
+            <th>Status</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for call in calls %}
+        <tr class="border-b hover:bg-gray-100 {% if not call.is_read %}font-bold{% endif %}">
+            <td>{{ call.first_name }} {{ call.last_name }}</td>
+            <td>{{ call.email }}</td>
+            <td>{{ call.date }}</td>
+            <td>{{ call.time_slot }}</td>
+            <td>
+                {% if call.is_confirmed %}
+                    <span class="text-green-600">Confirmed</span>
+                {% else %}
+                    <span class="text-red-600">Pending</span>
+                {% endif %}
+            </td>
+            <td class="space-x-2">
+                {% if not call.is_confirmed %}
+                <a href="{% url 'admin_confirm_call' call.id %}" class="px-2 py-1 bg-green-600 text-white rounded hover:bg-green-700">Confirm</a>
+                <a href="{% url 'admin_decline_call' call.id %}" class="px-2 py-1 bg-red-600 text-white rounded hover:bg-red-700">Decline</a>
+                {% else %}
+                <span class="text-gray-500">No actions</span>
+                {% endif %}
+            </td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="6" class="text-center py-4">No scheduled calls.</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

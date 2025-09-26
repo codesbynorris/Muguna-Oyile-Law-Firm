@@ -1,0 +1,309 @@
+{% extends "contact_base.html" %}
+
+{% block title %} Contact Muguna & Oyile Advocates | Legal Excellence in Kenya{% endblock %}
+
+{% block extra_head %}
+<link rel="canonical" href="https://www.mugunaoyile.co.ke/contact/" />
+<meta name="description" content="Contact Muguna & Oyile Advocates for expert legal support in Kenya. Reach us via phone, email, WhatsApp, or visit our offices in Nairobi." />
+
+<!-- Open Graph -->
+<meta property="og:title" content="Contact Muguna & Oyile Advocates" />
+<meta property="og:description" content="Get in touch with our legal team for consultations, inquiries or support." />
+<meta property="og:url" content="https://www.mugunaoyile.co.ke/contact/" />
+<meta property="og:type" content="website" />
+<meta property="og:image" content="https://www.mugunaoyile.co.ke/static/images/logo.png" />
+
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="Contact Muguna & Oyile Advocates" />
+<meta name="twitter:description" content="Legal support made accessible. Contact us today." />
+<meta name="twitter:image" content="https://www.mugunaoyile.co.ke/static/images/logo.png" />
+
+<!-- Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXX"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){ dataLayer.push(arguments); }
+  gtag('js', new Date());
+  gtag('config', 'G-XXXXXXX', { page_path: window.location.pathname });
+</script>
+{% endblock %}
+
+{% block content %}
+<section class="container">
+  <div class="section-header centered-header">
+    <h1>Contact Us</h1>
+    <p class="header-subtitle">Have questions or need legal assistance? Reach out to us today.</p>
+  </div>
+</section>
+
+
+<main class="container">
+  <div class="contact-container">
+    <div class="contact-methods">
+      <p style="margin-bottom: 30px; font-size: 1.1rem; color: var(--text-muted);">
+        Our team is ready to assist you with all your legal needs. Contact us through any of these channels.
+      </p>
+      
+      <div class="social-icons">
+        <a href="https://facebook.com/share/16e75PQdGA/?mibextid=wwXIfr" class="icon facebook" target="_blank" aria-label="Facebook">
+          <i class="fab fa-facebook-f"></i>
+          <span class="tooltip">Facebook</span>
+        </a>
+        <a href="https://twitter.com" class="icon twitter" target="_blank" aria-label="Twitter">
+          <i class="fab fa-twitter"></i>
+          <span class="tooltip">Twitter</span>
+        </a>
+        <div class="icon email-icon" id="emailIcon" aria-label="Email">
+          <i class="fas fa-envelope"></i>
+          <span class="tooltip">Email Us</span>
+        </div>
+        <a href="https://www.linkedin.com/in/tony-muguna-903a05134/" class="icon linkedin" target="_blank" aria-label="LinkedIn">
+          <i class="fab fa-linkedin-in"></i>
+          <span class="tooltip">LinkedIn</span>
+        </a>
+        <a href="https://wa.me/254746152650" class="icon whatsapp" target="_blank" aria-label="WhatsApp">
+          <i class="fab fa-whatsapp"></i>
+          <span class="tooltip">WhatsApp</span>
+        </a>
+      </div>
+
+      <p class="office-location">
+        <i class="fas fa-map-marker-alt" style="margin-right: 8px;"></i>
+        24th Floor, Britam Towers, Hospital Road, Upper Hill, Nairobi
+      </p>
+      
+      <div class="office-hours">
+        <h3>Office Hours</h3>
+        <p>Monday - Friday: 8:00 AM - 5:00 PM</p>
+        <p>Saturday: 9:00 AM - 1:00 PM</p>
+        <p>Sunday: Closed</p>
+      </div>
+    </div>
+  
+    <div class="map-container">
+      <iframe
+        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3988.818244714745!2d36.81290705!3d-1.282635!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMcKwMTYnNTcuNSJTIDM2wrA0OCc0NC40IkU!5e0!3m2!1sen!2ske!4v1620000000000!5m2!1sen!2ske"
+        width="100%"
+        height="100%"
+        style="border:0;"
+        allowfullscreen=""
+        loading="lazy"
+        referrerpolicy="no-referrer-when-downgrade"
+        aria-label="Map showing Muguna & Oyile Advocates at Britam Towers, Nairobi">
+      </iframe>
+      <p style="text-align: center; margin-top: 10px; font-size: 0.9rem; color: var(--text-muted);">
+        Our office at Britam Towers, 24th Floor, Hospital Road, Upper Hill, Nairobi
+      </p>
+    </div>
+  </div>
+</main>
+
+<!-- Contact Form Modal -->
+<div class="modal" id="contactModal">
+  <div class="modal-content">
+    <span class="close" id="closeModal">&times;</span>
+    <h3>Send us a message</h3>
+    <form id="contactForm" method="POST">
+      <div class="form-group">
+        <label for="name">Your Name</label>
+        <input type="text" id="name" name="name" placeholder="John Doe" required />
+      </div>
+      <div class="form-group">
+        <label for="email">Email Address</label>
+        <input type="email" id="email" name="email" placeholder="john@example.com" required />
+      </div>
+      <div class="form-group">
+        <label for="subject">Subject</label>
+        <select id="subject" name="subject" required>
+          <option value="" disabled selected>Select a subject</option>
+          <option value="Legal Consultation">Legal Consultation</option>
+          <option value="Property & Real Estate">Property & Real Estate</option>
+          <option value="Dispute Resolution">Dispute Resolution</option>
+          <option value="Any Other">Any Other</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="message">Your Message</label>
+        <textarea id="message" name="message" placeholder="How can we help you?" required></textarea>
+      </div>
+      <button type="submit" class="submit-btn">Send Message</button>
+    </form>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Modal functionality
+const modal = document.getElementById("contactModal");
+const emailIcon = document.getElementById("emailIcon");
+const closeBtn = document.getElementById("closeModal");
+const contactForm = document.getElementById("contactForm");
+
+emailIcon.addEventListener("click", () => {
+  modal.style.display = "flex";
+  document.body.style.overflow = "hidden";
+});
+
+closeBtn.addEventListener("click", () => {
+  modal.style.display = "none";
+  document.body.style.overflow = "auto";
+});
+
+window.addEventListener("click", (e) => {
+  if (e.target === modal) {
+    modal.style.display = "none";
+    document.body.style.overflow = "auto";
+  }
+});
+
+// Form submission handling
+contactForm.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  
+  const formData = new FormData(contactForm);
+  const submitBtn = contactForm.querySelector("button[type='submit']");
+  
+  try {
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
+    
+function getCookie(name) {
+  let cookieValue = null;
+  if (document.cookie && document.cookie !== '') {
+    const cookies = document.cookie.split(';');
+    for (let i = 0; i < cookies.length; i++) {
+      const cookie = cookies[i].trim();
+      // Does this cookie string begin with the name we want?
+      if (cookie.substring(0, name.length + 1) === (name + '=')) {
+        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+        break;
+      }
+    }
+  }
+  return cookieValue;
+}
+   
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+      const cookies = document.cookie.split(';');
+      for (let cookie of cookies) {
+        cookie = cookie.trim();
+        if (cookie.substring(0, name.length + 1) === (name + '=')) {
+          cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+          break;
+        }
+      }
+    }
+    return cookieValue;
+  }
+
+    // Validate form data
+const response = await fetch('/send-contact-email/', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+    'X-CSRFToken': getCookie('csrftoken')  // if using CSRF protection
+  },
+  body: JSON.stringify({
+    name: formData.get("name"),
+    email: formData.get("email"),
+    subject: formData.get("subject"),
+    message: formData.get("message")
+  }),
+});
+
+const result = await response.json();
+if (!response.ok || result.status !== "success") {
+  throw new Error("Email failed to send");
+}    
+    // Show success alert instead of default alert
+    showAlert('success', 'Message Sent', "Thank you for your message! We'll get back to you soon.");
+    
+    contactForm.reset();
+    modal.style.display = "none";
+    document.body.style.overflow = "auto";
+  } catch (error) {
+    // Show error alert instead of default alert
+    showAlert('error', 'Submission Error', "There was an error sending your message. Please try again.", 5000);
+    console.error(error);
+  } finally {
+    submitBtn.disabled = false;
+    submitBtn.textContent = "Send Message";
+  }
+});
+
+// Close modal with ESC key
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape" && modal.style.display === "flex") {
+    modal.style.display = "none";
+    document.body.style.overflow = "auto";
+  }
+});
+
+// Enhanced Alert System
+function showAlert(type, title, message, duration = 4000) {
+  // Create container if it doesn't exist
+  let container = document.querySelector('.alert-container');
+  if (!container) {
+    container = document.createElement('div');
+    container.className = 'alert-container';
+    document.body.appendChild(container);
+  }
+
+  // Create alert element
+  const alert = document.createElement('div');
+  alert.className = `alert alert-${type}`;
+  
+  // Set icon based on type
+  let icon;
+  switch(type) {
+    case 'success': icon = 'fa-check-circle'; break;
+    case 'error': icon = 'fa-exclamation-circle'; break;
+    case 'warning': icon = 'fa-exclamation-triangle'; break;
+    default: icon = 'fa-info-circle';
+  }
+
+  alert.innerHTML = `
+    <i class="fas ${icon} alert-icon"></i>
+    <div class="alert-content">
+      <div class="alert-title">${title}</div>
+      <div class="alert-message">${message}</div>
+    </div>
+    <button class="alert-close">&times;</button>
+    <div class="alert-progress" style="animation-duration: ${duration}ms"></div>
+  `;
+
+  // Add to container
+  container.appendChild(alert);
+
+  // Close button functionality
+  const closeBtn = alert.querySelector('.alert-close');
+  closeBtn.addEventListener('click', () => {
+    alert.style.animation = 'alertFadeOut 0.5s forwards';
+    setTimeout(() => alert.remove(), 500);
+  });
+
+  // Auto-remove after duration
+  if (duration) {
+    setTimeout(() => {
+      alert.style.animation = 'alertFadeOut 0.5s forwards';
+      setTimeout(() => alert.remove(), 500);
+    }, duration);
+  }
+}
+
+// Initialize alert container on load
+document.addEventListener('DOMContentLoaded', function() {
+  // Create the alert container if it doesn't exist
+  if (!document.querySelector('.alert-container')) {
+    const container = document.createElement('div');
+    container.className = 'alert-container';
+    document.body.appendChild(container);
+  }
+});
+</script>
+{% endblock %}
+

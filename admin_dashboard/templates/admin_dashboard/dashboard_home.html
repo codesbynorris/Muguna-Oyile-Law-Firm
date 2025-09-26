@@ -1,0 +1,51 @@
+{% extends "admin_dashboard/base_admin.html" %}
+
+{% block title %}Admin Home{% endblock %}
+{% block header %}Welcome, {{ request.user.username }}{% endblock %}
+
+{% block content %}
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+    <!-- Quick Stats -->
+    <div class="bg-white shadow rounded p-4">
+        <h3 class="text-lg font-semibold">New Contacts</h3>
+        <p class="text-3xl font-bold mt-2">{{ unread_contacts_count }}</p>
+    </div>
+    <div class="bg-white shadow rounded p-4">
+        <h3 class="text-lg font-semibold">Pending Calls</h3>
+        <p class="text-3xl font-bold mt-2">{{ pending_calls_count }}</p>
+    </div>
+    <div class="bg-white shadow rounded p-4">
+        <h3 class="text-lg font-semibold">Activity Logs</h3>
+        <p class="text-3xl font-bold mt-2">{{ activity_count }}</p>
+    </div>
+</div>
+
+<div class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+
+    <!-- Quick Links -->
+    <div class="bg-white shadow rounded p-4">
+        <h3 class="text-lg font-semibold mb-4">Quick Links</h3>
+        <ul class="space-y-2">
+            <li><a href="{% url 'admin_dashboard_contacts' %}" class="text-blue-600 hover:underline">View Contact Messages</a></li>
+            <li><a href="{% url 'admin_dashboard_calls' %}" class="text-blue-600 hover:underline">View Scheduled Calls</a></li>
+            <li><a href="{% url 'admin_dashboard_activity' %}" class="text-blue-600 hover:underline">View Activity Log</a></li>
+        </ul>
+    </div>
+
+    <!-- Notifications -->
+    <div class="bg-white shadow rounded p-4">
+        <h3 class="text-lg font-semibold mb-4">Recent Notifications</h3>
+        <ul class="space-y-2 max-h-64 overflow-y-auto">
+            {% for contact in recent_contacts %}
+            <li class="border-b py-2">
+                New Contact from {{ contact.first_name }} {{ contact.last_name }}
+            </li>
+            {% empty %}
+            <li>No new notifications</li>
+            {% endfor %}
+        </ul>
+    </div>
+
+</div>
+{% endblock %}

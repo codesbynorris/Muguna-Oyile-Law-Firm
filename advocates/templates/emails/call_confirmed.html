@@ -1,0 +1,24 @@
+{% extends "emails/base_email.html" %}
+
+{% block title %}Your Scheduled Call Has Been Confirmed{% endblock %}
+
+{% block content %}
+<p>Hi {{ call.first_name }},</p>
+
+<p>Good news! Your scheduled call with <strong>{{ firm_name }}</strong> has been <strong>confirmed</strong>.</p>
+
+<p>Here are the details:</p>
+<ul>
+    <li><strong>Date:</strong> {{ call.date }}</li>
+    <li><strong>Time:</strong> {{ call.time_slot }}</li>
+</ul>
+
+<p>Please make sure to be available at the scheduled time. If you need to reschedule, you can easily book a new time using the link below:</p>
+
+<a href="{{ booking_link }}" class="btn">Reschedule Call</a>
+
+<p>We look forward to speaking with you!</p>
+
+<p>Best regards,</p>
+<p>{{ firm_name }}</p>
+{% endblock %}

@@ -1,0 +1,41 @@
+{% extends "admin_dashboard/base_admin.html" %}
+
+{% block title %}Contact Messages{% endblock %}
+{% block header %}Contact Messages{% endblock %}
+
+{% block content %}
+<table class="min-w-full bg-white shadow rounded overflow-hidden">
+    <thead class="bg-blue-900 text-white">
+        <tr>
+            <th class="py-2 px-4">Name</th>
+            <th>Email</th>
+            <th>Subject</th>
+            <th>Message</th>
+            <th>Received At</th>
+            <th>Status</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for contact in contacts %}
+        <tr class="border-b hover:bg-gray-100 {% if not contact.is_read %}font-bold{% endif %}">
+            <td>{{ contact.first_name }} {{ contact.last_name }}</td>
+            <td>{{ contact.email }}</td>
+            <td>{{ contact.subject }}</td>
+            <td>{{ contact.message|truncatechars:50 }}</td>
+            <td>{{ contact.created_at|date:"M d, Y H:i" }}</td>
+            <td>
+                {% if contact.is_read %}
+                    <span class="text-green-600">Read</span>
+                {% else %}
+                    <span class="text-red-600">Unread</span>
+                {% endif %}
+            </td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="6" class="text-center py-4">No contacts yet.</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

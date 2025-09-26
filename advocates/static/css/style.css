@@ -24,7 +24,7 @@
   --heading-font: 'Hoefler Text', serif;
   --body-font: 'Montserrat', sans-serif;
   --text-color: #333;
-  --text-light: #666;
+  --text-light: #030303;
   --text-lighter: #999;
   --bg-light: #f9f9f9;
   --bg-dark: #1a1a1a;
@@ -98,7 +98,7 @@ ul {
 }
 
 .section-padding {
-  padding: 5rem 0;
+  padding: 1.25rem 0;
 }
 
 .bg-light {
@@ -974,6 +974,38 @@ nav ul li a.active {
   margin-bottom: 20px;
   display: block;
   color: rgba(255, 255, 255, 0.85);
+}
+
+.menu-item {
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.menu-item a {
+  display: flex;
+  align-items: center;
+  justify-content: space-between; /* text to the right */
+  width: 100%;
+  text-decoration: none;
+  color: inherit;
+}
+
+.menu-item .icon {
+  font-size: 1.2rem;
+  color: #1e3a8a; /* blue-900 */
+}
+
+.menu-item .divider {
+  width: 2px;
+  height: 20px;
+  background-color: orange;
+  margin: 0 12px;
+}
+
+.menu-item .label {
+  margin-left: auto;
+  text-align: right;
 }
 
 /* ========================================= */

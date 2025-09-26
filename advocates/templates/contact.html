@@ -1,309 +1,732 @@
-{% extends "contact_base.html" %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Contact Us — Full Page</title>
 
-{% block title %} Contact Muguna & Oyile Advocates | Legal Excellence in Kenya{% endblock %}
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com"></script>
 
-{% block extra_head %}
-<link rel="canonical" href="https://www.mugunaoyile.co.ke/contact/" />
-<meta name="description" content="Contact Muguna & Oyile Advocates for expert legal support in Kenya. Reach us via phone, email, WhatsApp, or visit our offices in Nairobi." />
+  <!-- Google Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;600;700&family=Open+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 
-<!-- Open Graph -->
-<meta property="og:title" content="Contact Muguna & Oyile Advocates" />
-<meta property="og:description" content="Get in touch with our legal team for consultations, inquiries or support." />
-<meta property="og:url" content="https://www.mugunaoyile.co.ke/contact/" />
-<meta property="og:type" content="website" />
-<meta property="og:image" content="https://www.mugunaoyile.co.ke/static/images/logo.png" />
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
-<!-- Twitter Card -->
-<meta name="twitter:card" content="summary_large_image" />
-<meta name="twitter:title" content="Contact Muguna & Oyile Advocates" />
-<meta name="twitter:description" content="Legal support made accessible. Contact us today." />
-<meta name="twitter:image" content="https://www.mugunaoyile.co.ke/static/images/logo.png" />
+  <style>
+    :root{
+      --brand: #011425;
+      --accent: #4f46e5;
+      --font-header: 'EB Garamond', serif;
+      --font-content: 'Open Sans', sans-serif;
+    }
 
-<!-- Google Analytics -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXX"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){ dataLayer.push(arguments); }
-  gtag('js', new Date());
-  gtag('config', 'G-XXXXXXX', { page_path: window.location.pathname });
-</script>
-{% endblock %}
+    html,body{
+      height:100%;
+      font-family: var(--font-content);
+      background-color: #d8e5ee;
+    }
 
-{% block content %}
-<section class="container">
-  <div class="section-header centered-header">
-    <h1>Contact Us</h1>
-    <p class="header-subtitle">Have questions or need legal assistance? Reach out to us today.</p>
-  </div>
-</section>
+    /* Main headers */
+    h1, .main-header {
+      font-family: var(--font-header);
+      font-weight: 700;
+      color: #1F2937;
+    }
 
+    /* Sub headers */
+    h2, .sub-header {
+      font-family: var(--font-header);
+      font-weight: 600;
+    }
 
-<main class="container">
-  <div class="contact-container">
-    <div class="contact-methods">
-      <p style="margin-bottom: 30px; font-size: 1.1rem; color: var(--text-muted);">
-        Our team is ready to assist you with all your legal needs. Contact us through any of these channels.
-      </p>
-      
-      <div class="social-icons">
-        <a href="https://facebook.com/share/16e75PQdGA/?mibextid=wwXIfr" class="icon facebook" target="_blank" aria-label="Facebook">
-          <i class="fab fa-facebook-f"></i>
-          <span class="tooltip">Facebook</span>
-        </a>
-        <a href="https://twitter.com" class="icon twitter" target="_blank" aria-label="Twitter">
-          <i class="fab fa-twitter"></i>
-          <span class="tooltip">Twitter</span>
-        </a>
-        <div class="icon email-icon" id="emailIcon" aria-label="Email">
-          <i class="fas fa-envelope"></i>
-          <span class="tooltip">Email Us</span>
+    /* Content text */
+    p, label, input, textarea, button, .content-text {
+      font-family: var(--font-content);
+    }
+
+    /* ---------- General visual polish ---------- */
+    .rounded-3xl { border-radius: 1.25rem; }
+    .shadow-2xl { box-shadow: 0 25px 50px -12px rgba(2,6,23,0.35); }
+
+    /* ---------- Small decorative line under heading ---------- */
+    .heading-deco {
+      width: 72px;
+      height: 6px;
+      background: #EBD19E;
+      border-radius: 9999px;
+      margin: 0.75rem auto;
+    }
+
+    /* ---------- Toggle pill styles (left column) ---------- */
+    .toggle-button {
+      background-color: #e5e7eb;
+      color: #374151;
+      font-weight: 600;
+      padding: 0.6rem 1.2rem;
+      border-radius: 9999px;
+      cursor: pointer;
+      transition: all .18s ease-in-out;
+      user-select: none;
+      border: none;
+    }
+    .toggle-button.active {
+      background-color: var(--brand);
+      color: white;
+      box-shadow: 0 6px 18px rgba(2,6,23,0.12);
+    }
+
+    /* ---------- Searchable country dropdown ---------- */
+    .country-dropdown {
+      position: relative;
+    }
+    .country-list {
+      position: absolute;
+      left: 0;
+      right: 0;
+      margin-top: 0.5rem;
+      border-radius: 0.6rem;
+      border: 1px solid #e6e6e6;
+      background: white;
+      max-height: 220px;
+      overflow-y: auto;
+      box-shadow: 0 10px 30px rgba(2,6,23,0.07);
+      z-index: 60;
+    }
+    .country-list li {
+      padding: 0.6rem 0.9rem;
+      cursor: pointer;
+      font-size: 0.95rem;
+    }
+    .country-list li:hover { background: #eef2ff; }
+
+    /* ---------- Calendar: ensure it fits its box ---------- */
+    .calendar-card {
+      background: white;
+      border-radius: 1rem;
+      border: 1px solid #e6e6e6;
+      padding: 1rem;
+      box-shadow: 0 6px 18px rgba(2,6,23,0.04);
+    }
+
+    .calendar-days {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      grid-template-rows: repeat(6, 1fr);
+      gap: 6px;
+      height: 260px;
+      align-items: stretch;
+    }
+
+    .calendar-day {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 9999px;
+      transition: transform .12s ease, background-color .12s ease;
+      font-size: 0.92rem;
+      cursor: pointer;
+      min-height: 34px;
+    }
+    .calendar-day:hover:not(.disabled) { transform: scale(1.04); background: #eef2ff; }
+    .calendar-day.disabled { color: #c7c7c7; cursor: not-allowed; }
+    .calendar-day.selected { background: var(--brand); color: white; font-weight: 600; }
+
+    .weekday-head { font-size: .85rem; color: #6b7280; text-align: center; }
+
+    .time-slots {
+      max-height: 260px;
+      overflow-y: auto;
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      padding:4px;
+    }
+    .time-slot {
+      padding: 8px 12px;
+      border: 1px solid #e6e6e6;
+      border-radius: 9999px;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: transform .12s, background-color .12s;
+      font-size: .92rem;
+    }
+    .time-slot:hover { transform: scale(1.03); background: #eef2ff; }
+    .time-slot.selected { background: var(--brand); color: white; font-weight:600; }
+
+    @media (max-width: 768px){
+      .calendar-days { height: 220px; gap:5px; }
+      .time-slots { max-height: 220px; }
+    }
+  </style>
+</head>
+<body>
+  <!-- Outer wrapper -->
+  <div class="min-h-screen flex items-center justify-center px-4 py-8">
+    <div class="bg-white rounded-3xl shadow-2xl max-w-6xl w-full overflow-hidden">
+
+      <!-- ---------- Top shared heading (spans both columns) ---------- -->
+      <div class="px-8 lg:px-12 py-8 text-center">
+        <h1 class="text-3xl lg:text-4xl font-bold text-gray-800">Contact Us</h1>
+        <div class="heading-deco" aria-hidden="true"></div>
+        <p class="text-gray-600 max-w-3xl mx-auto">
+          Do you have a question? A workplace? Or need any legal advice? Let's talk. We're here to help.
+        </p>
+      </div>
+
+      <!-- ---------- Main grid: left = form/scheduler, right = contact info ---------- -->
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-0">
+
+        <!-- LEFT (form + schedule) -->
+        <div class="lg:col-span-2 p-6 lg:p-12">
+          <!-- Toggle: Send a message / Schedule a call -->
+          <div class="mb-8">
+            <div class="inline-flex items-center p-1 bg-gray-100 rounded-full">
+              <button id="contactModeBtn" type="button" class="toggle-button active">Send a Message</button>
+              <button id="scheduleModeBtn" type="button" class="toggle-button ml-2">Schedule a Call</button>
+            </div>
+          </div>
+
+          <!-- Form (posts to Django view) -->
+          <form id="mainForm" class="grid grid-cols-1 md:grid-cols-2 gap-6" action="{% url 'contact' %}" method="post" novalidate>
+            {% csrf_token %}
+
+            <!-- hidden control fields -->
+            <input type="hidden" name="form_type" id="formType" value="message">
+            <input type="hidden" name="date" id="hiddenDate" value="">
+            <input type="hidden" name="time_slot" id="hiddenTimeSlot" value="">
+            <input type="hidden" name="country_code" id="hiddenCountryCode" value="+254">
+
+            <!-- First name -->
+            <div>
+              <label for="firstName" class="block text-sm font-medium text-gray-700 mb-2">First Name</label>
+              <input id="firstName" name="first_name" type="text" required placeholder="Enter your first name"
+                     class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
+            </div>
+
+            <!-- Last name -->
+            <div>
+              <label for="lastName" class="block text-sm font-medium text-gray-700 mb-2">Last Name</label>
+              <input id="lastName" name="last_name" type="text" required placeholder="Enter your last name"
+                     class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
+            </div>
+
+            <!-- Email -->
+            <div>
+              <label for="email" class="block text-sm font-medium text-gray-700 mb-2">Email</label>
+              <input id="email" name="email" type="email" required placeholder="Enter your email"
+                     class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
+            </div>
+
+            <!-- Phone: compact country selector + wider phone input -->
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">Contact Details</label>
+
+              <div class="flex items-stretch">
+                <!-- Searchable country selector (compact) -->
+                <div class="country-dropdown w-24 relative">
+                  <input id="countrySearch" type="text" readonly value="KE +254"
+                         class="w-full p-3 border border-gray-300 rounded-l-lg bg-gray-50 text-center cursor-pointer"
+                         aria-haspopup="listbox" aria-expanded="false" />
+                  <!-- hidden code value that will be used programmatically -->
+                  <input type="hidden" id="countryCode" name="country_code_display" value="+254">
+
+                  <!-- list -->
+                  <ul id="countryList" class="country-list hidden" role="listbox" tabindex="-1" aria-label="Country codes">
+                    <li data-code="+254">KE +254 (Kenya)</li>
+                    <li data-code="+256">UG +256 (Uganda)</li>
+                    <li data-code="+255">TZ +255 (Tanzania)</li>
+                    <li data-code="+257">BI +257 (Burundi)</li>
+                    <li data-code="+250">RW +250 (Rwanda)</li>
+                    <li data-code="+211">SS +211 (South Sudan)</li>
+                    <li data-code="+252">SO +252 (Somalia)</li>
+                    <li data-code="+253">DJ +253 (Djibouti)</li>
+                    <li data-code="+269">KM +269 (Comoros)</li>
+                    <li data-code="+248">SC +248 (Seychelles)</li>
+                    <li data-code="+260">ZM +260 (Zambia)</li>
+                    <li data-code="+263">ZW +263 (Zimbabwe)</li>
+                  </ul>
+                </div>
+
+                <!-- phone number input (name matches model) -->
+                <input id="contactNumber" name="phone_number" type="tel" placeholder="Enter your contact number"
+                       class="flex-1 p-3 border border-t border-b border-r border-gray-300 rounded-r-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                       inputmode="tel" />
+              </div>
+            </div>
+
+            <!-- Subject (spans two columns) -->
+            <div class="md:col-span-2">
+              <label for="subject" class="block text-sm font-medium text-gray-700 mb-2">Subject</label>
+
+              <select id="subject" name="subject" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                <option value="consultancy">Consultancy Services</option>
+                <option value="dispute">Dispute Resolution</option>
+                <option value="corporate">Corporate & Commercial Law</option>
+                <option value="intellectual">Intellectual Property</option>
+              </select>
+            </div>
+
+            <!-- Message area (default contact mode) -->
+            <div id="messageArea" class="md:col-span-2">
+              <label for="message" class="block text-sm font-medium text-gray-700 mb-2">Message</label>
+              <textarea id="message" name="message" rows="5" placeholder="Type your message here..."
+                        class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"></textarea>
+            </div>
+
+            <!-- Schedule area (hidden by default, occupies same grid area as message) -->
+            <div id="scheduleArea" class="md:col-span-2 hidden space-y-4">
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <!-- Calendar panel -->
+                <div class="calendar-card">
+                  <div class="flex items-center justify-between mb-3">
+                    <button id="prevMonthBtn" type="button" class="p-2 rounded bg-gray-100"><i class="fas fa-chevron-left"></i></button>
+                    <div id="calendarTitle" class="text-sm font-semibold text-gray-800"></div>
+                    <button id="nextMonthBtn" type="button" class="p-2 rounded bg-gray-100"><i class="fas fa-chevron-right"></i></button>
+                  </div>
+
+                  <!-- Weekday labels -->
+                  <div class="grid grid-cols-7 gap-2 mb-2">
+                    <div class="weekday-head">Mo</div>
+                    <div class="weekday-head">Tu</div>
+                    <div class="weekday-head">We</div>
+                    <div class="weekday-head">Th</div>
+                    <div class="weekday-head">Fr</div>
+                    <div class="weekday-head">Sa</div>
+                    <div class="weekday-head">Su</div>
+                  </div>
+
+                  <!-- Days grid (keeps stable size so it always fits in container) -->
+                  <div id="calendarDays" class="calendar-days" role="grid" aria-label="Calendar days"></div>
+                </div>
+
+                <!-- Time slots panel -->
+                <div class="calendar-card flex flex-col">
+                  <div id="selectedDateDisplay" class="font-semibold text-gray-800 mb-3">Select a date to see available times.</div>
+                  <div id="timeSlots" class="time-slots"></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Submit button (spans two columns) -->
+            <div class="md:col-span-2">
+              <button id="submitBtn" type="submit"
+                      class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 px-6 rounded-xl shadow-lg transition">
+                Send Message
+              </button>
+            </div>
+          </form>
         </div>
-        <a href="https://www.linkedin.com/in/tony-muguna-903a05134/" class="icon linkedin" target="_blank" aria-label="LinkedIn">
-          <i class="fab fa-linkedin-in"></i>
-          <span class="tooltip">LinkedIn</span>
-        </a>
-        <a href="https://wa.me/254746152650" class="icon whatsapp" target="_blank" aria-label="WhatsApp">
-          <i class="fab fa-whatsapp"></i>
-          <span class="tooltip">WhatsApp</span>
-        </a>
-      </div>
 
-      <p class="office-location">
-        <i class="fas fa-map-marker-alt" style="margin-right: 8px;"></i>
-        24th Floor, Britam Towers, Hospital Road, Upper Hill, Nairobi
-      </p>
-      
-      <div class="office-hours">
-        <h3>Office Hours</h3>
-        <p>Monday - Friday: 8:00 AM - 5:00 PM</p>
-        <p>Saturday: 9:00 AM - 1:00 PM</p>
-        <p>Sunday: Closed</p>
+        <!-- RIGHT (contact info) -->
+        <aside class="lg:col-span-1 bg-[var(--brand)] text-white p-8 lg:p-12 flex flex-col justify-between">
+          <div>
+            <p class="text-xl italic font-bold">Hello! Guten Tag! Bonjour!</p> <br>
+            <p class="text-gray-200 mb-6">We are always here to help you! <br>  <br>Feel free to reach out to us through any of these support channels.</p>
+
+            <ul class="space-y-6 text-sm">
+              <!-- Call / WhatsApp -->
+              <li class="bg-gray-800 bg-opacity-30 p-4 rounded-xl shadow-lg transition-all duration-300">
+                <div class="flex items-start gap-3">
+                  <i class="fas fa-phone-alt text-indigo-400 mt-1"></i>
+                  <div>
+                    <div class="text-gray-200">Call / WhatsApp</div>
+                    <a href="tel:+254746152650" class="text-white font-semibold hover:underline block">
+                      +254 746 152650
+                    </a>
+                  </div>
+                </div>
+              </li>
+
+              <!-- Email -->
+              <li class="bg-gray-800 bg-opacity-30 p-4 rounded-xl shadow-lg transition-all duration-300">
+                <div class="flex items-start gap-3">
+                  <i class="fas fa-envelope text-indigo-400 mt-1"></i>
+                  <div>
+                    <div class="text-gray-200">Email</div>
+                    <a href="mailto:info.mugunaoyile@gmail.com" class="text-white font-semibold hover:underline block">
+                      info@mugunaoyile.com
+                    </a>
+                  </div>
+                </div>
+              </li>
+
+              <!-- Office Address -->
+              <li class="bg-gray-800 bg-opacity-30 p-4 rounded-xl shadow-lg transition-all duration-300">
+                <div class="flex items-start gap-3">
+                  <i class="fas fa-map-marker-alt text-indigo-400 mt-1"></i>
+                  <div>
+                    <div class="text-gray-200">Our Office</div>
+                    <p class="text-white font-semibold">
+                      24th Floor, Britam Towers, Upper Hill,
+                      Hospital Road<br>
+                      P.O Box 78544-00507, NAIROBI
+                    </p>
+                  </div>
+                </div>
+              </li>
+
+              <!-- Office Hours -->
+              <li class="bg-gray-800 bg-opacity-30 p-4 rounded-xl shadow-lg transition-all duration-300">
+                <div class="flex items-start gap-3">
+                  <i class="fas fa-clock text-indigo-400 mt-1"></i>
+                  <div>
+                    <div class="text-gray-200">Office Hours</div>
+                    <p class="text-white font-semibold">
+                      Monday – Friday: 8:00 AM – 5:00 PM <br>
+                      Saturday & Sunday: Closed
+                    </p>
+                  </div>
+                </div>
+              </li>
+            </ul>
+
+          </div>
+
+          <div class="mt-6 pt-6 border-t border-white/10">
+            <div class="flex items-center justify-between">
+              <span class="text-gray-200">Connect with us</span>
+              <div class="flex items-center gap-3 text-xl">
+                <a href="#" aria-label="facebook" class="hover:text-gray-300"><i class="fab fa-facebook-f"></i></a>
+                <a href="#" aria-label="instagram" class="hover:text-gray-300"><i class="fab fa-instagram"></i></a>
+                <a href="#" aria-label="linkedin" class="hover:text-gray-300"><i class="fab fa-linkedin-in"></i></a>
+              </div>
+            </div>
+          </div>
+        </aside>
       </div>
     </div>
-  
-    <div class="map-container">
-      <iframe
-        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3988.818244714745!2d36.81290705!3d-1.282635!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMcKwMTYnNTcuNSJTIDM2wrA0OCc0NC40IkU!5e0!3m2!1sen!2ske!4v1620000000000!5m2!1sen!2ske"
-        width="100%"
-        height="100%"
-        style="border:0;"
-        allowfullscreen=""
-        loading="lazy"
-        referrerpolicy="no-referrer-when-downgrade"
-        aria-label="Map showing Muguna & Oyile Advocates at Britam Towers, Nairobi">
-      </iframe>
-      <p style="text-align: center; margin-top: 10px; font-size: 0.9rem; color: var(--text-muted);">
-        Our office at Britam Towers, 24th Floor, Hospital Road, Upper Hill, Nairobi
-      </p>
+  </div>
+
+  <!-- Confirmation modal -->
+  <div id="confirmationModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/40">
+    <div class="bg-white rounded-2xl shadow-xl p-8 max-w-md w-full text-center">
+      <div class="mb-4">
+        <i class="fas fa-check-circle text-green-500 text-4xl"></i>
+      </div>
+      <h3 id="confirmationTitle" class="text-xl font-semibold mb-2">Success</h3>
+      <p id="confirmationMessage" class="text-gray-700 mb-6"></p>
+      <div class="flex justify-center">
+        <button id="closeModal" class="px-6 py-2 rounded-lg bg-indigo-600 text-white hover:bg-indigo-700">Close</button>
+      </div>
     </div>
   </div>
-</main>
 
-<!-- Contact Form Modal -->
-<div class="modal" id="contactModal">
-  <div class="modal-content">
-    <span class="close" id="closeModal">&times;</span>
-    <h3>Send us a message</h3>
-    <form id="contactForm" method="POST">
-      <div class="form-group">
-        <label for="name">Your Name</label>
-        <input type="text" id="name" name="name" placeholder="John Doe" required />
-      </div>
-      <div class="form-group">
-        <label for="email">Email Address</label>
-        <input type="email" id="email" name="email" placeholder="john@example.com" required />
-      </div>
-      <div class="form-group">
-        <label for="subject">Subject</label>
-        <select id="subject" name="subject" required>
-          <option value="" disabled selected>Select a subject</option>
-          <option value="Legal Consultation">Legal Consultation</option>
-          <option value="Property & Real Estate">Property & Real Estate</option>
-          <option value="Dispute Resolution">Dispute Resolution</option>
-          <option value="Any Other">Any Other</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label for="message">Your Message</label>
-        <textarea id="message" name="message" placeholder="How can we help you?" required></textarea>
-      </div>
-      <button type="submit" class="submit-btn">Send Message</button>
-    </form>
-  </div>
-</div>
-{% endblock %}
-
-{% block extra_js %}
 <script>
-// Modal functionality
-const modal = document.getElementById("contactModal");
-const emailIcon = document.getElementById("emailIcon");
-const closeBtn = document.getElementById("closeModal");
-const contactForm = document.getElementById("contactForm");
+  // -----------------------------
+  // Mode toggle: Contact vs Schedule
+  // -----------------------------
+  const contactModeBtn = document.getElementById('contactModeBtn');
+  const scheduleModeBtn = document.getElementById('scheduleModeBtn');
+  const messageArea = document.getElementById('messageArea');
+  const scheduleArea = document.getElementById('scheduleArea');
+  const submitBtn = document.getElementById('submitBtn');
+  const form = document.getElementById('mainForm');
+  const formTypeInput = document.getElementById('formType');
+  const hiddenDateInput = document.getElementById('hiddenDate');
+  const hiddenTimeSlotInput = document.getElementById('hiddenTimeSlot');
 
-emailIcon.addEventListener("click", () => {
-  modal.style.display = "flex";
-  document.body.style.overflow = "hidden";
-});
+  let currentMode = 'contact'; // 'contact' or 'schedule'
 
-closeBtn.addEventListener("click", () => {
-  modal.style.display = "none";
-  document.body.style.overflow = "auto";
-});
-
-window.addEventListener("click", (e) => {
-  if (e.target === modal) {
-    modal.style.display = "none";
-    document.body.style.overflow = "auto";
-  }
-});
-
-// Form submission handling
-contactForm.addEventListener("submit", async (e) => {
-  e.preventDefault();
-  
-  const formData = new FormData(contactForm);
-  const submitBtn = contactForm.querySelector("button[type='submit']");
-  
-  try {
-    submitBtn.disabled = true;
-    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
-    
-function getCookie(name) {
-  let cookieValue = null;
-  if (document.cookie && document.cookie !== '') {
-    const cookies = document.cookie.split(';');
-    for (let i = 0; i < cookies.length; i++) {
-      const cookie = cookies[i].trim();
-      // Does this cookie string begin with the name we want?
-      if (cookie.substring(0, name.length + 1) === (name + '=')) {
-        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-        break;
-      }
+  function setMode(mode){
+    currentMode = mode;
+    formTypeInput.value = (mode === 'contact') ? 'message' : 'schedule';
+    if(mode === 'contact'){
+      contactModeBtn.classList.add('active');
+      scheduleModeBtn.classList.remove('active');
+      messageArea.classList.remove('hidden');
+      scheduleArea.classList.add('hidden');
+      submitBtn.textContent = 'Send Message';
+    } else {
+      contactModeBtn.classList.remove('active');
+      scheduleModeBtn.classList.add('active');
+      messageArea.classList.add('hidden');
+      scheduleArea.classList.remove('hidden');
+      submitBtn.textContent = 'Book a Call';
     }
   }
-  return cookieValue;
-}
-   
-function getCookie(name) {
-    let cookieValue = null;
-    if (document.cookie && document.cookie !== '') {
-      const cookies = document.cookie.split(';');
-      for (let cookie of cookies) {
-        cookie = cookie.trim();
-        if (cookie.substring(0, name.length + 1) === (name + '=')) {
-          cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-          break;
-        }
-      }
-    }
-    return cookieValue;
-  }
 
-    // Validate form data
-const response = await fetch('/send-contact-email/', {
-  method: 'POST',
-  headers: {
-    'Content-Type': 'application/json',
-    'X-CSRFToken': getCookie('csrftoken')  // if using CSRF protection
-  },
-  body: JSON.stringify({
-    name: formData.get("name"),
-    email: formData.get("email"),
-    subject: formData.get("subject"),
-    message: formData.get("message")
-  }),
-});
+  contactModeBtn.addEventListener('click', () => setMode('contact'));
+  scheduleModeBtn.addEventListener('click', () => setMode('schedule'));
 
-const result = await response.json();
-if (!response.ok || result.status !== "success") {
-  throw new Error("Email failed to send");
-}    
-    // Show success alert instead of default alert
-    showAlert('success', 'Message Sent', "Thank you for your message! We'll get back to you soon.");
-    
-    contactForm.reset();
-    modal.style.display = "none";
-    document.body.style.overflow = "auto";
-  } catch (error) {
-    // Show error alert instead of default alert
-    showAlert('error', 'Submission Error', "There was an error sending your message. Please try again.", 5000);
-    console.error(error);
-  } finally {
-    submitBtn.disabled = false;
-    submitBtn.textContent = "Send Message";
-  }
-});
+  // default
+  setMode('contact');
 
-// Close modal with ESC key
-document.addEventListener("keydown", (e) => {
-  if (e.key === "Escape" && modal.style.display === "flex") {
-    modal.style.display = "none";
-    document.body.style.overflow = "auto";
-  }
-});
+  // -----------------------------
+  // Searchable country selector (compact)
+  // -----------------------------
+  const countrySearch = document.getElementById('countrySearch');
+  const countryList = document.getElementById('countryList');
+  const countryCode = document.getElementById('countryCode');
+  const hiddenCountryCode = document.getElementById('hiddenCountryCode');
 
-// Enhanced Alert System
-function showAlert(type, title, message, duration = 4000) {
-  // Create container if it doesn't exist
-  let container = document.querySelector('.alert-container');
-  if (!container) {
-    container = document.createElement('div');
-    container.className = 'alert-container';
-    document.body.appendChild(container);
-  }
-
-  // Create alert element
-  const alert = document.createElement('div');
-  alert.className = `alert alert-${type}`;
-  
-  // Set icon based on type
-  let icon;
-  switch(type) {
-    case 'success': icon = 'fa-check-circle'; break;
-    case 'error': icon = 'fa-exclamation-circle'; break;
-    case 'warning': icon = 'fa-exclamation-triangle'; break;
-    default: icon = 'fa-info-circle';
-  }
-
-  alert.innerHTML = `
-    <i class="fas ${icon} alert-icon"></i>
-    <div class="alert-content">
-      <div class="alert-title">${title}</div>
-      <div class="alert-message">${message}</div>
-    </div>
-    <button class="alert-close">&times;</button>
-    <div class="alert-progress" style="animation-duration: ${duration}ms"></div>
-  `;
-
-  // Add to container
-  container.appendChild(alert);
-
-  // Close button functionality
-  const closeBtn = alert.querySelector('.alert-close');
-  closeBtn.addEventListener('click', () => {
-    alert.style.animation = 'alertFadeOut 0.5s forwards';
-    setTimeout(() => alert.remove(), 500);
+  countrySearch.addEventListener('click', (e) => {
+    e.stopPropagation();
+    countryList.classList.toggle('hidden');
+    countrySearch.setAttribute('aria-expanded', countryList.classList.contains('hidden') ? 'false' : 'true');
   });
 
-  // Auto-remove after duration
-  if (duration) {
-    setTimeout(() => {
-      alert.style.animation = 'alertFadeOut 0.5s forwards';
-      setTimeout(() => alert.remove(), 500);
-    }, duration);
-  }
-}
+  countryList.querySelectorAll('li').forEach(li => {
+    li.addEventListener('click', () => {
+      const code = li.dataset.code || li.getAttribute('data-code');
+      const label = li.textContent.trim().split('(')[0].trim(); // "KE +254"
+      countrySearch.value = label;
+      countryCode.value = code;
+      hiddenCountryCode.value = code;
+      countryList.classList.add('hidden');
+      countrySearch.setAttribute('aria-expanded','false');
+    });
+  });
 
-// Initialize alert container on load
-document.addEventListener('DOMContentLoaded', function() {
-  // Create the alert container if it doesn't exist
-  if (!document.querySelector('.alert-container')) {
-    const container = document.createElement('div');
-    container.className = 'alert-container';
-    document.body.appendChild(container);
+  // close dropdown on outside click
+  document.addEventListener('click', (e) => {
+    if (!countrySearch.parentElement.contains(e.target)) {
+      countryList.classList.add('hidden');
+      countrySearch.setAttribute('aria-expanded','false');
+    }
+  });
+
+  // -----------------------------
+  // Calendar & Time Slots
+  // -----------------------------
+  const calendarDaysEl = document.getElementById('calendarDays');
+  const calendarTitleEl = document.getElementById('calendarTitle');
+  const prevMonthBtn = document.getElementById('prevMonthBtn');
+  const nextMonthBtn = document.getElementById('nextMonthBtn');
+
+  const selectedDateDisplay = document.getElementById('selectedDateDisplay');
+  const timeSlotsContainer = document.getElementById('timeSlots');
+
+  // calendar state
+  let today = new Date();
+  let displayMonth = today.getMonth();
+  let displayYear = today.getFullYear();
+  let selectedDate = null;
+  let selectedTime = null;
+
+  function startOfDay(d){
+    return new Date(d.getFullYear(), d.getMonth(), d.getDate());
   }
-});
+
+  function renderCalendar(month, year){
+    calendarDaysEl.innerHTML = '';
+
+    const monthNames = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+    calendarTitleEl.textContent = `${monthNames[month]} ${year}`;
+
+    const firstDayOfMonth = new Date(year, month, 1);
+    let firstWeekday = firstDayOfMonth.getDay(); // 0..6 (Sun..Sat)
+    let blanks = (firstWeekday === 0) ? 6 : (firstWeekday - 1);
+
+    for(let i=0;i<blanks;i++){
+      const emptyCell = document.createElement('div');
+      emptyCell.className = 'calendar-day disabled';
+      calendarDaysEl.appendChild(emptyCell);
+    }
+
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+    for(let d=1; d<=daysInMonth; d++){
+      const dt = new Date(year, month, d);
+      const cell = document.createElement('div');
+      cell.className = 'calendar-day';
+      cell.tabIndex = 0;
+      cell.textContent = d;
+
+      const isSunday = dt.getDay() === 0;
+      const isPast = startOfDay(dt) < startOfDay(today);
+
+      if(isPast || isSunday){
+        cell.classList.add('disabled');
+      } else {
+        cell.addEventListener('click', () => {
+          selectedDate = dt;
+          calendarDaysEl.querySelectorAll('.calendar-day').forEach(c => c.classList.remove('selected'));
+          cell.classList.add('selected');
+
+          const displayText = `${dt.toLocaleDateString(undefined, { weekday: 'long', month: 'long', day: 'numeric' })}`;
+          selectedDateDisplay.textContent = displayText;
+          hiddenDateInput.value = dt.toISOString().slice(0,10); // yyyy-mm-dd
+          populateTimeSlotsForDate(dt);
+        });
+      }
+
+      calendarDaysEl.appendChild(cell);
+    }
+
+    const totalCells = calendarDaysEl.children.length;
+    const required = 42;
+    for(let i=totalCells; i<required; i++){
+      const emptyCell = document.createElement('div');
+      emptyCell.className = 'calendar-day disabled';
+      calendarDaysEl.appendChild(emptyCell);
+    }
+  }
+
+  prevMonthBtn.addEventListener('click', () => {
+    displayMonth--;
+    if(displayMonth < 0){ displayMonth = 11; displayYear--; }
+    renderCalendar(displayMonth, displayYear);
+  });
+  nextMonthBtn.addEventListener('click', () => {
+    displayMonth++;
+    if(displayMonth > 11){ displayMonth = 0; displayYear++; }
+    renderCalendar(displayMonth, displayYear);
+  });
+
+  function populateTimeSlotsForDate(date){
+    timeSlotsContainer.innerHTML = '';
+    selectedTime = null;
+    hiddenTimeSlotInput.value = '';
+
+    const dow = date.getDay(); // 0=Sun .. 6=Sat
+    let slots = [];
+
+    if(dow >= 1 && dow <= 5){
+      // Weekdays: 9:00 → 17:00, 45 min steps
+      let start = new Date(date);
+      start.setHours(9, 0, 0, 0);
+
+      let endOfDay = new Date(date);
+      endOfDay.setHours(17, 0, 0, 0);
+
+      while(start < endOfDay){
+        let end = new Date(start.getTime() + 45 * 60000);
+        if(end > endOfDay) break;
+        slots.push({ start: new Date(start), end: new Date(end) });
+        start = end;
+      }
+    } else if(dow === 6){
+      // Saturday: 9:00 → 12:00, 45 min steps
+      let start = new Date(date);
+      start.setHours(9, 0, 0, 0);
+
+      let endOfDay = new Date(date);
+      endOfDay.setHours(12, 0, 0, 0);
+
+      while(start < endOfDay){
+        let end = new Date(start.getTime() + 45 * 60000);
+        if(end > endOfDay) break;
+        slots.push({ start: new Date(start), end: new Date(end) });
+        start = end;
+      }
+    } else {
+      selectedDateDisplay.textContent = 'Closed on Sundays';
+      return;
+    }
+
+    if(slots.length === 0){
+      selectedDateDisplay.textContent = 'No available times for this date.';
+      return;
+    }
+
+    // create buttons for each slot
+    slots.forEach(slot => {
+      const label = `${formatTime(slot.start)} - ${formatTime(slot.end)}`;
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'time-slot';
+      btn.textContent = label;
+      btn.addEventListener('click', () => {
+        // visually select
+        timeSlotsContainer.querySelectorAll('.time-slot').forEach(s => s.classList.remove('selected'));
+        btn.classList.add('selected');
+        selectedTime = label;
+        hiddenTimeSlotInput.value = label;
+      });
+      timeSlotsContainer.appendChild(btn);
+    });
+  }
+
+  function formatTime(d){
+    return d.toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' });
+  }
+
+  renderCalendar(displayMonth, displayYear);
+
+  // -----------------------------
+  // Form submit handling & modal
+  // -----------------------------
+  const confirmationModal = document.getElementById('confirmationModal');
+  const confirmationMessageEl = document.getElementById('confirmationMessage');
+  const closeModalBtn = document.getElementById('closeModal');
+
+  form.addEventListener('submit', (ev) => {
+    // Basic client-side validation and to ensure hidden fields are set.
+    // Server should still validate and return errors; this prevents false submits.
+    // If you prefer to use AJAX (fetch) you can change this section later.
+    if(formTypeInput.value === 'message'){
+      const first = document.getElementById('firstName').value.trim();
+      const email = document.getElementById('email').value.trim();
+      const message = document.getElementById('message').value.trim();
+      if(!first || !email || !message){
+        ev.preventDefault();
+        alert('Please fill name, email and message.');
+        return;
+      }
+      // let form submit normally to Django backend
+      // Optionally show the modal client-side (but better to show after server confirms)
+    } else {
+      // schedule
+      if(!hiddenDateInput.value || !hiddenTimeSlotInput.value){
+        ev.preventDefault();
+        alert('Please select a date and time for your call.');
+        return;
+      }
+      // allow normal submit
+    }
+    // Note: when Django processes the POST, it should redirect back and set a message.
+    // The confirmation modal will work for immediate client-side success scenarios.
+  });
+
+  function openModal(message){
+    confirmationMessageEl.textContent = message;
+    confirmationModal.classList.remove('hidden');
+    confirmationModal.classList.add('flex');
+  }
+  function closeModal(){
+    confirmationModal.classList.add('hidden');
+    confirmationModal.classList.remove('flex');
+  }
+  closeModalBtn.addEventListener('click', closeModal);
+
+  // -----------------------------
+  // Accessibility nicety: keyboard close for country list (Esc)
+  // -----------------------------
+  document.addEventListener('keydown', (ev) => {
+    if(ev.key === 'Escape'){
+      countryList.classList.add('hidden');
+    }
+  });
+
+  // -----------------------------
+  // Extra: keep countrySearch showing the label for current code on load
+  // -----------------------------
+  (function initCountryLabel(){
+    const code = document.getElementById('countryCode').value || '+254';
+    const li = Array.from(countryList.children).find(x => x.dataset.code === code);
+    if(li) countrySearch.value = li.textContent.split('(')[0].trim();
+    hiddenCountryCode.value = code;
+  })();
+
+  // If you want to show a client-side modal after a successful POST (server redirected with ?success or messages),
+  // you can have Django include a small script or set a template variable and call openModal(...) on load.
+  // Example server-side pattern: after successful save redirect to /contact/?sent=1 and then:
+  (function maybeShowServerSuccess(){
+    const urlParams = new URLSearchParams(window.location.search);
+    if(urlParams.get('sent') === '1'){
+      // message could also be passed by the server through a template var
+      openModal('Thank you — your submission was received. We will get back to you shortly.');
+      // optionally, remove the query param to avoid re-showing modal on refresh
+      history.replaceState(null, '', window.location.pathname);
+    }
+  })();
+
+  // end of script
 </script>
-{% endblock %}
 
+</body>
+</html>
