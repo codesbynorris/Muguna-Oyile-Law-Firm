@@ -4,43 +4,38 @@
 {% block title %}{{ article.title }} - Law Firm{% endblock %}
 
 {% block content %}
-    <article class="max-w-4xl mx-auto bg-white rounded-xl shadow-lg p-8">
-        <!-- Article Image -->
-        {% if article.image %}
-            <img src="{{ article.image.url }}" 
-                 alt="{{ article.title }}" 
-                 class="w-full h-72 object-cover rounded-lg mb-6">
-        {% else %}
-            <img src="{% static 'images/default-article.jpg' %}" 
-                 alt="{{ article.title }}" 
-                 class="w-full h-72 object-cover rounded-lg mb-6">
-        {% endif %}
-
-        <!-- Title -->
-        <h1 class="text-3xl sm:text-4xl font-extrabold text-blue-900 mb-4">
-            {{ article.title }}
-        </h1>
-
-        <!-- Metadata -->
-        <div class="flex items-center text-sm text-gray-500 mb-6 space-x-4">
-            <span>By {{ article.author }}</span>
-            <span>{{ article.created_at|date:"F d, Y" }}</span>
-            <span class="bg-amber-100 text-amber-700 px-2 py-1 rounded-full text-xs">
-                {{ article.category.name }}
-            </span>
+    <article class="max-w-4xl mx-auto bg-white rounded-xl shadow-lg overflow-hidden">
+        
+        <!-- Header Block -->
+        <div class="h-56 flex items-center justify-center px-6 text-center {{ article.theme_color }}">
+            <h1 class="text-3xl sm:text-4xl font-serif font-bold text-white leading-snug">
+                {{ article.title }}
+            </h1>
         </div>
 
-        <!-- Article Content -->
-        <div class="prose max-w-none text-gray-700 leading-relaxed">
-            {{ article.content|safe }}
-        </div>
+        <!-- Body -->
+        <div class="p-8">
+            <!-- Metadata -->
+            <div class="flex items-center text-sm text-gray-500 mb-6 space-x-4">
+                <span>By {{ article.author }}</span>
+                <span>{{ article.created_at|date:"F d, Y" }}</span>
+                <span class="bg-amber-100 text-amber-700 px-2 py-1 rounded-full text-xs">
+                    {{ article.category.name }}
+                </span>
+            </div>
 
-        <!-- Back Link -->
-        <div class="mt-10">
-            <a href="{% url 'article_list' %}" 
-               class="text-blue-900 hover:text-amber-500 font-medium">
-               ← Back to Articles
-            </a>
+            <!-- Article Content -->
+            <div class="prose max-w-none text-gray-700 leading-relaxed">
+                {{ article.content|safe }}
+            </div>
+
+            <!-- Back Link -->
+            <div class="mt-10">
+                <a href="{% url 'article_list' %}" 
+                   class="text-blue-900 hover:text-amber-500 font-medium">
+                   ← Back to Articles
+                </a>
+            </div>
         </div>
     </article>
 

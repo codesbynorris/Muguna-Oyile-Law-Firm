@@ -6,7 +6,7 @@
 <div class="p-6">
     <h1 class="text-2xl font-bold mb-4">All Notifications</h1>
 
-    <!-- Filter -->
+    <!-- Filter Buttons -->
     <div class="mb-4 flex flex-wrap gap-2">
         <button class="filter-btn bg-blue-500 text-white px-4 py-1 rounded" data-type="all">All</button>
         <button class="filter-btn bg-green-500 text-white px-4 py-1 rounded" data-type="call">Calls</button>
@@ -26,7 +26,7 @@
             </thead>
             <tbody id="notificationsTable">
                 {% for item in notifications %}
-                <tr class="hover:bg-gray-50 cursor-pointer notification-row" data-type="{{ item.type }}">
+                <tr class="hover:bg-gray-50 cursor-pointer notification-row {% if item.red_flag %}bg-red-100{% endif %}" data-type="{{ item.type }}">
                     <td class="px-4 py-2">
                         {% if item.type == 'message' %}
                             <span class="px-2 py-1 bg-blue-600 text-white rounded-full text-xs font-semibold">Message</span>
@@ -35,7 +35,7 @@
                         {% endif %}
                     </td>
                     <td class="px-4 py-2">{{ item.client }}</td>
-                    <td class="px-4 py-2">{{ item.subject }}</td>
+                    <td class="px-4 py-2">{{ item.subject|default:"N/A" }}</td>
                     <td class="px-4 py-2">{{ item.created_at|date:"Y-m-d H:i" }}</td>
                 </tr>
                 {% endfor %}
@@ -66,11 +66,7 @@ filterBtns.forEach(btn => {
     btn.addEventListener('click', () => {
         const type = btn.dataset.type;
         document.querySelectorAll('.notification-row').forEach(row => {
-            if (type === 'all' || row.dataset.type === type) {
-                row.style.display = '';
-            } else {
-                row.style.display = 'none';
-            }
+            row.style.display = (type === 'all' || row.dataset.type === type) ? '' : 'none';
         });
     });
 });

@@ -28,6 +28,8 @@ urlpatterns = [
     path('articles/', main_views.article_list, name='article_list'),
     path('articles/category/<slug:category_slug>/', main_views.article_list, name='article_by_category'),
     path('articles/<slug:slug>/', main_views.article_detail, name='article_detail'),
+    path("blogs/new/", admin_views.article_create, name="article_create"),
+
 
     # ---------------------------
     # Service Pages
@@ -44,12 +46,14 @@ urlpatterns = [
     # ---------------------------
     path('admin-dashboard/', admin_views.dashboard_home, name='admin_dashboard_home'),
     path('admin-dashboard/contacts/', admin_views.contacts_list, name='admin_dashboard_contacts'),
-    path('admin-dashboard/calls/', admin_views.scheduled_calls_list, name='admin_dashboard_calls'),
+    path('admin-dashboard/calls/', admin_views.scheduled_calls_admin, name='admin_dashboard_calls'),
     path('admin-dashboard/activity/', admin_views.activity_log_list, name='admin_dashboard_activity'),
 
     # Call actions
     path('admin-dashboard/call/confirm/<int:call_id>/', admin_views.confirm_call, name='admin_confirm_call'),
     path('admin-dashboard/call/decline/<int:call_id>/', admin_views.decline_call, name='admin_decline_call'),
+
+    path('test-email/', admin_views.test_email, name='test_email'),
 
     # ---------------------------
     # Notifications
@@ -57,6 +61,14 @@ urlpatterns = [
     path('admin-dashboard/notifications/', admin_views.all_notifications, name='all_notifications'),
     path('admin-dashboard/notifications/fetch/', admin_views.fetch_notifications, name='fetch_notifications'),
 
+    # Admin dashboard blog management
+    path('blogs/new/', admin_views.article_create, name='article_create'),  # create new blog
+    path('admin-dashboard/blogs/', admin_views.manage_blogs, name='manage_blogs'),
+    path('admin-dashboard/blogs/view/<int:blog_id>/', admin_views.view_blog, name='view_blog'),
+    path('admin-dashboard/blogs/edit/<int:blog_id>/', admin_views.edit_blog, name='edit_blog'),
+    path('admin-dashboard/blogs/delete/<int:blog_id>/', admin_views.delete_blog, name='delete_blog'),
+    path('profile/', admin_views.admin_profile, name='admin_profile'),  # ✅ Add this
+    path('logout/', admin_views.logout_view, name='logout'),
 
 
     path('users/', include('users.urls')),
@@ -72,6 +84,9 @@ urlpatterns = [
     path('events/add/', main_views.add_event, name='add_event'),
     path('events/delete/<int:event_id>/', main_views.delete_event, name='delete_event'),
     path('events/edit/<int:event_id>/', main_views.edit_event, name='edit_event'),
+
+    path('messages/add/', admin_views.add_message, name='add_message'),
+    path('calls/add/', admin_views.add_call, name='add_call'),
 ]
 
 # Serve robots.txt

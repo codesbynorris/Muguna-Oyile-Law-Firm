@@ -51,6 +51,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'advocates.context_processors.admin_context',
             ],
         },
     },
@@ -104,7 +105,6 @@ EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_USE_SSL = False
-
 EMAIL_HOST_USER = 'codesbynorris@gmail.com'       # your Gmail
 EMAIL_HOST_PASSWORD = 'tton rbjn kaij goyj'       # your app password (not Gmail login password!)
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER

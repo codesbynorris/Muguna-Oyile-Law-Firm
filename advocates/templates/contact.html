@@ -577,69 +577,62 @@
     renderCalendar(displayMonth, displayYear);
   });
 
-  function populateTimeSlotsForDate(date){
+  function populateTimeSlotsForDate(date) {
     timeSlotsContainer.innerHTML = '';
     selectedTime = null;
     hiddenTimeSlotInput.value = '';
 
-    const dow = date.getDay(); // 0=Sun .. 6=Sat
+    const dow = date.getDay();
     let slots = [];
 
-    if(dow >= 1 && dow <= 5){
-      // Weekdays: 9:00 → 17:00, 45 min steps
-      let start = new Date(date);
-      start.setHours(9, 0, 0, 0);
-
-      let endOfDay = new Date(date);
-      endOfDay.setHours(17, 0, 0, 0);
-
-      while(start < endOfDay){
-        let end = new Date(start.getTime() + 45 * 60000);
-        if(end > endOfDay) break;
-        slots.push({ start: new Date(start), end: new Date(end) });
-        start = end;
-      }
-    } else if(dow === 6){
-      // Saturday: 9:00 → 12:00, 45 min steps
-      let start = new Date(date);
-      start.setHours(9, 0, 0, 0);
-
-      let endOfDay = new Date(date);
-      endOfDay.setHours(12, 0, 0, 0);
-
-      while(start < endOfDay){
-        let end = new Date(start.getTime() + 45 * 60000);
-        if(end > endOfDay) break;
-        slots.push({ start: new Date(start), end: new Date(end) });
-        start = end;
-      }
+    if (dow >= 1 && dow <= 5) {
+        let start = new Date(date);
+        start.setHours(9, 0, 0, 0);
+        let endOfDay = new Date(date);
+        endOfDay.setHours(17, 0, 0, 0);
+        while (start < endOfDay) {
+            let end = new Date(start.getTime() + 45 * 60000);
+            if (end > endOfDay) break;
+            slots.push({ start: new Date(start), end: new Date(end) });
+            start = end;
+        }
+    } else if (dow === 6) {
+        let start = new Date(date);
+        start.setHours(9, 0, 0, 0);
+        let endOfDay = new Date(date);
+        endOfDay.setHours(12, 0, 0, 0);
+        while (start < endOfDay) {
+            let end = new Date(start.getTime() + 45 * 60000);
+            if (end > endOfDay) break;
+            slots.push({ start: new Date(start), end: new Date(end) });
+            start = end;
+        }
     } else {
-      selectedDateDisplay.textContent = 'Closed on Sundays';
-      return;
+        selectedDateDisplay.textContent = 'Closed on Sundays';
+        return;
     }
 
-    if(slots.length === 0){
-      selectedDateDisplay.textContent = 'No available times for this date.';
-      return;
+    if (slots.length === 0) {
+        selectedDateDisplay.textContent = 'No available times for this date.';
+        return;
     }
 
-    // create buttons for each slot
     slots.forEach(slot => {
-      const label = `${formatTime(slot.start)} - ${formatTime(slot.end)}`;
-      const btn = document.createElement('button');
-      btn.type = 'button';
-      btn.className = 'time-slot';
-      btn.textContent = label;
-      btn.addEventListener('click', () => {
-        // visually select
-        timeSlotsContainer.querySelectorAll('.time-slot').forEach(s => s.classList.remove('selected'));
-        btn.classList.add('selected');
-        selectedTime = label;
-        hiddenTimeSlotInput.value = label;
-      });
-      timeSlotsContainer.appendChild(btn);
+        const label = `${formatTime(slot.start)} - ${formatTime(slot.end)}`;
+        const startTime = slot.start.toTimeString().slice(0, 8); // e.g., "09:00:00"
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'time-slot';
+        btn.textContent = label;
+        btn.addEventListener('click', () => {
+            timeSlotsContainer.querySelectorAll('.time-slot').forEach(s => s.classList.remove('selected'));
+            btn.classList.add('selected');
+            selectedTime = startTime;
+            hiddenTimeSlotInput.value = startTime; // Store HH:MM:SS
+        });
+        timeSlotsContainer.appendChild(btn);
     });
-  }
+}
 
   function formatTime(d){
     return d.toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' });

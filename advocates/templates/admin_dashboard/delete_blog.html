@@ -1,0 +1,15 @@
+{% extends "admin_dashboard/base_admin.html" %}
+{% block title %}Delete Blog{% endblock %}
+
+{% block dashboard_content %}
+<div class="p-6 max-w-md mx-auto text-center">
+    <h1 class="text-2xl font-bold text-red-600 mb-4">Delete Blog</h1>
+    <p class="mb-6">Are you sure you want to delete <strong>{{ article.title }}</strong>?</p>
+
+    <form method="POST">
+        {% csrf_token %}
+        <button type="submit" class="px-6 py-2 bg-red-600 text-white rounded hover:bg-red-700">Yes, Delete</button>
+        <a href="{% url 'manage_blogs' %}" class="px-6 py-2 bg-gray-200 text-gray-800 rounded hover:bg-gray-300">Cancel</a>
+    </form>
+</div>
+{% endblock %}

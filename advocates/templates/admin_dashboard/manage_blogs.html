@@ -1,0 +1,65 @@
+{% extends "admin_dashboard/base_admin.html" %}
+{% block title %}Manage Blogs{% endblock %}
+
+{% block dashboard_content %}
+<div class="p-6 max-w-7xl mx-auto">
+    <div class="flex justify-between items-center mb-4">
+        <h1 class="text-3xl font-bold text-blue-900">📝 Manage Blogs</h1>
+        <a href="{% url 'article_create' %}" class="px-4 py-2 bg-blue-900 text-white rounded hover:bg-amber-500">➕ New Blog</a>
+    </div>
+
+    <!-- Filters -->
+    <form method="get" class="flex gap-4 mb-4">
+        <!-- Category Filter -->
+        <select name="category" class="rounded border-gray-300 px-3 py-2 shadow-sm focus:ring-2 focus:ring-amber-200 focus:border-amber-500">
+            <option value="">All Categories</option>
+            {% for cat in categories %}
+            <option value="{{ cat }}" {% if selected_category == cat %}selected{% endif %}>{{ cat }}</option>
+            {% endfor %}
+        </select>
+
+        <!-- Author Filter -->
+        <select name="author" class="rounded border-gray-300 px-3 py-2 shadow-sm focus:ring-2 focus:ring-amber-200 focus:border-amber-500">
+            <option value="">All Authors</option>
+            {% for auth in authors %}
+            <option value="{{ auth }}" {% if selected_author == auth %}selected{% endif %}>{{ auth }}</option>
+            {% endfor %}
+        </select>
+
+        <button type="submit" class="px-4 py-2 bg-blue-900 text-white rounded hover:bg-amber-500">Filter</button>
+        <a href="{% url 'manage_blogs' %}" class="px-4 py-2 bg-gray-300 text-gray-800 rounded hover:bg-gray-400">Reset</a>
+    </form>
+
+    <!-- Blog Table -->
+    <table class="min-w-full bg-white shadow rounded-lg overflow-hidden">
+        <thead class="bg-gray-200">
+            <tr>
+                <th class="px-4 py-2 text-left">Title</th>
+                <th class="px-4 py-2 text-left">Category</th>
+                <th class="px-4 py-2 text-left">Author</th>
+                <th class="px-4 py-2 text-left">Created At</th>
+                <th class="px-4 py-2 text-left">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for article in blogs %}
+            <tr class="border-b">
+                <td class="px-4 py-2">{{ article.title }}</td>
+                <td class="px-4 py-2">{{ article.category.name }}</td>
+                <td class="px-4 py-2">{{ article.author }}</td>
+                <td class="px-4 py-2">{{ article.created_at|date:"d M Y H:i" }}</td>
+                <td class="px-4 py-2 space-x-2">
+                    <a href="{% url 'view_blog' article.id %}" class="text-blue-600 hover:underline">View</a>
+                    <a href="{% url 'edit_blog' article.id %}" class="text-amber-600 hover:underline">Edit</a>
+                    <a href="{% url 'delete_blog' article.id %}" class="text-red-600 hover:underline">Delete</a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="5" class="px-4 py-4 text-center text-gray-500">No blogs found.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

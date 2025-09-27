@@ -1,0 +1,15 @@
+{% extends "admin_dashboard/base_admin.html" %}
+{% block title %}Edit Blog{% endblock %}
+
+{% block dashboard_content %}
+<div class="p-6 max-w-5xl mx-auto">
+    <h1 class="text-3xl font-bold text-blue-900 mb-6">✏️ Edit Blog</h1>
+
+    <form method="POST" enctype="multipart/form-data" class="space-y-6">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="px-6 py-2 bg-amber-500 text-white rounded hover:bg-amber-600">Update Blog</button>
+        <a href="{% url 'manage_blogs' %}" class="px-6 py-2 bg-gray-200 text-gray-800 rounded hover:bg-gray-300">Cancel</a>
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,128 @@
+{% extends "admin_dashboard/base_admin.html" %}
+{% load static %}
+
+{% block title %}Write Blog - Admin Dashboard{% endblock %}
+
+{% block dashboard_content %}
+<div class="p-6 max-w-5xl mx-auto">
+    <!-- Page Title -->
+    <h1 class="text-3xl font-extrabold text-blue-900 mb-8 border-b-4 border-amber-500 inline-block pb-2">
+        ✍️ Write a New Blog
+    </h1>
+
+    <!-- Message Box -->
+    <div id="form-message" class="hidden p-4 mb-6 rounded-lg"></div>
+
+    <!-- Blog Form -->
+    <div class="bg-white rounded-2xl shadow-xl p-10 border border-gray-100">
+        <form id="article-form" method="POST" enctype="multipart/form-data" class="space-y-8">
+            {% csrf_token %}
+
+            <!-- Title -->
+            <div>
+                {{ form.title.label_tag }}
+                {{ form.title }}
+                {% if form.title.errors %}
+                    <p class="text-sm text-red-600 mt-1">{{ form.title.errors }}</p>
+                {% endif %}
+            </div>
+
+            <!-- Content -->
+            <div>
+                {{ form.content.label_tag }}
+                {{ form.content }}
+                {% if form.content.errors %}
+                    <p class="text-sm text-red-600 mt-1">{{ form.content.errors }}</p>
+                {% endif %}
+            </div>
+
+            <!-- Category -->
+            <div>
+                {{ form.category.label_tag }}
+                {{ form.category }}
+                {% if form.category.errors %}
+                    <p class="text-sm text-red-600 mt-1">{{ form.category.errors }}</p>
+                {% endif %}
+            </div>
+
+            <!-- Image -->
+            <div>
+                {{ form.image.label_tag }}
+                {{ form.image }}
+                <p class="mt-2 text-xs text-gray-400">Upload a high-quality image for the blog header.</p>
+                {% if form.image.errors %}
+                    <p class="text-sm text-red-600 mt-1">{{ form.image.errors }}</p>
+                {% endif %}
+            </div>
+
+            <!-- Author -->
+            <div>
+                {{ form.author.label_tag }}
+                {{ form.author }}
+                {% if form.author.errors %}
+                    <p class="text-sm text-red-600 mt-1">{{ form.author.errors }}</p>
+                {% endif %}
+            </div>
+
+            <!-- Submit -->
+            <div class="pt-6 flex justify-end">
+                <button type="submit"
+                        class="px-8 py-3 bg-blue-900 text-white font-semibold rounded-xl shadow-md hover:bg-amber-500 hover:shadow-lg transition-all duration-300">
+                    ✅ Publish Article
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- AJAX Script -->
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    const form = document.getElementById("article-form");
+    const msgDiv = document.getElementById("form-message");
+
+    form.addEventListener("submit", function(e){
+        e.preventDefault();
+        let formData = new FormData(form);
+
+        fetch("{% url 'article_create' %}", {
+            method: "POST",
+            headers: {
+                "X-Requested-With": "XMLHttpRequest",
+                "X-CSRFToken": document.querySelector('[name=csrfmiddlewaretoken]').value
+            },
+            body: formData
+        })
+        .then(res => res.json())
+        .then(data => {
+            msgDiv.className = "";
+            msgDiv.textContent = "";
+
+            if(data.success){
+                msgDiv.textContent = data.message;
+                msgDiv.className = "p-4 mb-6 rounded-lg bg-green-100 text-green-800";
+                msgDiv.classList.remove("hidden");
+                form.reset();
+                setTimeout(() => msgDiv.classList.add("hidden"), 3000);
+            } else {
+                let errorsText = "";
+                for(let field in data.errors){
+                    data.errors[field].forEach(err => errorsText += err.message + " ");
+                }
+                msgDiv.textContent = errorsText;
+                msgDiv.className = "p-4 mb-6 rounded-lg bg-red-100 text-red-800";
+                msgDiv.classList.remove("hidden");
+                setTimeout(() => msgDiv.classList.add("hidden"), 5000);
+            }
+        })
+        .catch(err => {
+            console.error("AJAX error:", err);
+            msgDiv.textContent = "⚠️ Something went wrong. Please try again.";
+            msgDiv.className = "p-4 mb-6 rounded-lg bg-red-100 text-red-800";
+            msgDiv.classList.remove("hidden");
+            setTimeout(() => msgDiv.classList.add("hidden"), 5000);
+        });
+    });
+});
+</script>
+{% endblock %}

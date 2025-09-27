@@ -9,6 +9,8 @@ from django.http import JsonResponse
 from datetime import timedelta, datetime
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.timezone import localdate
+from .forms import ArticleForm
+from .models import Category
 import json
 
 
@@ -21,26 +23,30 @@ from .models import (
     AdminActivityLog,
     ActivityLog,
     CalendarEvent,
+    LEGAL_SERVICES,
+    slugify
 )
 
 # ---------------------------
 # Helpers
 # ---------------------------
 def send_html_email(subject, template, context, to_email):
-    """Send HTML email with plain text fallback."""
-    html_content = render_to_string(template, context)
-    text_content = render_to_string(template, context).replace('<br>', '\n')
+    try:
+        html_content = render_to_string(template, context)
+        text_content = render_to_string(template, context).replace("<br>", "\n")
+        email = EmailMultiAlternatives(
+            subject=subject,
+            body=text_content,
+            from_email=settings.DEFAULT_FROM_EMAIL,
+            to=[to_email],
+        )
+        email.attach_alternative(html_content, "text/html")
+        email.send()
+    except Exception as e:
+        # Optionally log the error or handle it as needed
+        print(f"Email sending failed to {to_email}: {e}")
 
-    email = EmailMultiAlternatives(
-        subject=subject,
-        body=text_content,
-        from_email=settings.DEFAULT_FROM_EMAIL,
-        to=[to_email],
-    )
-    email.attach_alternative(html_content, "text/html")
-    email.send()
-
-
+        
 def admin_check(user):
     """Check if user is admin/staff."""
     return user.is_staff
@@ -146,29 +152,58 @@ def article_detail(request, slug):
     }
     return render(request, "articles/article_detail.html", context)
 
+def write_blog(request):
+    categories = [(c.id, c.name) for c in Category.objects.all()]
 
+    if request.method == "POST":
+        title = request.POST.get("title")
+        content = request.POST.get("content")
+        category_id = request.POST.get("category")
+        image = request.FILES.get("image")
+        author = request.POST.get("author")
+
+        category = Category.objects.get(id=category_id)
+
+        article = Article.objects.create(
+            title=title,
+            content=content,
+            category=category,
+            image=image,
+            author=author,
+            slug=slugify(title),  # 👈 ensures slug is set
+        )
+
+        return redirect("article_detail", slug=article.slug)
+
+    return render(request, "admin_dashboard/write_blog.html", {
+        "categories": categories,
+    }) 
 # ---------------------------
 # Contact & Schedule Call
 # ---------------------------
 def contact_us(request):
+    contact_form = ContactMessageForm()
+    call_form = ScheduledCallForm()
+
     if request.method == "POST":
         form_type = request.POST.get("form_type")
 
-        # --- Contact Message ---
+        # ----------- Handle Contact Message -----------
         if form_type == "message":
-            form = ContactMessageForm(request.POST)
-            if form.is_valid():
-                contact = form.save()
+            contact_form = ContactMessageForm(request.POST)
+            if contact_form.is_valid():
+                contact = contact_form.save()
 
-                # Email to admin
+                if contact.created_at <= timezone.now() - timedelta(hours=48):
+                    contact.is_red_flag = True
+                    contact.save()
+
                 send_html_email(
                     subject=f"📩 New Contact Message - {contact.subject}",
                     template="emails/contact_admin.html",
                     context={"contact": contact, "firm_name": "Law Firm"},
                     to_email=settings.CONTACT_RECEIVER_EMAIL,
                 )
-
-                # Email to user
                 send_html_email(
                     subject="✅ We received your message",
                     template="emails/contact_user.html",
@@ -176,30 +211,32 @@ def contact_us(request):
                     to_email=contact.email,
                 )
 
-                messages.success(request, "Your message has been sent successfully!")
-                return redirect("contact")
+                # Redirect with ?sent=1 to trigger modal
+                return redirect("/contact/?sent=1")
 
-        # --- Schedule a Call ---
+        # ----------- Handle Scheduled Call -----------
         elif form_type == "schedule":
-            form = ScheduledCallForm(request.POST)
-            if form.is_valid():
-                date = form.cleaned_data["date"]
-                time_slot = form.cleaned_data["time_slot"]
+            call_form = ScheduledCallForm(request.POST)
+            if call_form.is_valid():
+                date = call_form.cleaned_data["date"]
+                time_slot = call_form.cleaned_data["time_slot"]
 
                 if ScheduledCall.objects.filter(date=date, time_slot=time_slot).exists():
-                    messages.error(request, "This slot is already booked. Please choose another.")
+                    # Slot already booked — optional: use messages.error here
+                    return redirect("/contact/?sent=slot_taken")
                 else:
-                    call = form.save()
+                    call = call_form.save()
 
-                    # Email to admin
+                    if call.created_at <= timezone.now() - timedelta(hours=48):
+                        call.is_red_flag = True
+                        call.save()
+
                     send_html_email(
                         subject=f"📅 New Call Request - {call.first_name} {call.last_name}",
                         template="emails/call_admin.html",
                         context={"call": call, "firm_name": "Law Firm"},
                         to_email=settings.CONTACT_RECEIVER_EMAIL,
                     )
-
-                    # Email to user
                     send_html_email(
                         subject="⏳ Call request received",
                         template="emails/call_user.html",
@@ -207,13 +244,19 @@ def contact_us(request):
                         to_email=call.email,
                     )
 
-                    messages.success(request, "Your call request has been submitted!")
-                    return redirect("contact")
-    else:
-        form = ContactMessageForm()
+                    # Redirect with ?sent=1 to trigger modal
+                    return redirect("/contact/?sent=1")
 
-    return render(request, "contact.html", {"form": form})
-
+    # GET or invalid POST
+    return render(
+        request,
+        "contact.html",
+        {
+            "contact_form": contact_form,
+            "call_form": call_form,
+            "legal_services": LEGAL_SERVICES,
+        },
+    )
 
 # ---------------------------
 # Admin Dashboard
@@ -332,24 +375,30 @@ def fetch_notifications(request):
 # ---------------------------
 @login_required
 @user_passes_test(admin_check)
+@login_required
+@user_passes_test(lambda u: u.is_staff)
 def confirm_call(request, call_id):
     call = get_object_or_404(ScheduledCall, id=call_id)
+
+    # Update call status
     call.is_confirmed = True
     call.is_read = True
-    call._admin_user = request.user
     call.save()
 
-    # Create CalendarEvent automatically (includes time)
-    title_with_time = f"Call with {call.first_name} {call.last_name} at {call.time_slot.strftime('%H:%M')}"
-    CalendarEvent.objects.create(
-        title=title_with_time,
-        client=f"{call.first_name} {call.last_name}",
-        case_name=call.subject,
-        date=call.date,
-        event_type=CalendarEvent.CALL,
-        created_by=request.user,
-        time_slot=call.time_slot
-    )
+    # Create CalendarEvent if not already linked
+    if not call.calendar_event:
+        event_title = f"Call with {call.first_name} {call.last_name} at {call.time_slot.strftime('%H:%M')}"
+        event = CalendarEvent.objects.create(
+            title=event_title,
+            client=f"{call.first_name} {call.last_name}",
+            case_name=call.subject,
+            date=call.date,
+            time_slot=call.time_slot,
+            event_type=CalendarEvent.CALL,
+            created_by=request.user
+        )
+        call.calendar_event = event
+        call.save()
 
     # Log admin activity
     ActivityLog.objects.create(
@@ -357,7 +406,7 @@ def confirm_call(request, call_id):
         action=f"Confirmed call: {call.first_name} {call.last_name} at {call.time_slot.strftime('%H:%M')}"
     )
 
-    # Email notifications
+    # Send email notifications
     send_html_email(
         subject="✅ Your call has been confirmed",
         template="emails/call_confirmed.html",
@@ -371,7 +420,6 @@ def confirm_call(request, call_id):
 
     messages.success(request, f"Call with {call.first_name} confirmed and added to calendar.")
     return redirect("admin_dashboard")
-
 
 
 
@@ -402,17 +450,48 @@ def decline_call(request, call_id):
 @login_required
 @user_passes_test(lambda u: u.is_staff)
 def all_notifications(request):
+    # Fetch all items
     messages_list = ContactMessage.objects.all().order_by("-created_at")
     calls_list = ScheduledCall.objects.all().order_by("-created_at")
     red_flags = AdminActivityLog.objects.all().order_by("-created_at")
 
+    # Convert each queryset into a common dict structure
+    notifications = []
+
+    for m in messages_list:
+        notifications.append({
+            "type": "message",
+            "client": f"{m.first_name} {m.last_name}",
+            "subject": m.subject,
+            "created_at": m.created_at,
+            "red_flag": m.is_red_flag
+        })
+
+    for c in calls_list:
+        notifications.append({
+            "type": "call",
+            "client": f"{c.first_name} {c.last_name}",
+            "subject": getattr(c, "subject", "N/A"),
+            "created_at": c.created_at,
+            "red_flag": c.is_red_flag
+        })
+
+    for r in red_flags:
+        notifications.append({
+            "type": "activity",
+            "client": getattr(r, "user", "Admin"),
+            "subject": getattr(r, "action", "N/A"),
+            "created_at": r.created_at,
+            "red_flag": True
+        })
+
+    # Sort combined list by created_at descending
+    notifications.sort(key=lambda x: x["created_at"], reverse=True)
+
     context = {
-        "messages": messages_list,
-        "calls": calls_list,
-        "red_flags": red_flags,
+        "notifications": notifications,
     }
     return render(request, "admin_dashboard/all_notifications.html", context)
-
 
 # ---------------------------
 # Internal Calendar Events
@@ -504,3 +583,39 @@ def edit_event(request, event_id):
         event.title = data.get('title', event.title)
         event.save()
         return JsonResponse({"title": event.title})
+
+def admin_required(user):
+    return user.is_staff or user.is_superuser
+
+@login_required
+@user_passes_test(admin_required)
+def article_create(request):
+    if request.method == "POST":
+        form = ArticleForm(request.POST, request.FILES)
+
+        form.fields['category'].queryset = Category.objects.all()
+
+        if form.is_valid():
+            article = form.save()
+            return JsonResponse({"success": True, "message": "✅ Blog published successfully!"})
+        else:
+            errors = {field: error.get_json_data() for field, error in form.errors.items()}
+            return JsonResponse({"success": False, "errors": errors})
+    else:
+        form = ArticleForm()
+    return render(request, "admin_dashboard/article_create.html", {"form": form})
+
+def schedule_call(request):
+    if request.method == "POST":
+        ScheduledCall.objects.create(
+            first_name=request.POST.get('first_name'),
+            last_name=request.POST.get('last_name'),
+            email=request.POST.get('email'),
+            phone_number=request.POST.get('phone'),
+            subject=request.POST.get('subject'),
+            date=request.POST.get('date'),
+            time_slot=request.POST.get('time_slot')
+        )
+        messages.success(request, "Your call request has been submitted successfully!")
+        return redirect('contact')
+    return render(request, "schedule_call.html")

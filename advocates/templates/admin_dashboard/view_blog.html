@@ -1,0 +1,22 @@
+{% extends "admin_dashboard/base_admin.html" %}
+{% block title %}View Blog{% endblock %}
+
+{% block dashboard_content %}
+<div class="p-6 max-w-4xl mx-auto">
+    <h1 class="text-3xl font-bold text-blue-900 mb-4">{{ article.title }}</h1>
+    <p class="text-gray-500 mb-2">Category: {{ article.get_category_display }}</p>
+    <p class="text-gray-500 mb-4">Author: {{ article.author }} | Created: {{ article.created_at|date:"d M Y H:i" }}</p>
+
+    {% if article.image %}
+        <img src="{{ article.image.url }}" class="mb-6 w-full rounded-xl shadow-lg" alt="Blog Image">
+    {% endif %}
+
+    <div class="prose max-w-full">{{ article.content|linebreaks }}</div>
+
+    <div class="mt-6 space-x-2">
+        <a href="{% url 'edit_blog' article.id %}" class="px-4 py-2 bg-amber-500 text-white rounded hover:bg-amber-600">Edit</a>
+        <a href="{% url 'delete_blog' article.id %}" class="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700">Delete</a>
+        <a href="{% url 'manage_blogs' %}" class="px-4 py-2 bg-gray-200 text-gray-800 rounded hover:bg-gray-300">Back</a>
+    </div>
+</div>
+{% endblock %}
