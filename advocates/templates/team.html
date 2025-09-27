@@ -1,175 +1,550 @@
-{% extends 'team_base.html' %}
-{% load static %}
-
-{% block title %}Tony Muguna – Litigation and Commercial Lead | Muguna & Oyile Advocates{% endblock %}
-
-{% block extra_head %}
-<link rel="canonical" href="https://www.mugunaoyile.co.ke/team/tony-muguna/" />
-<meta name="description" content="Meet Tony Muguna, Litigation and Commercial Lead with a 95% success rate in litigation and a landmark impact on corporate law in East Africa." />
-
-<!-- Open Graph -->
-<meta property="og:title" content="Tony Muguna – Litigation and Commercial Lead | Muguna & Oyile Advocates" />
-<meta property="og:description" content="127 cases handled, 95% success rate. Learn more about Tony Muguna, Kenya's respected legal mind." />
-<meta property="og:image" content="https://www.mugunaoyile.co.ke/static/images/tony.jpg" />
-<meta property="og:url" content="https://www.mugunaoyile.co.ke/team/tony-muguna/" />
-<meta property="og:type" content="profile" />
-
-<!-- Twitter Card -->
-<meta name="twitter:card" content="summary_large_image" />
-<meta name="twitter:title" content="Tony Muguna – Litigation and Commercial Lead" />
-<meta name="twitter:description" content="Learn more about Tony Muguna’s litigation achievements and legal leadership." />
-<meta name="twitter:image" content="https://www.mugunaoyileadvocates.co.ke/static/images/tony.jpg" />
-
-<!-- Google Analytics -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXX"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){ dataLayer.push(arguments); }
-  gtag('js', new Date());
-  gtag('config', 'G-XXXXXXX', { page_path: window.location.pathname });
-</script>
-
-<!-- Schema.org Person -->
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "Person",
-  "name": "Tony Muguna",
-  "jobTitle": "Litigation and Commercial Lead",
-  "worksFor": {
-    "@type": "LegalService",
-    "name": "Muguna & Oyile Advocates"
-  },
-  "image": "https://www.mugunaoyileadvocates.co.ke/static/images/tony.jpg",
-  "url": "https://www.mugunaoyileadvocates.co.ke/team/tony-muguna/",
-  "sameAs": [
-    "https://www.linkedin.com/in/tony-muguna-903a05134/",
-    "https://www.mugunaoyileadvocates.co.ke"
-  ],
-  "alumniOf": {
-    "@type": "EducationalOrganization",
-    "name": "Kenya School of Law"
-  },
-  "description": "Tony Muguna is the Litigation and Commercial Lead with a 95% litigation success rate. He is a published legal scholar and a former lecturer in constitutional law."
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Markeetar - Team</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Great+Vibes&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+/* --- Global Styles and Typography --- */
+:root {
+    --primary-color: #198754; /* Green from the 'Get Started' button and checkmarks */
+    --secondary-color: #0d121c; /* Dark navy for the header */
+    --text-color: #333;
+    --light-text-color: #777;
+    --background-light: #f8f8f8;
 }
-</script>
-{% endblock %}
 
-{% block content %}
-<div class="tm-wrapper">
-  <!-- Header with Portrait -->
-  <div class="tm-header-container">
-    <header class="tm-section-header tm-centered-header">
-      <h1>Tony Muguna</h1>
-      <span class="tm-header-subtitle"></span>
-      <div class="tm-profile-img-container">
-        <div class="tm-profile-title">Litigation & Commercial Lead</div>
-        <img src="{% static 'images/tony.jpg' %}" alt="Tony Muguna, Litigation and Commercial Lead" class="tm-profile-img" loading="lazy">
-      </div>
-    </header>
-  </div>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
 
-  <!-- Stats Section -->
-  <section class="tm-intro">
-    <div class="tm-container">
-      <div class="tm-stats-container">
-        <div class="tm-stat-item">
-          <div class="tm-stat-number tm-animated-counter" id="casesCounter">0</div>
-          <div class="tm-stat-label">Cases Handled</div>
+body {
+    font-family: 'Montserrat', sans-serif;
+    color: var(--text-color);
+    line-height: 1.6;
+}
+
+h1, h2 {
+    font-weight: 700;
+}
+
+/* Subtitle style like 'OUR TEAM' */
+.subtitle {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--primary-color);
+    letter-spacing: 2px;
+    margin-bottom: 10px;
+}
+
+/* Utility to center section content */
+section {
+    padding: 0;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* Call to action button styling */
+.cta-button, .discover-button {
+    padding: 10px 25px;
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background-color 0.3s;
+}
+
+.cta-button:hover, .discover-button:hover {
+    background-color: #156d44;
+}
+
+/* --- 1. Header/Navigation Section --- */
+.main-header {
+    background: url('placeholder-header-bg.jpg') no-repeat center center/cover;
+    height: 450px; 
+    position: relative;
+    z-index: 1;
+}
+
+.main-header::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.4); 
+    z-index: 2;
+}
+
+.header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 5%;
+    background-color: var(--secondary-color); 
+    color: white;
+    position: relative;
+    z-index: 3; 
+}
+
+.logo {
+    font-size: 1.5rem;
+    font-weight: 700;
+    letter-spacing: -1px;
+}
+
+nav a {
+    color: white;
+    text-decoration: none;
+    margin-left: 25px;
+    font-size: 0.9rem;
+    opacity: 0.8;
+    transition: opacity 0.2s;
+}
+
+nav a:hover {
+    opacity: 1;
+}
+
+/* Hero Title Styling */
+.hero-title-container {
+    position: absolute;
+    bottom: 40px;
+    left: 0;
+    right: 0;
+    color: white;
+    padding: 0 5%;
+    max-width: 1200px;
+    margin: 0 auto;
+    z-index: 3;
+    display: flex; 
+    justify-content: space-between;
+    align-items: flex-end;
+}
+
+.breadcrumb {
+    font-size: 0.9rem;
+    font-weight: 400;
+    opacity: 0.7;
+    text-align: right;
+    margin-bottom: 5px; 
+    flex-grow: 1;
+}
+
+.hero-main-title {
+    font-size: 3rem;
+    margin-top: 10px;
+    flex-shrink: 0;
+}
+
+/* --- 2. Mission Statement / Founder Section --- */
+.mission-section {
+    background-color: var(--background-light); 
+}
+
+.mission-container {
+    display: flex;
+    gap: 50px;
+    padding-top: 60px; 
+    align-items: flex-start;
+}
+
+.mission-text-left, .founder-info-right {
+    flex: 1;
+}
+
+.mission-text-left h2 {
+    font-size: 2.5rem;
+    line-height: 1.2;
+    margin-bottom: 30px;
+    max-width: 80%;
+}
+
+.team-meeting-photo {
+    width: 100%;
+    height: auto;
+    display: block;
+    border-radius: 5px;
+    margin-top: 30px; 
+}
+
+.founder-info-right p:not(.signature, .founder-title) {
+    margin-bottom: 20px;
+    color: var(--light-text-color);
+}
+
+.signature {
+    font-family: 'Great Vibes', cursive;
+    font-size: 2.5rem;
+    margin-top: 30px;
+    margin-bottom: 5px;
+    color: var(--text-color);
+}
+
+.founder-title {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--light-text-color);
+    letter-spacing: 1px;
+    margin-bottom: 30px;
+}
+
+.value-list {
+    list-style: none;
+    padding: 0;
+    margin-bottom: 30px;
+}
+
+.value-list li {
+    margin-bottom: 15px;
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+.value-list i {
+    color: var(--primary-color);
+    margin-right: 10px;
+}
+
+/* --- 3. Team Grid Section (Portrait & Social Icon Fix Applied) --- */
+.team-grid-section {
+    text-align: center;
+    padding-top: 0;
+    padding-bottom: 100px;
+    background-color: white;
+}
+
+.team-grid-heading {
+    font-size: 2rem;
+    margin-bottom: 50px;
+}
+
+.team-grid {
+    display: flex; 
+    justify-content: center;
+    gap: 40px; 
+    flex-wrap: wrap;
+}
+
+.team-member-card {
+    text-align: center;
+    flex-basis: calc(50% - 20px); 
+    max-width: 400px;
+    background-color: white; 
+    padding: 0; 
+    border-radius: 5px; 
+    box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+    transition: transform 0.3s, box-shadow 0.3s;
+    display: flex; 
+    flex-direction: column; 
+    align-items: center;
+    overflow: hidden; 
+}
+
+.team-member-card:hover {
+    transform: translateY(-5px); 
+    box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+}
+
+.member-image-container {
+    position: relative; /* Crucial for positioning floating icons */
+    overflow: hidden;
+    width: 100%; 
+    height: 350px; 
+    margin-bottom: 0; 
+}
+
+.member-photo {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; 
+    display: block;
+    /* FIX: REMOVED grayscale filter entirely for original color/tone */
+    filter: none; 
+    transition: filter 0.3s ease-in-out;
+}
+
+/* No change on hover needed since there's no filter to toggle */
+.team-member-card:hover .member-photo {
+    filter: none;
+}
+
+.member-name {
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin-top: 15px;
+    margin-bottom: 5px;
+}
+
+.member-role {
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: var(--light-text-color);
+    text-transform: uppercase;
+    margin-bottom: 15px;
+}
+
+/* FIX: Social Icons placed back on the image, visible only on hover */
+.social-icons {
+    position: absolute; /* Positioned relative to .member-image-container */
+    top: 10px;
+    right: 10px;
+    display: flex;
+    flex-direction: column; /* Vertical stack */
+    gap: 8px;
+    opacity: 0; /* Hidden by default */
+    transition: opacity 0.3s, transform 0.3s;
+}
+
+.team-member-card:hover .social-icons {
+    opacity: 1; /* Show on card hover */
+    /* Optional subtle animation to slide in */
+    transform: translateX(0); 
+}
+
+.social-icons a {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 35px;
+    height: 35px;
+    /* Use primary color (green) for background as seen in the original image */
+    background-color: var(--primary-color);
+    color: white; 
+    border-radius: 5px; 
+    font-size: 1rem;
+    transition: background-color 0.2s;
+}
+
+.social-icons a:hover {
+    background-color: #156d44;
+}
+
+/* --- Media Queries for Responsiveness --- */
+@media (max-width: 992px) {
+    .mission-container {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+    .mission-text-left h2 {
+        max-width: 100%;
+        font-size: 2.2rem;
+    }
+    .founder-info-right {
+        text-align: center;
+    }
+    .value-list {
+        display: inline-block;
+        text-align: left;
+    }
+    .team-grid {
+        flex-direction: column;
+        gap: 30px;
+    }
+    .team-member-card {
+        flex-basis: 90%; 
+        max-width: 350px;
+    }
+    .hero-title-container {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+    .breadcrumb {
+        text-align: center;
+    }
+}
+
+@media (max-width: 768px) {
+    .header-content {
+        flex-direction: column;
+        text-align: center;
+    }
+    nav {
+        margin: 10px 0;
+    }
+    nav a {
+        margin: 0 10px;
+    }
+}
+
+@media (max-width: 576px) {
+    .mission-text-left h2 {
+        font-size: 1.8rem;
+    }
+    .hero-main-title {
+        font-size: 2rem;
+    }
+    .signature {
+        font-size: 2rem;
+    }
+}
+
+/* --- New Quote Slider Styles --- */
+.quote-slider-container {
+    height: 120px; /* Gives space for the longest quote */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 80px;
+    overflow: hidden; /* Important: hides quotes that are not currently active */
+}
+
+.quote-slider {
+    position: relative;
+    width: 100%;
+    max-width: 800px;
+}
+
+.quote {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    font-size: 1.2rem;
+    line-height: 1.4;
+    font-weight: 600; /* Slightly lighter weight for long quote readability */
+    color: var(--text-color);
+    opacity: 0; /* Hidden by default */
+    transition: opacity 1s ease-in-out;
+    text-align: center;
+}
+
+.quote.active-quote {
+    opacity: 1; /* Only the active quote is visible */
+}
+
+.author {
+    display: block;
+    margin-top: 10px;
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--primary-color);
+}
+
+/* Update Media Query for smaller headings */
+@media (max-width: 768px) {
+    .quote-slider-container {
+        height: 150px; /* Adjust height for stacked mobile text */
+    }
+    .quote {
+        font-size: 1.5rem;
+    }
+}
+
+</style>
+</head>
+<body>
+    <section class="mission-section">
+        <div class="mission-container">
+            <div class="mission-text-left">
+                <p class="subtitle">OUR TEAM</p>
+                <h2>Alone we can do so little, together we can do so much.</h2>
+                <div class="team-photo-container">
+                    <img src="https://tse2.mm.bing.net/th/id/OIP.VTmeChM7aGUzu-JxXdcoRgHaE8?rs=1&pid=ImgDetMain&o=7&rm=3" alt="Team members smiling and collaborating" class="team-meeting-photo">
+                </div>
+            </div>
+
+            <div class="founder-info-right">
+                <p>"The life of the law has not been logic; it has been experience. The felt necessities of the time, the prevalent moral and political theories, intuitions of public policy, avowed or unconscious, even the prejudices which judges share with their fellow-men, have had a good deal more to do than the syllogism in determining the rules by which men should be governed."</p>
+                
+                <p class="signature">Oliver Wendell Holmes Jr.</p>
+                <p class="founder-title">LEGAL PHILOSOPHER</p> <ul class="value-list">
+                    <li><i class="fas fa-check-circle"></i> Commitment to Precedent</li>
+                    <li><i class="fas fa-check-circle"></i> Strategic Legal Innovation</li>
+                    <li><i class="fas fa-check-circle"></i> Unwavering Professionalism</li>
+                    <li><i class="fas fa-check-circle"></i> Advancement of Justice</li>
+                </ul>
+                <button class="discover-button">Discover more</button>
+            </div>
         </div>
-       <!-- <div class="tm-stat-item">
-          <div class="tm-stat-number">10</div>
-          <div class="tm-stat-label">Years Experience</div>
-        </div> -->
-        <div class="tm-stat-item">
-          <div class="tm-stat-number tm-animated-counter" id="successCounter">0</div>
-          <div class="tm-stat-label">Success Rate</div>
-        </div>
-      </div>
+    </section>
+    
+    <section class="team-grid-section">
+        <p class="subtitle">MEET OUR TEAM</p>
+        <div class="quote-slider-container">
+    <div class="quote-slider">
+        <h2 class="quote active-quote">
+            Alone we can do so little; together we can do so much.<span class="author">Helen Keller</span>
+        </h2>
+        <h2 class="quote">
+            Be careful what you water your dreams with. Water them with worry and fear and you will produce weeds. <span class="author">Lao Tzu</span>
+        </h2>
+        <h2 class="quote">
+            Always be on the lookout for ways to nurture your dream. <span class="author">Lao Tzu</span>
+        </h2>
+        <h2 class="quote">
+            It’s not about ideas, it’s about making ideas happen. <span class="author">Scott Belsky</span>
+        </h2>
     </div>
-  </section>
-
-  <!-- About -->
-  <section class="tm-about">
-    <div class="tm-container">
-      <div class="section-header centered-header">
-        <h2>Expert Legal Representation</h2>
-        <p>Tony Muguna is a dynamic and results-driven Advocate, currently practising as the Litigation and Commercial Lead at Muguna & Oyile Advocates, a forward-thinking law firm based in Nairobi and Meru, Kenya. With a deep command of corporate, commercial, and dispute resolution practice, Tony has earned a solid reputation for his tactical precision, strategic insight, and client-focused approach in both contentious and non-contentious matters.</p>
-
-        <p>He routinely advises corporations, financial institutions, start-ups, NGOs, and high-net-worth individuals on matters spanning corporate structuring, mergers and acquisitions, joint ventures, shareholder agreements, cross-border transactions, and regulatory compliance. Tony also has a strong foothold in real estate transactions, employment law, and banking and securities law.</p>
-
-        <p>In the litigation arena, he is known for handling complex commercial disputes, debt recovery, contractual enforcement, intellectual property infringement, and land-related disputes, with a particular focus on achieving commercially sound outcomes.</p>
-
-        <p>Notable mandates he has led or contributed to include:</p>
-        <ul id="tony-highlights">
-          <li>Advised on the acquisition of a majority stake in a Kenyan logistics firm by a South African private equity group, including regulatory approvals from COMESA and the Competition Authority of Kenya.</li>
-          <li>Represented a leading commercial bank in enforcing securities and recovering over Ksh. 600 million in defaulted loans through contested receivership and liquidation proceedings.</li>
-          <li>Led a restructuring of a multi-company manufacturing group, covering share transfers, employment rationalization, and lease renegotiations.</li>
-          <li>Conducted due diligence and prepared documentation for a Ksh. 1 billion real estate acquisition and project finance transaction.</li>
-          <li>Successfully defended a foreign investor in a shareholder dispute involving mismanagement allegations and breach of fiduciary duties.</li>
-        </ul>
-
-        <p>Known for his sharp legal drafting, negotiation skills, and courtroom presence, Tony is a trusted legal advisor to both local and international clients navigating Kenya’s business and legal environment.</p>
-
-        <p>Outside the legal sphere, Tony is an avid rugby enthusiast, passionately supporting Kenya's Shujaa and Simbas teams, and a lifelong fan of the South African Springboks. He also enjoys nature and adventure, often exploring Kenya’s landscapes for inspiration and renewal.</p>
-
-        <div class="hero-buttons">
-          <a href="{% url 'contact' %}" class="btn btn-primary">Connect With Me</a>
-        </div>
-      </div>
-
-      <div class="tm-signature">
-        <p>Tony Muguna</p>
-        <p>Litigation and Commercial Lead</p>
-      </div>
-
-      <div class="services-list-minimal">
-        <h3 class="skills-heading">Top Skills</h3>
-        <ul class="skills-list">
-          <li><i class="fas fa-gavel"></i><span>Legal Research & Analysis</span></li>
-          <li><i class="fas fa-file-signature"></i><span>Contract Drafting & Negotiation</span></li>
-          <li><i class="fas fa-search"></i><span>Due Diligence</span></li>
-          <li><i class="fas fa-folder-open"></i><span>Document Management</span></li>
-          <li><i class="fas fa-shield-alt"></i><span>Technology Law Compliance</span></li>
-        </ul>
-      </div>
-
-      <div class="services-list-minimal">
-        <h3 class="practice-areas-heading">Practice Areas</h3>
-        <ul class="practice-areas-list">
-          <li><i class="fas fa-briefcase"></i><span>Commercial Law</span></li>
-          <li><i class="fas fa-building"></i><span>Real Estate Law</span></li>
-          <li><i class="fas fa-user-shield"></i><span>Estate Planning</span></li>
-          <li><i class="fas fa-university"></i><span>Banking & Finance</span></li>
-          <li><i class="fas fa-lightbulb"></i><span>Intellectual Property Law</span></li>
-          <li><i class="fas fa-balance-scale"></i><span>Corporate Law</span></li>
-        </ul>
-      </div>
-    </div>
-  </section>
 </div>
-{% endblock %}
 
-{% block extra_js %}
-<script>
-document.addEventListener("DOMContentLoaded", () => {
-  const animateCounter = (el, target, suffix = "") => {
-    let start = 0;
-    const duration = 1000;
-    const startTime = performance.now();
+        <div class="team-grid">
+            
+            <div class="team-member-card">
+                <div class="member-image-container">
+                    <img src="https://randomuser.me/api/portraits/women/3.jpg" alt="Bethany Holland" class="member-photo">
+                    </div>
+                <p class="member-name">Lauretta Oyile</p>
+                <p class="member-role">TITLE</p>
+                <div class="social-icons">
+                    <a href="#"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fas fa-plus"></i></a>
+                </div>
+            </div>
+            
+            <div class="team-member-card">
+                <div class="member-image-container">
+                    <img src="https://randomuser.me/api/portraits/men/5.jpg" alt="Connor Harrison" class="member-photo"> </div>
+                <p class="member-name">Tony Muguna</p>
+                <p class="member-role">TITLES</p>
+                <div class="social-icons">
+                    <a href="#"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fas fa-plus"></i></a>
+                </div>
+            </div>
+            
+        </div>
+    </section>
 
-    const step = now => {
-      const progress = Math.min((now - startTime) / duration, 1);
-      const value = Math.floor(progress * target);
-      el.textContent = progress < 1 ? `${value}${suffix}` : `${target}${suffix}`;
-      if (progress < 1) requestAnimationFrame(step);
-    };
+    <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const quotes = document.querySelectorAll('.quote-slider .quote');
+        let currentQuote = 0;
 
-    requestAnimationFrame(step);
-  };
+        function showQuote(index) {
+            quotes.forEach((quote, i) => {
+                quote.classList.remove('active-quote');
+                if (i === index) {
+                    quote.classList.add('active-quote');
+                }
+            });
+        }
 
-  animateCounter(document.getElementById("casesCounter"), 127);
-  animateCounter(document.getElementById("successCounter"), 95, "%");
-});
+        function nextQuote() {
+            currentQuote = (currentQuote + 1) % quotes.length;
+            showQuote(currentQuote);
+        }
+
+        // Initialize the first quote
+        showQuote(currentQuote);
+
+        // Set the timer to switch quotes every 5000 milliseconds (5 seconds)
+        setInterval(nextQuote, 5000);
+    });
 </script>
-{% endblock %}
+</body>
+</html>
