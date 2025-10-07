@@ -1,24 +1,85 @@
-{% extends "emails/base_email.html" %}
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Call Update</title>
+  <style>
+    body {
+      font-family: 'Inter', Arial, sans-serif;
+      background-color: #f7f8fc;
+      color: #444;
+      margin: 0;
+      padding: 0;
+    }
+    .email-container {
+      max-width: 600px;
+      margin: 40px auto;
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      overflow: hidden;
+    }
+    .header {
+      background-color: #0B1B40;
+      padding: 25px 20px;
+      text-align: center;
+    }
+    .header img {
+      width: 90px;
+      height: auto;
+      margin-bottom: 10px;
+    }
+    .header h1 {
+      color: #C9A227;
+      font-size: 20px;
+      font-weight: 600;
+      margin: 0;
+    }
+    .content {
+      padding: 30px;
+    }
+    .content h2 {
+      color: #0B1B40;
+      margin-top: 0;
+    }
+    .details {
+      background: #f4f6fb;
+      border-left: 4px solid #C9A227;
+      padding: 15px;
+      margin: 20px 0;
+    }
+    .footer {
+      text-align: center;
+      font-size: 13px;
+      color: #888;
+      padding: 20px;
+      background: #f9fafc;
+    }
+  </style>
+</head>
+<body>
+  <div class="email-container">
+    <div class="header">
+      <img src="{{ site_url }}/static/images/muguna-oyile-logo.png" alt="Muguna Oyile Law Firm Logo">
+      <h1>Muguna Oyile Law Firm</h1>
+    </div>
 
-{% block title %}Your Scheduled Call Has Been Confirmed{% endblock %}
+    <div class="content">
+      <h2>Dear {{ call.first_name }},</h2>
+      <p>We regret to inform you that your scheduled call regarding <strong>{{ call.subject }}</strong> has been cancelled.</p>
 
-{% block content %}
-<p>Hi {{ call.first_name }},</p>
+      <div class="details">
+        <p><strong>Original Date:</strong> {{ date }}</p>
+        <p><strong>Original Time:</strong> {{ time_slot }}</p>
+      </div>
 
-<p>Good news! Your scheduled call with <strong>{{ firm_name }}</strong> has been <strong>confirmed</strong>.</p>
+      <p>Please visit our scheduling page to choose a new time that works best for you.</p>
+      <p>We apologize for any inconvenience and look forward to speaking with you soon.</p>
+    </div>
 
-<p>Here are the details:</p>
-<ul>
-    <li><strong>Date:</strong> {{ call.date }}</li>
-    <li><strong>Time:</strong> {{ call.time_slot }}</li>
-</ul>
-
-<p>Please make sure to be available at the scheduled time. If you need to reschedule, you can easily book a new time using the link below:</p>
-
-<a href="{{ booking_link }}" class="btn">Reschedule Call</a>
-
-<p>We look forward to speaking with you!</p>
-
-<p>Best regards,</p>
-<p>{{ firm_name }}</p>
-{% endblock %}
+    <div class="footer">
+      © {{ year }} Muguna Oyile Law Firm. All rights reserved.
+    </div>
+  </div>
+</body>
+</html>

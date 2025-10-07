@@ -11,6 +11,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.utils.timezone import localdate
 from .forms import ArticleForm
 from .models import Category
+from django.core.mail import EmailMessage
 import json
 
 
@@ -27,25 +28,45 @@ from .models import (
     slugify
 )
 
+
 # ---------------------------
 # Helpers
 # ---------------------------
 def send_html_email(subject, template, context, to_email):
+    """
+    Send a professional HTML email using Django templates.
+    Includes print logs for debugging.
+    """
     try:
+        print("📧 Preparing to send email...")
+        print(f"Subject: {subject}")
+        print(f"Recipient: {to_email}")
+        print(f"Template: {template}")
+
+        # Render the HTML content from the template and context
         html_content = render_to_string(template, context)
-        text_content = render_to_string(template, context).replace("<br>", "\n")
-        email = EmailMultiAlternatives(
+
+        # Create the email message
+        email = EmailMessage(
             subject=subject,
-            body=text_content,
+            body=html_content,
             from_email=settings.DEFAULT_FROM_EMAIL,
             to=[to_email],
         )
-        email.attach_alternative(html_content, "text/html")
-        email.send()
-    except Exception as e:
-        # Optionally log the error or handle it as needed
-        print(f"Email sending failed to {to_email}: {e}")
+        email.content_subtype = "html"  # Set content type to HTML
 
+        # Send the email
+        sent = email.send(fail_silently=False)
+
+        print(f"✅ Email successfully sent: {sent}")
+        return sent
+
+    except Exception as e:
+        print(f"❌ Error sending email: {e}")
+        return None
+    except Exception as e:
+        print("❌ Email sending error:", str(e))
+        return None
         
 def admin_check(user):
     """Check if user is admin/staff."""
@@ -190,20 +211,29 @@ def contact_us(request):
 
         # ----------- Handle Contact Message -----------
         if form_type == "message":
+            print("🚀 contact_us() triggered")
             contact_form = ContactMessageForm(request.POST)
+
             if contact_form.is_valid():
                 contact = contact_form.save()
+                print("✅ Contact form validated successfully")
 
+                # Check if older than 48 hours → mark red flag
                 if contact.created_at <= timezone.now() - timedelta(hours=48):
                     contact.is_red_flag = True
                     contact.save()
 
+                # Send admin email
+                print("📨 Sending admin email to:", settings.CONTACT_RECEIVER_EMAIL)
                 send_html_email(
                     subject=f"📩 New Contact Message - {contact.subject}",
                     template="emails/contact_admin.html",
                     context={"contact": contact, "firm_name": "Law Firm"},
                     to_email=settings.CONTACT_RECEIVER_EMAIL,
                 )
+
+                # Send user email
+                print("📨 Sending confirmation email to:", contact.email)
                 send_html_email(
                     subject="✅ We received your message",
                     template="emails/contact_user.html",
@@ -211,43 +241,53 @@ def contact_us(request):
                     to_email=contact.email,
                 )
 
-                # Redirect with ?sent=1 to trigger modal
                 return redirect("/contact/?sent=1")
+            else:
+                print("❌ Contact form validation errors:", contact_form.errors)
 
         # ----------- Handle Scheduled Call -----------
         elif form_type == "schedule":
             call_form = ScheduledCallForm(request.POST)
+
             if call_form.is_valid():
                 date = call_form.cleaned_data["date"]
                 time_slot = call_form.cleaned_data["time_slot"]
 
                 if ScheduledCall.objects.filter(date=date, time_slot=time_slot).exists():
-                    # Slot already booked — optional: use messages.error here
+                    print("⚠️ Slot already taken:", date, time_slot)
                     return redirect("/contact/?sent=slot_taken")
-                else:
-                    call = call_form.save()
 
-                    if call.created_at <= timezone.now() - timedelta(hours=48):
-                        call.is_red_flag = True
-                        call.save()
+                call = call_form.save()
 
-                    send_html_email(
-                        subject=f"📅 New Call Request - {call.first_name} {call.last_name}",
-                        template="emails/call_admin.html",
-                        context={"call": call, "firm_name": "Law Firm"},
-                        to_email=settings.CONTACT_RECEIVER_EMAIL,
-                    )
-                    send_html_email(
-                        subject="⏳ Call request received",
-                        template="emails/call_user.html",
-                        context={"call": call, "firm_name": "Law Firm"},
-                        to_email=call.email,
-                    )
+                # Mark as red flag if older than 48h
+                if call.created_at <= timezone.now() - timedelta(hours=48):
+                    call.is_red_flag = True
+                    call.save()
 
-                    # Redirect with ?sent=1 to trigger modal
-                    return redirect("/contact/?sent=1")
+                # Send admin email
+                print("📨 Sending admin email for scheduled call")
+                send_html_email(
+                    subject=f"📅 New Call Request - {call.first_name} {call.last_name}",
+                    template="emails/call_admin.html",
+                    context={"call": call, "firm_name": "Law Firm"},
+                    to_email=settings.CONTACT_RECEIVER_EMAIL,
+                )
 
-    # GET or invalid POST
+                # Send user email
+                print("📨 Sending confirmation email to:", call.email)
+                send_html_email(
+                    subject="⏳ Call Request Received",
+                    template="emails/call_user.html",
+                    context={"call": call, "firm_name": "Law Firm"},
+                    to_email=call.email,
+                )
+
+                return redirect("/contact/?sent=1")
+
+            else:
+                print("❌ Scheduled Call form validation errors:", call_form.errors)
+
+    # Default: GET or invalid POST
     return render(
         request,
         "contact.html",
@@ -256,10 +296,7 @@ def contact_us(request):
             "call_form": call_form,
             "legal_services": LEGAL_SERVICES,
         },
-    )
-
-# ---------------------------
-# Admin Dashboard
+    )# Admin Dashboard
 # ---------------------------
 @login_required
 @user_passes_test(admin_check)
@@ -406,6 +443,26 @@ def confirm_call(request, call_id):
         action=f"Confirmed call: {call.first_name} {call.last_name} at {call.time_slot.strftime('%H:%M')}"
     )
 
+from django.contrib.sites.shortcuts import get_current_site
+    current_site = get_current_site(request)
+    site_url = f"http://{current_site.domain}"  # Local = 127.0.0.1:8000, hosted = yourdomain.com
+
+    # ✅ Send confirmation email
+    send_html_email(
+        subject="✅ Your call has been confirmed",
+        template="emails/call_confirmed.html",
+        context={
+            "call": call,
+            "firm_name": "Muguna Oyile Law Firm",
+            "site_url": site_url,
+            "booking_link": f"{site_url}/contact",
+        },
+        to_email=call.email,
+    )
+
+    messages.success(request, f"Call with {call.first_name} confirmed and added to calendar.")
+    return redirect("admin_dashboard")
+
     # Send email notifications
     send_html_email(
         subject="✅ Your call has been confirmed",
@@ -431,7 +488,7 @@ def decline_call(request, call_id):
     call.is_read = True
     call._admin_user = request.user
     call.save()
-
+    
     send_html_email(
         subject="❌ Your call request was declined",
         template="emails/call_declined.html",

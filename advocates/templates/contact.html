@@ -431,10 +431,10 @@
 
   let currentMode = 'contact'; // 'contact' or 'schedule'
 
-  function setMode(mode){
+  function setMode(mode) {
     currentMode = mode;
     formTypeInput.value = (mode === 'contact') ? 'message' : 'schedule';
-    if(mode === 'contact'){
+    if (mode === 'contact') {
       contactModeBtn.classList.add('active');
       scheduleModeBtn.classList.remove('active');
       messageArea.classList.remove('hidden');
@@ -477,7 +477,7 @@
       countryCode.value = code;
       hiddenCountryCode.value = code;
       countryList.classList.add('hidden');
-      countrySearch.setAttribute('aria-expanded','false');
+      countrySearch.setAttribute('aria-expanded', 'false');
     });
   });
 
@@ -485,7 +485,7 @@
   document.addEventListener('click', (e) => {
     if (!countrySearch.parentElement.contains(e.target)) {
       countryList.classList.add('hidden');
-      countrySearch.setAttribute('aria-expanded','false');
+      countrySearch.setAttribute('aria-expanded', 'false');
     }
   });
 
@@ -507,11 +507,11 @@
   let selectedDate = null;
   let selectedTime = null;
 
-  function startOfDay(d){
+  function startOfDay(d) {
     return new Date(d.getFullYear(), d.getMonth(), d.getDate());
   }
 
-  function renderCalendar(month, year){
+  function renderCalendar(month, year) {
     calendarDaysEl.innerHTML = '';
 
     const monthNames = ['January','February','March','April','May','June','July','August','September','October','November','December'];
@@ -521,7 +521,7 @@
     let firstWeekday = firstDayOfMonth.getDay(); // 0..6 (Sun..Sat)
     let blanks = (firstWeekday === 0) ? 6 : (firstWeekday - 1);
 
-    for(let i=0;i<blanks;i++){
+    for (let i = 0; i < blanks; i++) {
       const emptyCell = document.createElement('div');
       emptyCell.className = 'calendar-day disabled';
       calendarDaysEl.appendChild(emptyCell);
@@ -529,7 +529,7 @@
 
     const daysInMonth = new Date(year, month + 1, 0).getDate();
 
-    for(let d=1; d<=daysInMonth; d++){
+    for (let d = 1; d <= daysInMonth; d++) {
       const dt = new Date(year, month, d);
       const cell = document.createElement('div');
       cell.className = 'calendar-day';
@@ -539,7 +539,7 @@
       const isSunday = dt.getDay() === 0;
       const isPast = startOfDay(dt) < startOfDay(today);
 
-      if(isPast || isSunday){
+      if (isPast || isSunday) {
         cell.classList.add('disabled');
       } else {
         cell.addEventListener('click', () => {
@@ -549,7 +549,7 @@
 
           const displayText = `${dt.toLocaleDateString(undefined, { weekday: 'long', month: 'long', day: 'numeric' })}`;
           selectedDateDisplay.textContent = displayText;
-          hiddenDateInput.value = dt.toISOString().slice(0,10); // yyyy-mm-dd
+          hiddenDateInput.value = dt.toISOString().slice(0, 10); // yyyy-mm-dd
           populateTimeSlotsForDate(dt);
         });
       }
@@ -559,7 +559,7 @@
 
     const totalCells = calendarDaysEl.children.length;
     const required = 42;
-    for(let i=totalCells; i<required; i++){
+    for (let i = totalCells; i < required; i++) {
       const emptyCell = document.createElement('div');
       emptyCell.className = 'calendar-day disabled';
       calendarDaysEl.appendChild(emptyCell);
@@ -568,12 +568,12 @@
 
   prevMonthBtn.addEventListener('click', () => {
     displayMonth--;
-    if(displayMonth < 0){ displayMonth = 11; displayYear--; }
+    if (displayMonth < 0) { displayMonth = 11; displayYear--; }
     renderCalendar(displayMonth, displayYear);
   });
   nextMonthBtn.addEventListener('click', () => {
     displayMonth++;
-    if(displayMonth > 11){ displayMonth = 0; displayYear++; }
+    if (displayMonth > 11) { displayMonth = 0; displayYear++; }
     renderCalendar(displayMonth, displayYear);
   });
 
@@ -586,140 +586,181 @@
     let slots = [];
 
     if (dow >= 1 && dow <= 5) {
-        let start = new Date(date);
-        start.setHours(9, 0, 0, 0);
-        let endOfDay = new Date(date);
-        endOfDay.setHours(17, 0, 0, 0);
-        while (start < endOfDay) {
-            let end = new Date(start.getTime() + 45 * 60000);
-            if (end > endOfDay) break;
-            slots.push({ start: new Date(start), end: new Date(end) });
-            start = end;
-        }
+      let start = new Date(date);
+      start.setHours(9, 0, 0, 0);
+      let endOfDay = new Date(date);
+      endOfDay.setHours(17, 0, 0, 0);
+      while (start < endOfDay) {
+        let end = new Date(start.getTime() + 45 * 60000);
+        if (end > endOfDay) break;
+        slots.push({ start: new Date(start), end: new Date(end) });
+        start = end;
+      }
     } else if (dow === 6) {
-        let start = new Date(date);
-        start.setHours(9, 0, 0, 0);
-        let endOfDay = new Date(date);
-        endOfDay.setHours(12, 0, 0, 0);
-        while (start < endOfDay) {
-            let end = new Date(start.getTime() + 45 * 60000);
-            if (end > endOfDay) break;
-            slots.push({ start: new Date(start), end: new Date(end) });
-            start = end;
-        }
+      let start = new Date(date);
+      start.setHours(9, 0, 0, 0);
+      let endOfDay = new Date(date);
+      endOfDay.setHours(12, 0, 0, 0);
+      while (start < endOfDay) {
+        let end = new Date(start.getTime() + 45 * 60000);
+        if (end > endOfDay) break;
+        slots.push({ start: new Date(start), end: new Date(end) });
+        start = end;
+      }
     } else {
-        selectedDateDisplay.textContent = 'Closed on Sundays';
-        return;
+      selectedDateDisplay.textContent = 'Closed on Sundays';
+      return;
     }
 
     if (slots.length === 0) {
-        selectedDateDisplay.textContent = 'No available times for this date.';
-        return;
+      selectedDateDisplay.textContent = 'No available times for this date.';
+      return;
     }
 
     slots.forEach(slot => {
-        const label = `${formatTime(slot.start)} - ${formatTime(slot.end)}`;
-        const startTime = slot.start.toTimeString().slice(0, 8); // e.g., "09:00:00"
-        const btn = document.createElement('button');
-        btn.type = 'button';
-        btn.className = 'time-slot';
-        btn.textContent = label;
-        btn.addEventListener('click', () => {
-            timeSlotsContainer.querySelectorAll('.time-slot').forEach(s => s.classList.remove('selected'));
-            btn.classList.add('selected');
-            selectedTime = startTime;
-            hiddenTimeSlotInput.value = startTime; // Store HH:MM:SS
-        });
-        timeSlotsContainer.appendChild(btn);
+      const label = `${formatTime(slot.start)} - ${formatTime(slot.end)}`;
+      const startTime = slot.start.toTimeString().slice(0, 8);
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'time-slot';
+      btn.textContent = label;
+      btn.addEventListener('click', () => {
+        timeSlotsContainer.querySelectorAll('.time-slot').forEach(s => s.classList.remove('selected'));
+        btn.classList.add('selected');
+        selectedTime = startTime;
+        hiddenTimeSlotInput.value = startTime;
+      });
+      timeSlotsContainer.appendChild(btn);
     });
-}
+  }
 
-  function formatTime(d){
+  function formatTime(d) {
     return d.toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' });
   }
 
   renderCalendar(displayMonth, displayYear);
 
   // -----------------------------
-  // Form submit handling & modal
+  // CSRF Token helper for Django
+  // -----------------------------
+  function getCSRFToken() {
+    const name = 'csrftoken';
+    const cookies = document.cookie.split(';');
+    for (let cookie of cookies) {
+      const c = cookie.trim();
+      if (c.startsWith(name + '=')) return decodeURIComponent(c.slice(name.length + 1));
+    }
+    return '';
+  }
+
+  // -----------------------------
+  // Form submit handling (AJAX)
   // -----------------------------
   const confirmationModal = document.getElementById('confirmationModal');
   const confirmationMessageEl = document.getElementById('confirmationMessage');
   const closeModalBtn = document.getElementById('closeModal');
 
-  form.addEventListener('submit', (ev) => {
-    // Basic client-side validation and to ensure hidden fields are set.
-    // Server should still validate and return errors; this prevents false submits.
-    // If you prefer to use AJAX (fetch) you can change this section later.
-    if(formTypeInput.value === 'message'){
+  form.addEventListener('submit', async (ev) => {
+    ev.preventDefault();
+
+    if (formTypeInput.value === 'message') {
       const first = document.getElementById('firstName').value.trim();
       const email = document.getElementById('email').value.trim();
       const message = document.getElementById('message').value.trim();
-      if(!first || !email || !message){
-        ev.preventDefault();
+      if (!first || !email || !message) {
         alert('Please fill name, email and message.');
         return;
       }
-      // let form submit normally to Django backend
-      // Optionally show the modal client-side (but better to show after server confirms)
     } else {
-      // schedule
-      if(!hiddenDateInput.value || !hiddenTimeSlotInput.value){
-        ev.preventDefault();
+      if (!hiddenDateInput.value || !hiddenTimeSlotInput.value) {
         alert('Please select a date and time for your call.');
         return;
       }
-      // allow normal submit
     }
-    // Note: when Django processes the POST, it should redirect back and set a message.
-    // The confirmation modal will work for immediate client-side success scenarios.
+
+    const formData = new FormData(form);
+    try {
+      const response = await fetch(form.action, {
+        method: 'POST',
+        body: formData,
+        headers: {
+          'X-Requested-With': 'XMLHttpRequest',
+          'X-CSRFToken': getCSRFToken()
+        },
+        credentials: 'same-origin'
+      });
+
+      if (response.ok) {
+        openModal('✅ Thank you — your submission was received. We will get back to you shortly.');
+        form.reset();
+      } else {
+        openModal('⚠️ Something went wrong. Please try again later.');
+      }
+    } catch (err) {
+      console.error(err);
+      openModal('⚠️ Error sending request. Please check your connection.');
+    }
   });
 
-  function openModal(message){
+  function openModal(message) {
     confirmationMessageEl.textContent = message;
     confirmationModal.classList.remove('hidden');
     confirmationModal.classList.add('flex');
+    setTimeout(closeModal, 6000);
   }
-  function closeModal(){
+
+  function closeModal() {
     confirmationModal.classList.add('hidden');
     confirmationModal.classList.remove('flex');
   }
   closeModalBtn.addEventListener('click', closeModal);
 
   // -----------------------------
-  // Accessibility nicety: keyboard close for country list (Esc)
+  // Accessibility nicety: ESC closes country list
   // -----------------------------
   document.addEventListener('keydown', (ev) => {
-    if(ev.key === 'Escape'){
+    if (ev.key === 'Escape') {
       countryList.classList.add('hidden');
     }
   });
 
   // -----------------------------
-  // Extra: keep countrySearch showing the label for current code on load
+  // Initialize country label
   // -----------------------------
-  (function initCountryLabel(){
+  (function initCountryLabel() {
     const code = document.getElementById('countryCode').value || '+254';
     const li = Array.from(countryList.children).find(x => x.dataset.code === code);
-    if(li) countrySearch.value = li.textContent.split('(')[0].trim();
+    if (li) countrySearch.value = li.textContent.split('(')[0].trim();
     hiddenCountryCode.value = code;
   })();
 
-  // If you want to show a client-side modal after a successful POST (server redirected with ?success or messages),
-  // you can have Django include a small script or set a template variable and call openModal(...) on load.
-  // Example server-side pattern: after successful save redirect to /contact/?sent=1 and then:
-  (function maybeShowServerSuccess(){
-    const urlParams = new URLSearchParams(window.location.search);
-    if(urlParams.get('sent') === '1'){
-      // message could also be passed by the server through a template var
-      openModal('Thank you — your submission was received. We will get back to you shortly.');
-      // optionally, remove the query param to avoid re-showing modal on refresh
-      history.replaceState(null, '', window.location.pathname);
-    }
-  })();
+  form.addEventListener('submit', async function(e) {
+  e.preventDefault();
 
-  // end of script
+  const formData = new FormData(form);
+  const csrfToken = getCSRFToken();
+
+  const response = await fetch(form.action, {
+    method: 'POST',
+    body: formData,
+    headers: {
+      'X-CSRFToken': csrfToken
+    },
+  });
+
+  if (response.ok) {
+    document.getElementById('confirmationTitle').textContent = 'Success';
+    document.getElementById('confirmationMessage').textContent = 'Your message has been sent successfully.';
+    document.getElementById('confirmationModal').classList.remove('hidden');
+  } else {
+    document.getElementById('confirmationTitle').textContent = 'Error';
+    document.getElementById('confirmationMessage').textContent = 'Something went wrong. Please try again.';
+    document.getElementById('confirmationModal').classList.remove('hidden');
+  }
+});
+
 </script>
+
 
 </body>
 </html>

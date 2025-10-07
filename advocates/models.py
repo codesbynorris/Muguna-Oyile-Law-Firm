@@ -3,10 +3,12 @@ from django.contrib.auth.models import User
 from django.utils import timezone
 from django.utils.text import slugify
 from datetime import timedelta
+from django.contrib.auth import get_user_model
 
 LEGAL_SERVICES = [
     ('commercial', 'Commercial Practice'),
     ('dispute', 'Dispute Resolution'),
+    ('consultancy', 'Consultancy Services'),
     ('debt', 'Debt Recovery'),
     ('intellectual', 'Intellectual Property'),
     ('real_estate', 'Real Estate Law'),
@@ -105,7 +107,7 @@ class ContactMessage(models.Model):
 
     def save(self, *args, **kwargs):
         # Auto-update red flag if unread for 48h
-        if not self.is_read and self.created_at <= timezone.now() - timedelta(hours=48):
+        if self.created_at and not self.is_read and self.created_at <= timezone.now() - timedelta(hours=48):
             self.is_red_flag = True
         else:
             self.is_red_flag = False
@@ -114,6 +116,8 @@ class ContactMessage(models.Model):
     def __str__(self):
         return f"{self.first_name} {self.last_name} - {self.subject}"
 
+
+User = get_user_model()
 
 class ScheduledCall(models.Model):
     first_name = models.CharField(max_length=50)
@@ -132,31 +136,39 @@ class ScheduledCall(models.Model):
     class Meta:
         ordering = ["-created_at"]
 
-    def save(self, *args, **kwargs):
-        # Auto-update red flag if older than 48h
+def save(self, *args, **kwargs):
+    # ✅ Skip comparison if created_at is not yet set
+    if self.created_at:
         if not self.is_read and self.created_at <= timezone.now() - timedelta(hours=48):
             self.is_red_flag = True
         else:
             self.is_red_flag = False
-        super().save(*args, **kwargs)
 
-        # Automatically create CalendarEvent if confirmed and not already created
-        if self.is_confirmed:
-            exists = CalendarEvent.objects.filter(
+    super().save(*args, **kwargs)
+
+    # ✅ Automatically create CalendarEvent if confirmed and not already created
+    if self.is_confirmed:
+        exists = CalendarEvent.objects.filter(
+            client=f"{self.first_name} {self.last_name}",
+            date=self.date,
+            time_slot=self.time_slot
+        ).exists()
+
+        if not exists:
+            # ✅ Assign the first superuser (safe fallback)
+            admin_user = User.objects.filter(is_superuser=True).first()
+            if not admin_user:
+                admin_user = User.objects.first()  # fallback if no superuser
+
+            CalendarEvent.objects.create(
+                title=f"Call with {self.first_name} {self.last_name} at {self.time_slot.strftime('%H:%M')}",
                 client=f"{self.first_name} {self.last_name}",
+                case_name=self.subject,
                 date=self.date,
-                time_slot=self.time_slot
-            ).exists()
-            if not exists:
-                CalendarEvent.objects.create(
-                    title=f"Call with {self.first_name} {self.last_name} at {self.time_slot.strftime('%H:%M')}",
-                    client=f"{self.first_name} {self.last_name}",
-                    case_name=self.subject,
-                    date=self.date,
-                    time_slot=self.time_slot,
-                    event_type=CalendarEvent.CALL,
-                    created_by=None  # set admin later if needed
-                )
+                time_slot=self.time_slot,
+                event_type=CalendarEvent.CALL,
+                created_by=admin_user
+            )
 
 class CalendarEvent(models.Model):
     MEETING = 'meeting'
