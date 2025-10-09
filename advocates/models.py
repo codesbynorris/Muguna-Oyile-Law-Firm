@@ -244,3 +244,22 @@ class Notification(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     red_flag = models.BooleanField(default=False)
     # Add other fields like time_slot if needed
+
+class TeamMember(models.Model):
+    name = models.CharField(max_length=100)
+    role = models.CharField(max_length=100)
+    photo = models.ImageField(upload_to='team_photos/')  # store uploaded images
+    facebook = models.URLField(blank=True, null=True)
+    linkedin = models.URLField(blank=True, null=True)
+    twitter = models.URLField(blank=True, null=True)
+    extra_link = models.URLField(blank=True, null=True)
+    slug = models.SlugField(unique=True, blank=True)
+
+    def save(self, *args, **kwargs):
+        # Automatically create slug from name if not provided
+        if not self.slug:
+            self.slug = slugify(self.name)
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return self.name

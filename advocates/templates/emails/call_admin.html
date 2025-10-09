@@ -4,28 +4,134 @@
   <meta charset="UTF-8">
   <title>New Call Request</title>
   <style>
-    body { font-family: Arial, sans-serif; color: #333; }
-    .container { padding: 20px; }
-    .header { background-color: #0B3D91; color: white; padding: 10px; text-align: center; }
-    .content { margin-top: 20px; }
-    .field { margin-bottom: 10px; }
-    .label { font-weight: bold; }
+    body {
+      font-family: 'Inter', Arial, sans-serif;
+      background-color: #f7f8fc;
+      color: #444;
+      margin: 0;
+      padding: 0;
+    }
+
+    .email-container {
+      max-width: 600px;
+      margin: 40px auto;
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+      overflow: hidden;
+    }
+
+    /* Header */
+    .header {
+      background-color: #0B3D91;
+      padding: 25px 20px;
+      text-align: center;
+    }
+
+    .header img {
+      width: 90px;
+      height: auto;
+      margin-bottom: 10px;
+    }
+
+    .header h2 {
+      color: #C9A227;
+      font-size: 22px;
+      font-weight: 600;
+      margin: 0;
+    }
+
+    /* Content */
+    .content {
+      padding: 30px;
+    }
+
+    .content p {
+      line-height: 1.6;
+      margin: 15px 0;
+      color: #444;
+    }
+
+    /* Details Card */
+    .details {
+      background: #f4f6fb;
+      border-left: 4px solid #C9A227;
+      padding: 20px 15px;
+      margin: 20px 0;
+      border-radius: 8px;
+    }
+
+    .details .field {
+      margin-bottom: 12px;
+    }
+
+    .details .label {
+      font-weight: 600;
+      color: #0B3D91;
+    }
+
+    /* Button */
+    .btn {
+      display: block;
+      width: 220px;
+      max-width: 80%;
+      padding: 12px 0;
+      font-size: 16px;
+      font-weight: 600;
+      color: #fff;
+      background-color: #0B3D91;
+      border-radius: 8px;
+      text-decoration: none;
+      text-align: center;
+      margin: 20px auto;
+    }
+
+    /* Footer */
+    .footer {
+      text-align: center;
+      font-size: 13px;
+      color: #888;
+      padding: 20px;
+      background: #f9fafc;
+    }
+
+    /* Responsive */
+    @media screen and (max-width: 480px) {
+      .content {
+        padding: 20px 15px;
+      }
+      .btn {
+        width: 100%;
+      }
+    }
   </style>
 </head>
 <body>
-  <div class="container">
+  <div class="email-container">
+    <!-- Header with logo -->
     <div class="header">
+      <img src="{{ site_url }}/static/images/muguna-oyile-logo.png" alt="Muguna Oyile Law Firm Logo">
       <h2>New Call Request</h2>
     </div>
+
     <div class="content">
       <p>A new call request has been submitted:</p>
-      <div class="field"><span class="label">Name:</span> {{ call.first_name }} {{ call.last_name }}</div>
-      <div class="field"><span class="label">Email:</span> {{ call.email }}</div>
-      <div class="field"><span class="label">Phone:</span> {{ call.phone_number }}</div>
-      <div class="field"><span class="label">Subject:</span> {{ call.get_subject_display }}</div>
-      <div class="field"><span class="label">Requested Date:</span> {{ call.date }}</div>
-      <div class="field"><span class="label">Requested Time:</span> {{ call.time_slot }}</div>
-      <p>Please confirm or decline this call from the admin dashboard.</p>
+
+      <div class="details">
+        <div class="field"><span class="label">Name:</span> {{ call.first_name }} {{ call.last_name }}</div>
+        <div class="field"><span class="label">Email:</span> {{ call.email }}</div>
+        <div class="field"><span class="label">Phone:</span> {{ call.phone_number }}</div>
+        <div class="field"><span class="label">Subject:</span> {{ call.get_subject_display }}</div>
+        <div class="field"><span class="label">Requested Date:</span> {{ call.date }}</div>
+        <div class="field"><span class="label">Requested Time:</span> {{ call.time_slot }}</div>
+      </div>
+
+      <p>Please click the button below to be redirected to the admin dashboard to confirm or decline this call:</p>
+      <a href="{{ admin_dashboard_url }}" class="btn">Go to Admin Dashboard</a>
+    </div>
+
+    <div class="footer">
+      © {{ year }} Muguna Oyile Law Firm. All rights reserved.
     </div>
   </div>
 </body>

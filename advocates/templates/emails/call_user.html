@@ -2,30 +2,135 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>Call Request Received</title>
+  <title>{% block title %}Call Request Received{% endblock %}</title>
   <style>
-    body { font-family: Arial, sans-serif; color: #333; }
-    .container { padding: 20px; }
-    .header { background-color: #0B3D91; color: white; padding: 10px; text-align: center; }
-    .content { margin-top: 20px; }
+    /* Base Styles */
+    body {
+      font-family: 'Inter', Arial, sans-serif;
+      background-color: #f7f8fc;
+      color: #444;
+      margin: 0;
+      padding: 0;
+    }
+
+    a {
+      color: #0B3D91;
+      text-decoration: none;
+    }
+
+    /* Container */
+    .email-container {
+      max-width: 600px;
+      margin: 40px auto;
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      overflow: hidden;
+    }
+
+    /* Header */
+    .header {
+      background-color: #0B3D91;
+      padding: 25px 20px;
+      text-align: center;
+    }
+
+    .header img {
+      width: 90px;
+      height: auto;
+      margin-bottom: 10px;
+    }
+
+    .header h2 {
+      color: #C9A227;
+      font-size: 22px;
+      font-weight: 600;
+      margin: 0;
+    }
+
+    /* Content */
+    .content {
+      padding: 30px;
+    }
+
+    .content p {
+      line-height: 1.6;
+      margin: 15px 0;
+      color: #444;
+    }
+
+    /* Details Card */
+    .details {
+      background: #f4f6fb;
+      border-left: 4px solid #C9A227;
+      padding: 20px 15px;
+      margin: 20px 0;
+      border-radius: 8px;
+    }
+
+    .details p {
+      font-weight: 600;
+      margin-bottom: 10px;
+    }
+
+    .details ul {
+      list-style: none;
+      padding-left: 0;
+      margin: 0;
+    }
+
+    .details ul li {
+      margin-bottom: 8px;
+    }
+
+    /* Footer */
+    .footer {
+      text-align: center;
+      font-size: 13px;
+      color: #888;
+      padding: 20px;
+      background: #f9fafc;
+    }
+
+    /* Responsive */
+    @media screen and (max-width: 480px) {
+      .email-container {
+        margin: 20px 10px;
+      }
+      .content {
+        padding: 20px 15px;
+      }
+    }
   </style>
 </head>
 <body>
-  <div class="container">
+  <div class="email-container">
     <div class="header">
-      <h2>Call Request Received</h2>
+      <img src="{{ site_url }}/static/images/muguna-oyile-logo.png" alt="Muguna Oyile Law Firm Logo">
+      <h2>{% block header %}Call Request Received{% endblock %}</h2>
     </div>
+
     <div class="content">
+      {% block content %}
       <p>Hi {{ call.first_name }},</p>
       <p>We have received your call request. Our team will review it and confirm or ask you to select another time.</p>
-      <p><strong>Requested Details:</strong></p>
-      <ul>
-        <li>Date: {{ call.date }}</li>
-        <li>Time: {{ call.time_slot }}</li>
-        <li>Subject: {{ call.get_subject_display }}</li>
-      </ul>
+
+      <div class="details">
+        <p>Requested Details:</p>
+        <ul>
+          <li><strong>Date:</strong> {{ call.date }}</li>
+          <li><strong>Time:</strong> {{ call.time_slot }}</li>
+          <li><strong>Subject:</strong> {{ call.get_subject_display }}</li>
+        </ul>
+      </div>
+
       <p>Once confirmed, we will notify you immediately.</p>
-      <p>Best regards,<br>{{ firm_name }} Team</p>
+      <p>Best regards,<br>Muguna Oyile Law Firm Team</p>
+      {% endblock %}
+    </div>
+
+    <div class="footer">
+      © {{ year }} Muguna Oyile Law Firm. All rights reserved.
     </div>
   </div>
 </body>

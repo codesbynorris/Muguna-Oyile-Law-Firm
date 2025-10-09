@@ -11,6 +11,7 @@
       margin: 0;
       padding: 0;
     }
+
     .email-container {
       max-width: 600px;
       margin: 40px auto;
@@ -19,41 +20,74 @@
       box-shadow: 0 2px 8px rgba(0,0,0,0.05);
       overflow: hidden;
     }
+
     .header {
       background-color: #0B1B40;
       padding: 25px 20px;
       text-align: center;
     }
+
     .header img {
       width: 90px;
       height: auto;
       margin-bottom: 10px;
     }
+
     .header h1 {
       color: #C9A227;
       font-size: 20px;
       font-weight: 600;
       margin: 0;
     }
+
     .content {
       padding: 30px;
     }
+
     .content h2 {
       color: #0B1B40;
       margin-top: 0;
     }
+
     .details {
       background: #f4f6fb;
       border-left: 4px solid #C9A227;
       padding: 15px;
       margin: 20px 0;
     }
+
+    /* Button */
+    .btn {
+      display: inline-block;
+      padding: 12px 25px;
+      width: 220px;
+      max-width: 80%;
+      margin: 20px 0;
+      font-size: 16px;
+      font-weight: 600;
+      color: #fff;
+      background-color: #0B3D91;
+      border-radius: 8px;
+      text-decoration: none;
+    }
+
     .footer {
       text-align: center;
       font-size: 13px;
       color: #888;
       padding: 20px;
       background: #f9fafc;
+    }
+
+    /* Responsive */
+    @media screen and (max-width: 480px) {
+      .content {
+        padding: 20px 15px;
+      }
+      .btn {
+        width: 100%;
+        text-align: center;
+      }
     }
   </style>
 </head>
@@ -69,11 +103,13 @@
       <p>We regret to inform you that your scheduled call regarding <strong>{{ call.subject }}</strong> has been cancelled.</p>
 
       <div class="details">
-        <p><strong>Original Date:</strong> {{ date }}</p>
-        <p><strong>Original Time:</strong> {{ time_slot }}</p>
+        <p><strong>Original Date:</strong> {{ call.date }}</p>
+        <p><strong>Original Time:</strong> {{ call.time_slot }}</p>
       </div>
 
-      <p>Please visit our scheduling page to choose a new time that works best for you.</p>
+      <p>To reschedule your call, please click the button below:</p>
+      <a href="{{ scheduling_url }}" class="btn">Reschedule Your Call</a>
+
       <p>We apologize for any inconvenience and look forward to speaking with you soon.</p>
     </div>
 

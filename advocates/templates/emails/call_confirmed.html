@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>Call Update</title>
+  <title>Call Confirmation</title>
   <style>
     body {
       font-family: 'Inter', Arial, sans-serif;
@@ -66,15 +66,16 @@
 
     <div class="content">
       <h2>Dear {{ call.first_name }},</h2>
-      <p>We regret to inform you that your scheduled call regarding <strong>{{ call.subject }}</strong> has been cancelled.</p>
+      <p>We’re pleased to confirm your scheduled call regarding <strong>{{ call.subject }}</strong>.</p>
 
       <div class="details">
-        <p><strong>Original Date:</strong> {{ date }}</p>
-        <p><strong>Original Time:</strong> {{ time_slot }}</p>
+        <p><strong>Date:</strong> {{ call.date }}</p>
+        <p><strong>Time:</strong> {{ call.time_slot }}</p>
       </div>
 
-      <p>Please visit our scheduling page to choose a new time that works best for you.</p>
-      <p>We apologize for any inconvenience and look forward to speaking with you soon.</p>
+      <p>Our advocate will contact you at the scheduled time. If you have any questions or need to reschedule, feel free to reply to this email.</p>
+
+      <p>We appreciate your trust in <strong>Muguna & Oyile Advocates</strong>.</p>
     </div>
 
     <div class="footer">

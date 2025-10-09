@@ -1,3 +1,16 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Team | Muguna & Oyile Advocates</title>
+
+    <!-- Fonts & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Great+Vibes&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
         :root {
             /* === PRIMARY COLORS === */
             --primary-color: #182942;    /* Deep blue */
@@ -104,3 +117,72 @@
         @media(max-width:992px) { .mission-container { flex-direction:column; text-align:center; } .team-member-card { flex-basis:90%; max-width:350px; } }
         @media(max-width:768px) { .mission-text-left h2 { font-size:2.2rem; } }
         @media(max-width:576px) { .mission-text-left h2 { font-size:1.8rem; } .signature { font-size:2rem; } }
+    </style>
+</head>
+<body>
+
+<!-- Mission / Team Intro -->
+<section class="mission-section">
+    <div class="mission-container">
+        <div class="mission-text-left">
+            <h2>Alone we can do so little, together we can do so much.</h2>
+            <img src="https://tse2.mm.bing.net/th/id/OIP.VTmeChM7aGUzu-JxXdcoRgHaE8?rs=1&pid=ImgDetMain&o=7&rm=3" alt="Team collaborating" class="team-meeting-photo">
+        </div>
+
+        <div class="founder-info-right">
+            <p>"The life of the law has not been logic; it has been experience. The felt necessities of the time, the prevalent moral and political theories, intuitions of public policy, avowed or unconscious, even the prejudices which judges share with their fellow-men, have had a good deal more to do than the syllogism in determining the rules by which men should be governed."</p>
+            <p class="signature">Oliver Wendell Holmes Jr.</p>
+            <p class="founder-title">LEGAL PHILOSOPHER</p>
+            <ul class="value-list">
+                <li><i class="fas fa-check-circle"></i> Commitment to Precedent</li>
+                <li><i class="fas fa-check-circle"></i> Strategic Legal Innovation</li>
+                <li><i class="fas fa-check-circle"></i> Unwavering Professionalism</li>
+                <li><i class="fas fa-check-circle"></i> Advancement of Justice</li>
+            </ul>
+        </div>
+    </div>
+</section>
+
+<!-- Team Grid -->
+<section class="team-grid-section">
+    <div class="relative inline-block mb-6">
+    <h2 class="text-3xl font-bold mb-6 relative pb-4">
+        Meet Our Team
+        <span class="absolute bottom-0 left-1/2 -translate-x-1/2 w-16 h-1 bg-[#ebd19e] rounded-full"></span>
+    </h2>
+</div>
+    <div class="team-grid">
+        {% for member in members %}
+        <div class="team-member-card" data-url="{% static 'team/' %}{{ member.slug }}.html">
+            <div class="member-image-container">
+                <img src="{{ member.photo.url }}" alt="{{ member.name }}" class="member-photo">
+            </div>
+            <p class="member-name">{{ member.name }}</p>
+            <p class="member-role">{{ member.role }}</p>
+            <div class="social-icons">
+                {% if member.facebook %}<a href="{{ member.facebook }}" target="_blank"><i class="fab fa-facebook-f"></i></a>{% endif %}
+                {% if member.linkedin %}<a href="{{ member.linkedin }}" target="_blank"><i class="fab fa-linkedin-in"></i></a>{% endif %}
+                {% if member.twitter %}<a href="{{ member.twitter }}" target="_blank"><i class="fab fa-twitter"></i></a>{% endif %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const cards = document.querySelectorAll('.team-member-card');
+    cards.forEach(card => {
+        card.addEventListener('click', () => {
+            window.location.href = card.dataset.url;
+        });
+    });
+    const socialLinks = document.querySelectorAll('.social-icons a');
+    socialLinks.forEach(link => {
+        link.addEventListener('click', e => e.stopPropagation());
+    });
+});
+</script>
+
+</body>
+</html>

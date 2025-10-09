@@ -1,7 +1,7 @@
 from django.contrib import admin, messages
 from django.core.mail import send_mail
 from django.conf import settings
-from .models import ContactMessage, ScheduledCall, Category, Article
+from .models import ContactMessage, ScheduledCall, Category, Article, TeamMember
 
 # -------------------------------
 # Admin for Categories & Articles
@@ -9,6 +9,11 @@ from .models import ContactMessage, ScheduledCall, Category, Article
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
     list_display = ("name", "article_count")
+    prepopulated_fields = {"slug": ("name",)}
+
+@admin.register(TeamMember)
+class TeamMemberAdmin(admin.ModelAdmin):
+    list_display = ("name", "role", "slug")
     prepopulated_fields = {"slug": ("name",)}
 
 @admin.register(Article)

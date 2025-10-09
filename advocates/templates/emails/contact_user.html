@@ -4,103 +4,153 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Message Received</title>
+    <style>
+        body {
+            font-family: 'Inter', Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+            background-color: #f7f8fc;
+        }
+
+        .email-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            padding-bottom: 20px;
+        }
+
+        .header img {
+            width: 90px;
+            height: auto;
+            margin-bottom: 10px;
+        }
+
+        .header h2 {
+            color: #0B3D91;
+            font-size: 24px;
+            font-weight: 600;
+            margin: 0;
+        }
+
+        .ticket {
+            background-color: #fef5e6;
+            border-left: 5px solid #ffcc66;
+            padding: 15px;
+            margin: 20px 0;
+            font-size: 16px;
+            color: #444;
+            border-radius: 6px;
+            text-align: center;
+        }
+
+        .details-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        .details-table td {
+            padding: 5px 0;
+            vertical-align: top;
+        }
+
+        .details-table td.label {
+            font-weight: 600;
+            color: #0B3D91;
+            width: 130px;
+        }
+
+        .btn {
+            display: block;
+            width: 220px;
+            max-width: 80%;
+            padding: 12px 0;
+            font-size: 16px;
+            font-weight: 600;
+            color: #fff;
+            background-color: #0B3D91;
+            border-radius: 8px;
+            text-decoration: none;
+            text-align: center;
+            margin: 20px auto;
+        }
+
+        .footer {
+            font-size: 14px;
+            color: #888;
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        @media screen and (max-width: 480px) {
+            .btn {
+                width: 100%;
+            }
+        }
+    </style>
 </head>
-<body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; margin: 0; padding: 20px; background-color: #f7f7f7;">
-
-    <div style="max-width: 600px; margin: 0 auto; background-color: #ffffff; padding: 30px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1);">
-
+<body>
+    <div class="email-container">
         <!-- Header -->
-        <div style="text-align: center; padding-bottom: 20px;">
-            <div style="font-size: 40px; font-weight: bold; letter-spacing: 5px; color: #000; line-height: 1;">
-                {{ firm_name|slice:":1" }}&{{ firm_name|slice:"1:2" }}
-            </div>
-            <div style="font-size: 24px; font-weight: 500; letter-spacing: 2px; color: #000; margin-top: 5px;">
-                {{ firm_name }}
-            </div>
-            <div style="font-size: 14px; letter-spacing: 1px; color: #555; border-bottom: 1px solid #ddd; padding-bottom: 20px; margin-top: 5px;">
-                ADVOCATES
-            </div>
+        <div class="header">
+            <img src="{{ site_url }}/static/images/muguna-oyile-logo.png" alt="Firm Logo">
+            <h2>{{ firm_name }} - Message Received</h2>
         </div>
 
         <!-- Greeting -->
-        <p style="font-size: 16px; margin-top: 30px;">
-            <strong>Hello {{ contact.first_name }},</strong>
-        </p>
-
-        <!-- Message -->
-        <p style="font-size: 16px;">
-            Thank you for reaching out to {{ firm_name }}. We have received your message and will respond as soon as possible.
-        </p>
+        <p><strong>Hello {{ contact.first_name }},</strong></p>
+        <p>Thank you for reaching out to {{ firm_name }}. We have received your message and will respond as soon as possible.</p>
 
         <!-- Ticket ID -->
-        <div style="background-color: #fef5e6; border-left: 5px solid #ffcc66; padding: 15px; margin: 20px 0; font-size: 16px; color: #444; border-radius: 4px;">
-            <span style="display: inline-block; margin-right: 10px; color: #cc8800;">&#9993;</span> 
-            <strong>Your Ticket ID: {{ ticket_id }}</strong>
+        <div class="ticket">
+            &#9993; <strong>Your Ticket ID: {{ ticket_id }}</strong>
         </div>
 
         <!-- Submitted Details -->
-        <p style="font-size: 16px; margin-bottom: 10px;"><strong>Your Submitted Details:</strong></p>
-        <table role="presentation" cellspacing="0" cellpadding="5" border="0" style="width: 100%; font-size: 16px; margin-bottom: 20px;">
+        <p><strong>Your Submitted Details:</strong></p>
+        <table class="details-table">
             <tr>
-                <td style="font-weight: bold; width: 120px;">Name:</td>
+                <td class="label">Name:</td>
                 <td>{{ contact.first_name }} {{ contact.last_name }}</td>
             </tr>
             <tr>
-                <td style="font-weight: bold;">Email:</td>
+                <td class="label">Email:</td>
                 <td>{{ contact.email }}</td>
             </tr>
             <tr>
-                <td style="font-weight: bold;">Phone:</td>
+                <td class="label">Phone:</td>
                 <td>{{ contact.phone_number }}</td>
             </tr>
             <tr>
-                <td style="font-weight: bold;">Subject:</td>
+                <td class="label">Subject:</td>
                 <td>{{ contact.get_subject_display }}</td>
             </tr>
             <tr>
-                <td style="font-weight: bold;">Message:</td>
+                <td class="label">Message:</td>
                 <td>{{ contact.message|linebreaks }}</td>
             </tr>
         </table>
 
-        <p style="font-size: 16px; margin-bottom: 30px;">
-            If your matter is urgent, don't hesitate to call or WhatsApp us directly.
-        </p>
+        <!-- Button to Admin / Ticket -->
+        <a href="{{ admin_ticket_url }}" class="btn">View Your Ticket</a>
 
-        <hr style="border: none; border-top: 1px solid #eee; margin: 30px 0;">
-
-        <!-- Contact Details -->
-        <p style="font-size: 16px; font-weight: bold; color: #333; margin-top: 30px;">
-            Contact Details:
-        </p>
-        <table role="presentation" cellspacing="0" cellpadding="0" border="0" style="width: 100%; font-size: 16px;">
-            <tr>
-                <td style="padding: 5px 0; width: 30px; color: #e74c3c;">&#128205;</td>
-                <td style="padding: 5px 0;">{{ firm_address }}</td>
-            </tr>
-            <tr>
-                <td style="padding: 5px 0; width: 30px; color: #3498db;">&#9742;</td>
-                <td style="padding: 5px 0;">{{ firm_phone }}</td>
-            </tr>
-            <tr>
-                <td style="padding: 5px 0; width: 30px; color: #f39c12;">&#9993;</td>
-                <td style="padding: 5px 0;">
-                    <a href="mailto:{{ firm_email }}" style="color: #333; text-decoration: none;">{{ firm_email }}</a>
-                </td>
-            </tr>
-        </table>
-
-        <hr style="border: none; border-top: 1px solid #eee; margin: 30px 0;">
+        <p>If your matter is urgent, don't hesitate to call or WhatsApp us directly.</p>
 
         <!-- Footer -->
-        <p style="font-size: 16px;">
-            Warm regards, 
-        </p>
-        <p style="font-size: 16px; font-weight: bold;">
-            The {{ firm_name }} Team
-        </p>
-
+        <div class="footer">
+            Warm regards,<br>
+            <strong>The {{ firm_name }} Team</strong>
+        </div>
     </div>
-
 </body>
 </html>

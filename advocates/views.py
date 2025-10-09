@@ -10,7 +10,8 @@ from datetime import timedelta, datetime
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.timezone import localdate
 from .forms import ArticleForm
-from .models import Category
+from .models import Category, TeamMember
+from django.contrib.sites.shortcuts import get_current_site
 from django.core.mail import EmailMessage
 import json
 
@@ -106,7 +107,8 @@ def about(request):
 
 
 def team(request):
-    return render(request, "team.html")
+    members = TeamMember.objects.all()
+    return render(request, 'team.html', {'members': members})
 
 
 def privacy_policy(request):
@@ -142,6 +144,11 @@ def real_estate_leases(request):
 
 def support_services(request):
     return render(request, "services/support_services.html")
+
+def team_list(request):
+    members = TeamMember.objects.all()  # Query all members from DB
+    return render(request, 'team.html', {'members': members})
+
 
 
 # ---------------------------
@@ -258,6 +265,7 @@ def contact_us(request):
                     return redirect("/contact/?sent=slot_taken")
 
                 call = call_form.save()
+
 
                 # Mark as red flag if older than 48h
                 if call.created_at <= timezone.now() - timedelta(hours=48):
@@ -412,7 +420,6 @@ def fetch_notifications(request):
 # ---------------------------
 @login_required
 @user_passes_test(admin_check)
-@login_required
 @user_passes_test(lambda u: u.is_staff)
 def confirm_call(request, call_id):
     call = get_object_or_404(ScheduledCall, id=call_id)
@@ -420,15 +427,20 @@ def confirm_call(request, call_id):
     # Update call status
     call.is_confirmed = True
     call.is_read = True
+
+    # Red flag check (older than 48h)
+    if call.created_at <= timezone.now() - timedelta(hours=48):
+        call.is_red_flag = True
+
     call.save()
 
-    # Create CalendarEvent if not already linked
+    # Create CalendarEvent if not exists
     if not call.calendar_event:
         event_title = f"Call with {call.first_name} {call.last_name} at {call.time_slot.strftime('%H:%M')}"
         event = CalendarEvent.objects.create(
             title=event_title,
             client=f"{call.first_name} {call.last_name}",
-            case_name=call.subject,
+            case_name=getattr(call, 'subject', ''),
             date=call.date,
             time_slot=call.time_slot,
             event_type=CalendarEvent.CALL,
@@ -443,11 +455,9 @@ def confirm_call(request, call_id):
         action=f"Confirmed call: {call.first_name} {call.last_name} at {call.time_slot.strftime('%H:%M')}"
     )
 
-from django.contrib.sites.shortcuts import get_current_site
+    # Send confirmation email
     current_site = get_current_site(request)
-    site_url = f"http://{current_site.domain}"  # Local = 127.0.0.1:8000, hosted = yourdomain.com
-
-    # ✅ Send confirmation email
+    site_url = f"http://{current_site.domain}"
     send_html_email(
         subject="✅ Your call has been confirmed",
         template="emails/call_confirmed.html",
@@ -463,39 +473,38 @@ from django.contrib.sites.shortcuts import get_current_site
     messages.success(request, f"Call with {call.first_name} confirmed and added to calendar.")
     return redirect("admin_dashboard")
 
-    # Send email notifications
-    send_html_email(
-        subject="✅ Your call has been confirmed",
-        template="emails/call_confirmed.html",
-        context={
-            "call": call,
-            "firm_name": "Law Firm",
-            "booking_link": "https://yourfirm.com/schedule-call",
-        },
-        to_email=call.email,
-    )
-
-    messages.success(request, f"Call with {call.first_name} confirmed and added to calendar.")
-    return redirect("admin_dashboard")
-
-
-
 @login_required
 @user_passes_test(admin_check)
 def decline_call(request, call_id):
     call = get_object_or_404(ScheduledCall, id=call_id)
+
+    # Update call status
     call.is_confirmed = False
     call.is_read = True
-    call._admin_user = request.user
+
+    # Red flag check
+    if call.created_at <= timezone.now() - timedelta(hours=48):
+        call.is_red_flag = True
+
     call.save()
-    
+
+    # Log admin activity
+    ActivityLog.objects.create(
+        admin_user=request.user,
+        action=f"Declined call: {call.first_name} {call.last_name} for {getattr(call, 'subject', '')}"
+    )
+
+    # Send decline email
+    current_site = get_current_site(request)
+    site_url = f"http://{current_site.domain}"
     send_html_email(
         subject="❌ Your call request was declined",
         template="emails/call_declined.html",
         context={
             "call": call,
-            "firm_name": "Law Firm",
-            "booking_link": "https://yourfirm.com/schedule-call",
+            "firm_name": "Muguna Oyile Law Firm",
+            "site_url": site_url,
+            "booking_link": f"{site_url}/contact",
         },
         to_email=call.email,
     )

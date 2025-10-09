@@ -1,550 +1,71 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Markeetar - Team</title>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Great+Vibes&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <style>
-/* --- Global Styles and Typography --- */
-:root {
-    --primary-color: #198754; /* Green from the 'Get Started' button and checkmarks */
-    --secondary-color: #0d121c; /* Dark navy for the header */
-    --text-color: #333;
-    --light-text-color: #777;
-    --background-light: #f8f8f8;
-}
+{% extends 'team/team_base.html' %}
+{% load static %}
 
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
+{% block title %}Commercial Practice | Muguna & Oyile{% endblock %}
 
-body {
-    font-family: 'Montserrat', sans-serif;
-    color: var(--text-color);
-    line-height: 1.6;
-}
+{% block content %}
 
-h1, h2 {
-    font-weight: 700;
-}
-
-/* Subtitle style like 'OUR TEAM' */
-.subtitle {
-    font-size: 0.8rem;
-    font-weight: 600;
-    color: var(--primary-color);
-    letter-spacing: 2px;
-    margin-bottom: 10px;
-}
-
-/* Utility to center section content */
-section {
-    padding: 0;
-    max-width: 1200px;
-    margin: 0 auto;
-}
-
-/* Call to action button styling */
-.cta-button, .discover-button {
-    padding: 10px 25px;
-    background-color: var(--primary-color);
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-weight: 600;
-    transition: background-color 0.3s;
-}
-
-.cta-button:hover, .discover-button:hover {
-    background-color: #156d44;
-}
-
-/* --- 1. Header/Navigation Section --- */
-.main-header {
-    background: url('placeholder-header-bg.jpg') no-repeat center center/cover;
-    height: 450px; 
-    position: relative;
-    z-index: 1;
-}
-
-.main-header::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0, 0, 0, 0.4); 
-    z-index: 2;
-}
-
-.header-content {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 15px 5%;
-    background-color: var(--secondary-color); 
-    color: white;
-    position: relative;
-    z-index: 3; 
-}
-
-.logo {
-    font-size: 1.5rem;
-    font-weight: 700;
-    letter-spacing: -1px;
-}
-
-nav a {
-    color: white;
-    text-decoration: none;
-    margin-left: 25px;
-    font-size: 0.9rem;
-    opacity: 0.8;
-    transition: opacity 0.2s;
-}
-
-nav a:hover {
-    opacity: 1;
-}
-
-/* Hero Title Styling */
-.hero-title-container {
-    position: absolute;
-    bottom: 40px;
-    left: 0;
-    right: 0;
-    color: white;
-    padding: 0 5%;
-    max-width: 1200px;
-    margin: 0 auto;
-    z-index: 3;
-    display: flex; 
-    justify-content: space-between;
-    align-items: flex-end;
-}
-
-.breadcrumb {
-    font-size: 0.9rem;
-    font-weight: 400;
-    opacity: 0.7;
-    text-align: right;
-    margin-bottom: 5px; 
-    flex-grow: 1;
-}
-
-.hero-main-title {
-    font-size: 3rem;
-    margin-top: 10px;
-    flex-shrink: 0;
-}
-
-/* --- 2. Mission Statement / Founder Section --- */
-.mission-section {
-    background-color: var(--background-light); 
-}
-
-.mission-container {
-    display: flex;
-    gap: 50px;
-    padding-top: 60px; 
-    align-items: flex-start;
-}
-
-.mission-text-left, .founder-info-right {
-    flex: 1;
-}
-
-.mission-text-left h2 {
-    font-size: 2.5rem;
-    line-height: 1.2;
-    margin-bottom: 30px;
-    max-width: 80%;
-}
-
-.team-meeting-photo {
-    width: 100%;
-    height: auto;
-    display: block;
-    border-radius: 5px;
-    margin-top: 30px; 
-}
-
-.founder-info-right p:not(.signature, .founder-title) {
-    margin-bottom: 20px;
-    color: var(--light-text-color);
-}
-
-.signature {
-    font-family: 'Great Vibes', cursive;
-    font-size: 2.5rem;
-    margin-top: 30px;
-    margin-bottom: 5px;
-    color: var(--text-color);
-}
-
-.founder-title {
-    font-size: 0.8rem;
-    font-weight: 600;
-    color: var(--light-text-color);
-    letter-spacing: 1px;
-    margin-bottom: 30px;
-}
-
-.value-list {
-    list-style: none;
-    padding: 0;
-    margin-bottom: 30px;
-}
-
-.value-list li {
-    margin-bottom: 15px;
-    font-size: 1.1rem;
-    font-weight: 600;
-}
-
-.value-list i {
-    color: var(--primary-color);
-    margin-right: 10px;
-}
-
-/* --- 3. Team Grid Section (Portrait & Social Icon Fix Applied) --- */
-.team-grid-section {
-    text-align: center;
-    padding-top: 0;
-    padding-bottom: 100px;
-    background-color: white;
-}
-
-.team-grid-heading {
-    font-size: 2rem;
-    margin-bottom: 50px;
-}
-
-.team-grid {
-    display: flex; 
-    justify-content: center;
-    gap: 40px; 
-    flex-wrap: wrap;
-}
-
-.team-member-card {
-    text-align: center;
-    flex-basis: calc(50% - 20px); 
-    max-width: 400px;
-    background-color: white; 
-    padding: 0; 
-    border-radius: 5px; 
-    box-shadow: 0 6px 15px rgba(0,0,0,0.1);
-    transition: transform 0.3s, box-shadow 0.3s;
-    display: flex; 
-    flex-direction: column; 
-    align-items: center;
-    overflow: hidden; 
-}
-
-.team-member-card:hover {
-    transform: translateY(-5px); 
-    box-shadow: 0 10px 20px rgba(0,0,0,0.15);
-}
-
-.member-image-container {
-    position: relative; /* Crucial for positioning floating icons */
-    overflow: hidden;
-    width: 100%; 
-    height: 350px; 
-    margin-bottom: 0; 
-}
-
-.member-photo {
-    width: 100%;
-    height: 100%;
-    object-fit: cover; 
-    display: block;
-    /* FIX: REMOVED grayscale filter entirely for original color/tone */
-    filter: none; 
-    transition: filter 0.3s ease-in-out;
-}
-
-/* No change on hover needed since there's no filter to toggle */
-.team-member-card:hover .member-photo {
-    filter: none;
-}
-
-.member-name {
-    font-size: 1.2rem;
-    font-weight: 700;
-    margin-top: 15px;
-    margin-bottom: 5px;
-}
-
-.member-role {
-    font-size: 0.95rem;
-    font-weight: 500;
-    color: var(--light-text-color);
-    text-transform: uppercase;
-    margin-bottom: 15px;
-}
-
-/* FIX: Social Icons placed back on the image, visible only on hover */
-.social-icons {
-    position: absolute; /* Positioned relative to .member-image-container */
-    top: 10px;
-    right: 10px;
-    display: flex;
-    flex-direction: column; /* Vertical stack */
-    gap: 8px;
-    opacity: 0; /* Hidden by default */
-    transition: opacity 0.3s, transform 0.3s;
-}
-
-.team-member-card:hover .social-icons {
-    opacity: 1; /* Show on card hover */
-    /* Optional subtle animation to slide in */
-    transform: translateX(0); 
-}
-
-.social-icons a {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 35px;
-    height: 35px;
-    /* Use primary color (green) for background as seen in the original image */
-    background-color: var(--primary-color);
-    color: white; 
-    border-radius: 5px; 
-    font-size: 1rem;
-    transition: background-color 0.2s;
-}
-
-.social-icons a:hover {
-    background-color: #156d44;
-}
-
-/* --- Media Queries for Responsiveness --- */
-@media (max-width: 992px) {
-    .mission-container {
-        flex-direction: column;
-        align-items: center;
-        text-align: center;
-    }
-    .mission-text-left h2 {
-        max-width: 100%;
-        font-size: 2.2rem;
-    }
-    .founder-info-right {
-        text-align: center;
-    }
-    .value-list {
-        display: inline-block;
-        text-align: left;
-    }
-    .team-grid {
-        flex-direction: column;
-        gap: 30px;
-    }
-    .team-member-card {
-        flex-basis: 90%; 
-        max-width: 350px;
-    }
-    .hero-title-container {
-        flex-direction: column;
-        align-items: center;
-        text-align: center;
-    }
-    .breadcrumb {
-        text-align: center;
-    }
-}
-
-@media (max-width: 768px) {
-    .header-content {
-        flex-direction: column;
-        text-align: center;
-    }
-    nav {
-        margin: 10px 0;
-    }
-    nav a {
-        margin: 0 10px;
-    }
-}
-
-@media (max-width: 576px) {
-    .mission-text-left h2 {
-        font-size: 1.8rem;
-    }
-    .hero-main-title {
-        font-size: 2rem;
-    }
-    .signature {
-        font-size: 2rem;
-    }
-}
-
-/* --- New Quote Slider Styles --- */
-.quote-slider-container {
-    height: 120px; /* Gives space for the longest quote */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-bottom: 80px;
-    overflow: hidden; /* Important: hides quotes that are not currently active */
-}
-
-.quote-slider {
-    position: relative;
-    width: 100%;
-    max-width: 800px;
-}
-
-.quote {
-    position: absolute;
-    top: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 100%;
-    font-size: 1.2rem;
-    line-height: 1.4;
-    font-weight: 600; /* Slightly lighter weight for long quote readability */
-    color: var(--text-color);
-    opacity: 0; /* Hidden by default */
-    transition: opacity 1s ease-in-out;
-    text-align: center;
-}
-
-.quote.active-quote {
-    opacity: 1; /* Only the active quote is visible */
-}
-
-.author {
-    display: block;
-    margin-top: 10px;
-    font-size: 1rem;
-    font-weight: 700;
-    color: var(--primary-color);
-}
-
-/* Update Media Query for smaller headings */
-@media (max-width: 768px) {
-    .quote-slider-container {
-        height: 150px; /* Adjust height for stacked mobile text */
-    }
-    .quote {
-        font-size: 1.5rem;
-    }
-}
-
-</style>
-</head>
-<body>
-    <section class="mission-section">
-        <div class="mission-container">
-            <div class="mission-text-left">
-                <p class="subtitle">OUR TEAM</p>
-                <h2>Alone we can do so little, together we can do so much.</h2>
-                <div class="team-photo-container">
-                    <img src="https://tse2.mm.bing.net/th/id/OIP.VTmeChM7aGUzu-JxXdcoRgHaE8?rs=1&pid=ImgDetMain&o=7&rm=3" alt="Team members smiling and collaborating" class="team-meeting-photo">
-                </div>
-            </div>
-
-            <div class="founder-info-right">
-                <p>"The life of the law has not been logic; it has been experience. The felt necessities of the time, the prevalent moral and political theories, intuitions of public policy, avowed or unconscious, even the prejudices which judges share with their fellow-men, have had a good deal more to do than the syllogism in determining the rules by which men should be governed."</p>
-                
-                <p class="signature">Oliver Wendell Holmes Jr.</p>
-                <p class="founder-title">LEGAL PHILOSOPHER</p> <ul class="value-list">
-                    <li><i class="fas fa-check-circle"></i> Commitment to Precedent</li>
-                    <li><i class="fas fa-check-circle"></i> Strategic Legal Innovation</li>
-                    <li><i class="fas fa-check-circle"></i> Unwavering Professionalism</li>
-                    <li><i class="fas fa-check-circle"></i> Advancement of Justice</li>
-                </ul>
-                <button class="discover-button">Discover more</button>
-            </div>
+<!-- Mission / Team Intro -->
+<section class="mission-section">
+    <div class="mission-container">
+        <div class="mission-text-left">
+            <h2>Alone we can do so little, together we can do so much.</h2>
+            <img src="https://tse2.mm.bing.net/th/id/OIP.VTmeChM7aGUzu-JxXdcoRgHaE8?rs=1&pid=ImgDetMain&o=7&rm=3" alt="Team collaborating" class="team-meeting-photo">
         </div>
-    </section>
-    
-    <section class="team-grid-section">
-        <p class="subtitle">MEET OUR TEAM</p>
-        <div class="quote-slider-container">
-    <div class="quote-slider">
-        <h2 class="quote active-quote">
-            Alone we can do so little; together we can do so much.<span class="author">Helen Keller</span>
-        </h2>
-        <h2 class="quote">
-            Be careful what you water your dreams with. Water them with worry and fear and you will produce weeds. <span class="author">Lao Tzu</span>
-        </h2>
-        <h2 class="quote">
-            Always be on the lookout for ways to nurture your dream. <span class="author">Lao Tzu</span>
-        </h2>
-        <h2 class="quote">
-            It’s not about ideas, it’s about making ideas happen. <span class="author">Scott Belsky</span>
-        </h2>
+
+        <div class="founder-info-right">
+            <p>"The life of the law has not been logic; it has been experience. The felt necessities of the time, the prevalent moral and political theories, intuitions of public policy, avowed or unconscious, even the prejudices which judges share with their fellow-men, have had a good deal more to do than the syllogism in determining the rules by which men should be governed."</p>
+            <p class="signature">Oliver Wendell Holmes Jr.</p>
+            <p class="founder-title">LEGAL PHILOSOPHER</p>
+            <ul class="value-list">
+                <li><i class="fas fa-check-circle"></i> Commitment to Precedent</li>
+                <li><i class="fas fa-check-circle"></i> Strategic Legal Innovation</li>
+                <li><i class="fas fa-check-circle"></i> Unwavering Professionalism</li>
+                <li><i class="fas fa-check-circle"></i> Advancement of Justice</li>
+            </ul>
+        </div>
     </div>
+</section>
+
+<!-- Team Grid -->
+<section class="team-grid-section">
+    <div class="relative inline-block mb-6">
+    <h2 class="text-3xl font-bold mb-6 relative pb-4">
+        Meet Our Team
+        <span class="absolute bottom-0 left-1/2 -translate-x-1/2 w-16 h-1 bg-[#ebd19e] rounded-full"></span>
+    </h2>
 </div>
-
-        <div class="team-grid">
-            
-            <div class="team-member-card">
-                <div class="member-image-container">
-                    <img src="https://randomuser.me/api/portraits/women/3.jpg" alt="Bethany Holland" class="member-photo">
-                    </div>
-                <p class="member-name">Lauretta Oyile</p>
-                <p class="member-role">TITLE</p>
-                <div class="social-icons">
-                    <a href="#"><i class="fab fa-facebook-f"></i></a>
-                    <a href="#"><i class="fab fa-linkedin-in"></i></a>
-                    <a href="#"><i class="fab fa-twitter"></i></a>
-                    <a href="#"><i class="fas fa-plus"></i></a>
-                </div>
+    <div class="team-grid">
+        {% for member in members %}
+        <div class="team-member-card" data-url="{% static 'team/' %}{{ member.slug }}.html">
+            <div class="member-image-container">
+                <img src="{{ member.photo.url }}" alt="{{ member.name }}" class="member-photo">
             </div>
-            
-            <div class="team-member-card">
-                <div class="member-image-container">
-                    <img src="https://randomuser.me/api/portraits/men/5.jpg" alt="Connor Harrison" class="member-photo"> </div>
-                <p class="member-name">Tony Muguna</p>
-                <p class="member-role">TITLES</p>
-                <div class="social-icons">
-                    <a href="#"><i class="fab fa-facebook-f"></i></a>
-                    <a href="#"><i class="fab fa-linkedin-in"></i></a>
-                    <a href="#"><i class="fab fa-twitter"></i></a>
-                    <a href="#"><i class="fas fa-plus"></i></a>
-                </div>
+            <p class="member-name">{{ member.name }}</p>
+            <p class="member-role">{{ member.role }}</p>
+            <div class="social-icons">
+                {% if member.facebook %}<a href="{{ member.facebook }}" target="_blank"><i class="fab fa-facebook-f"></i></a>{% endif %}
+                {% if member.linkedin %}<a href="{{ member.linkedin }}" target="_blank"><i class="fab fa-linkedin-in"></i></a>{% endif %}
+                {% if member.twitter %}<a href="{{ member.twitter }}" target="_blank"><i class="fab fa-twitter"></i></a>{% endif %}
             </div>
-            
         </div>
-    </section>
+        {% endfor %}
+    </div>
+</section>
 
-    <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const quotes = document.querySelectorAll('.quote-slider .quote');
-        let currentQuote = 0;
-
-        function showQuote(index) {
-            quotes.forEach((quote, i) => {
-                quote.classList.remove('active-quote');
-                if (i === index) {
-                    quote.classList.add('active-quote');
-                }
-            });
-        }
-
-        function nextQuote() {
-            currentQuote = (currentQuote + 1) % quotes.length;
-            showQuote(currentQuote);
-        }
-
-        // Initialize the first quote
-        showQuote(currentQuote);
-
-        // Set the timer to switch quotes every 5000 milliseconds (5 seconds)
-        setInterval(nextQuote, 5000);
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const cards = document.querySelectorAll('.team-member-card');
+    cards.forEach(card => {
+        card.addEventListener('click', () => {
+            window.location.href = card.dataset.url;
+        });
     });
+    const socialLinks = document.querySelectorAll('.social-icons a');
+    socialLinks.forEach(link => {
+        link.addEventListener('click', e => e.stopPropagation());
+    });
+});
 </script>
-</body>
-</html>
+
+{% endblock %}

@@ -17,7 +17,7 @@ urlpatterns = [
     # ---------------------------
     path('', main_views.home, name='home'),
     path('about/', main_views.about, name='about'),
-    path('team/', main_views.team, name='team'),
+    path('teams/', main_views.team, name='team'),
     path('contact/', main_views.contact_us, name='contact'),
     path('privacy-policy/', main_views.privacy_policy, name='privacy_policy'),
     path('terms-of-services/', main_views.terms_of_service, name='terms_of_service'),
@@ -54,6 +54,9 @@ urlpatterns = [
     path('admin-dashboard/call/decline/<int:call_id>/', admin_views.decline_call, name='admin_decline_call'),
 
     path('test-email/', admin_views.test_email, name='test_email'),
+
+    #Team Pages
+    path('team/', main_views.team, name='team'),
 
     # ---------------------------
     # Notifications

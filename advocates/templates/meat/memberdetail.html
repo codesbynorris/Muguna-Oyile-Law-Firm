@@ -1,0 +1,108 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ member.name }} - {{ member.role }} | Muguna & Oyile</title>
+
+  <!-- Font Awesome & Tailwind -->
+  <script src="https://kit.fontawesome.com/yourkit.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Custom SVG background -->
+  <style>
+    .design2 {
+      background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200"><rect width="200" height="200" fill="%23003366"/><circle cx="50" cy="50" r="30" fill="none" stroke="%23ffd700" stroke-opacity="0.1" stroke-width="2"/><circle cx="150" cy="50" r="30" fill="none" stroke="%23ffd700" stroke-opacity="0.1" stroke-width="2"/><circle cx="50" cy="150" r="30" fill="none" stroke="%23ffd700" stroke-opacity="0.1" stroke-width="2"/><circle cx="150" cy="150" r="30" fill="none" stroke="%23ffd700" stroke-opacity="0.1" stroke-width="2"/></svg>');
+      background-size: cover;
+      background-position: center;
+    }
+  </style>
+</head>
+
+<body class="bg-gray-50 font-sans">
+
+  <!-- Container -->
+  <div class="max-w-5xl mx-auto px-6 py-12">
+
+    <!-- Profile Card -->
+    <div class="bg-white shadow-lg rounded-2xl overflow-hidden">
+      
+      <!-- Header Section with SVG Background -->
+      <div class="design2 w-full py-12 flex flex-col items-center">
+        <img src="{{ member.image.url }}" alt="{{ member.name }}" class="w-40 h-40 rounded-full shadow-md object-cover border-4 border-white">
+        <h1 class="text-3xl font-bold text-white mt-4">{{ member.name }}</h1>
+        <p class="text-yellow-200 font-medium">{{ member.role }} | Muguna & Oyile Advocates</p>
+
+        <!-- Download Contact Card -->
+        {% if member.vcard %}
+        <a href="{{ member.vcard.url }}" download class="mt-6 inline-flex items-center px-6 py-2 bg-white text-blue-600 rounded-lg font-medium hover:bg-gray-100 transition">
+          <i class="fas fa-download mr-2"></i> Download Contact Card
+        </a>
+        {% endif %}
+      </div>
+
+      <!-- Details Sections -->
+      <div class="p-8 space-y-10">
+        
+        <!-- About -->
+        {% if member.about %}
+        <section>
+          <h2 class="text-2xl font-semibold text-gray-800 border-b-2 border-gray-200 pb-2 mb-4">About</h2>
+          <p class="text-gray-600 leading-relaxed whitespace-pre-line">{{ member.about }}</p>
+        </section>
+        {% endif %}
+
+        <!-- Key Matters -->
+        {% if member.key_matters %}
+        <section>
+          <h2 class="text-2xl font-semibold text-gray-800 border-b-2 border-gray-200 pb-2 mb-4">Key Matters</h2>
+          <ul class="list-disc list-inside text-gray-600 space-y-2">
+            {% for matter in member.key_matters.splitlines %}
+              {% if matter %}<li>{{ matter }}</li>{% endif %}
+            {% endfor %}
+          </ul>
+        </section>
+        {% endif %}
+
+        <!-- Capabilities -->
+        {% if member.capabilities %}
+        <section>
+          <h2 class="text-2xl font-semibold text-gray-800 border-b-2 border-gray-200 pb-2 mb-4">Capabilities</h2>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-gray-600">
+            {% for cap in member.capabilities.splitlines %}
+              {% if cap %}<span>{{ cap }}</span>{% endif %}
+            {% endfor %}
+          </div>
+        </section>
+        {% endif %}
+
+        <!-- Memberships -->
+        {% if member.memberships %}
+        <section>
+          <h2 class="text-2xl font-semibold text-gray-800 border-b-2 border-gray-200 pb-2 mb-4">Memberships</h2>
+          <ul class="list-disc list-inside text-gray-600 space-y-2">
+            {% for item in member.memberships.splitlines %}
+              {% if item %}<li>{{ item }}</li>{% endif %}
+            {% endfor %}
+          </ul>
+        </section>
+        {% endif %}
+
+        <!-- Qualifications -->
+        {% if member.qualifications %}
+        <section>
+          <h2 class="text-2xl font-semibold text-gray-800 border-b-2 border-gray-200 pb-2 mb-4">Qualifications</h2>
+          <ul class="list-disc list-inside text-gray-600 space-y-2">
+            {% for q in member.qualifications.splitlines %}
+              {% if q %}<li>{{ q }}</li>{% endif %}
+            {% endfor %}
+          </ul>
+        </section>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>
