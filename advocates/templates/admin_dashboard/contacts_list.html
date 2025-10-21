@@ -1,0 +1,434 @@
+{% extends "admin_dashboard/base_admin.html" %}
+{% load static %}
+
+{% block title %}Contact Messages{% endblock %}
+
+{% block dashboard_content %}
+<div class="p-4 sm:p-6">
+    <h1 class="text-2xl sm:text-3xl font-bold mb-6 text-gray-800 font-header">Contact Messages</h1>
+
+    <div class="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between bg-white p-4 rounded-3xl shadow-2xl border border-gray-200">
+        <div class="relative w-full sm:w-64 mb-4 sm:mb-0">
+            <select id="subjectFilter" class="w-full border border-gray-300 rounded-lg px-4 py-2 text-sm text-gray-700 focus:ring-indigo-500 focus:border-indigo-500 bg-white font-content">
+                <option value="">All Subjects</option>
+                {% for subject in subjects %}
+                    <option value="{{ subject }}">{{ subject }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="flex items-center space-x-3">
+            <input type="checkbox" id="selectAll" class="h-4 w-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500">
+            <button class="text-gray-500 hover:text-gray-700" title="Refresh" onclick="window.location.reload()">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m15.356-2H21v5"></path>
+                </svg>
+            </button>
+        </div>
+    </div>
+
+    <div class="border rounded-3xl shadow-2xl bg-white">
+        <div id="message-list" class="divide-y divide-gray-200">
+            {% for contact in contacts %}
+            <article class="message-row flex items-center p-3 cursor-pointer hover:shadow-md hover:z-10 transition-all duration-150 {% if not contact.is_read %}bg-blue-50{% endif %}" data-message-id="{{ contact.id }}">
+                <div class="flex items-center space-x-2 flex-shrink-0 pr-3 w-12 sm:w-16">
+                    <input type="checkbox" class="h-4 w-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500 message-checkbox">
+                    <svg class="w-5 h-5 {% if contact.is_starred %}text-yellow-500{% else %}text-gray-400 hover:text-yellow-500{% endif %} transition-colors sm:block star-icon" fill="{% if contact.is_starred %}currentColor{% else %}none{% endif %}" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.152A.75.75 0 0112 2.25c.54 0 1.059.324 1.309.854l1.83 3.868a.75.75 0 00.56.439l4.385.637a.75.75 0 01.417 1.27l-3.17 3.093a.75.75 0 00-.215.688l.75 4.363a.75.75 0 01-1.082.784L12 18.017l-3.921 2.067a.75.75 0 01-1.082-.784l.75-4.363a.75.75 0 00-.215-.688l-3.17-3.093a.75.75 0 01.417-1.27l4.385-.637a.75.75 0 00.56-.439l1.83-3.868a.75.75 0 01.309-.854z"></path>
+                    </svg>
+                </div>
+                <div class="w-20 sm:w-32 {% if not contact.is_read %}font-semibold{% endif %} text-gray-900 truncate flex-shrink-0 font-content">
+                    {{ contact.first_name }} {{ contact.last_name }}
+                </div>
+                <div class="flex-1 min-w-0 pr-3">
+                    <span class="{% if not contact.is_read %}font-semibold{% endif %} text-gray-900 font-content">{{ contact.subject }}</span>
+                    <span class="text-gray-600 font-content"> — {{ contact.message|truncatechars:30 }}</span>
+                </div>
+                <div class="w-20 sm:w-24 text-right text-sm text-gray-500 flex-shrink-0 relative">
+                    <div class="date-column transition-opacity duration-150">
+                        {{ contact.created_at|date:"M d" }}
+                    </div>
+                    <div class="icon-wrapper absolute top-1/2 right-0 transform -translate-y-1/2 space-x-2 hidden sm:flex opacity-0 transition-opacity duration-150">
+                        <button class="text-gray-500 hover:text-gray-700 archive-btn" title="Archive" data-message-id="{{ contact.id }}">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"></path>
+                            </svg>
+                        </button>
+                        <button class="text-gray-500 hover:text-gray-700 delete-btn" title="Delete" data-message-id="{{ contact.id }}">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </article>
+            {% empty %}
+            <div class="p-4 text-center text-gray-500 font-content">
+                No messages yet.
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div id="messageModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-gray-900/40 p-4">
+        <div class="bg-white rounded-xl shadow-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto font-content message-modal border border-gray-100">
+            
+            <div class="logo-section text-center py-6 border-b border-gray-100 bg-gray-50 rounded-t-xl">
+                <a href="#">
+                    <img src="{% static 'images/logo.png' %}" 
+                        alt="Muguna & Oyile Law Firm Logo" 
+                        width="180" 
+                        height="60"
+                        loading="eager"
+                        class="mx-auto"
+                    >
+                </a>
+            </div>
+
+            <div class="content-area px-8 sm:px-10 py-6">
+                <h1 id="modalSubject" class="text-2xl font-semibold text-indigo-700 mb-4 font-header border-b pb-3 border-indigo-100">
+                    </h1>
+
+                <p id="modalSenderGreeting" class="text-sm text-gray-700 mb-1">
+                    </p>
+
+                <p class="text-sm text-gray-600 leading-relaxed mb-6">
+                    Review the details for this important client inquiry:
+                </p>
+
+                <div class="details-section text-sm text-gray-700 mb-8 space-y-3">
+                    <div class="leading-relaxed bg-indigo-50 p-4 rounded-lg border border-indigo-200">
+                        <span class="w-40 text-indigo-700 font-semibold block mb-1">Message:</span>
+                        <p id="modalMessage" class="font-normal text-gray-800 leading-normal italic ml-2"></p>
+                    </div>
+                    
+                    <div class="flex leading-relaxed items-start">
+                        <span class="w-40 text-gray-600 font-normal">Sender:</span>
+                        <span id="modalSender" class="font-semibold text-gray-800 flex-1"></span>
+                    </div>
+                    <div class="flex leading-relaxed items-start">
+                        <span class="w-40 text-gray-600 font-normal">Email:</span>
+                        <span id="modalEmail" class="font-semibold text-indigo-600 flex-1"></span>
+                    </div>
+                    <div class="flex leading-relaxed items-start">
+                        <span class="w-40 text-gray-600 font-normal">Phone:</span>
+                        <span id="modalPhone" class="font-semibold text-gray-800 flex-1"></span>
+                    </div>
+                    <div class="flex leading-relaxed items-start">
+                        <span class="w-40 text-gray-600 font-normal">Country Code:</span>
+                        <span id="modalCountry" class="font-semibold text-gray-800 flex-1"></span>
+                    </div>
+                    <div class="flex leading-relaxed items-start">
+                        <span class="w-40 text-gray-600 font-normal">Request Type:</span>
+                        <span id="modalType" class="font-semibold text-gray-800 flex-1"></span>
+                    </div>
+                    <div class="flex leading-relaxed items-start">
+                        <span class="w-40 text-gray-600 font-normal">Date Received:</span>
+                        <span id="modalCreated" class="font-semibold text-gray-800 flex-1"></span>
+                    </div>
+                    <div class="flex leading-relaxed items-start pt-2 border-t border-gray-100" id="modalDateWrapper" style="display: none;">
+                        <span class="w-40 text-gray-600 font-normal">Preferred Date:</span>
+                        <span id="modalDate" class="font-bold text-indigo-600 flex-1"></span>
+                    </div>
+                    <div class="flex leading-relaxed items-start" id="modalTimeWrapper" style="display: none;">
+                        <span class="w-40 text-gray-600 font-normal">Preferred Time:</span>
+                        <span id="modalTime" class="font-bold text-indigo-600 flex-1"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="footer-text text-center text-sm text-gray-600 py-4 px-8 sm:px-10 border-t border-gray-200 bg-gray-50 rounded-b-xl flex justify-between items-center">
+                <button id="closeModal" class="px-5 py-2 bg-indigo-600 rounded-lg text-white hover:bg-indigo-700 transition-colors shadow-md font-semibold" title="Close">
+                    Close Message
+                </button>
+                <div class="text-right text-xs text-gray-500">
+                    ID: <span id="modalMessageId" class="font-bold text-gray-700"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+/* Custom styles (unchanged) */
+:root {
+    --brand: #011425;
+    --accent: #4f46e5;
+    --font-header: 'EB Garamond', serif;
+    --font-content: 'Open Sans', sans-serif;
+}
+
+.message-row .icon-wrapper {
+    opacity: 0;
+    transition: opacity 0.15s ease-in-out;
+}
+.message-row:hover .icon-wrapper {
+    opacity: 1;
+}
+.message-row:hover .date-column {
+    opacity: 0;
+}
+.message-row:hover {
+    background-color: #f9fafb;
+}
+.message-row {
+    font-family: var(--font-content);
+}
+.font-header {
+    font-family: var(--font-header);
+}
+.font-content {
+    font-family: var(--font-content);
+}
+.rounded-3xl {
+    border-radius: 1.25rem;
+}
+.shadow-2xl {
+    box-shadow: 0 25px 50px -12px rgba(2,6,23,0.35);
+}
+/* Modal Styles for better appearance */
+.message-modal {
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); /* Smoother animation */
+    transform: scale(0.95);
+    opacity: 0;
+}
+.message-modal.active {
+    transform: scale(1);
+    opacity: 1;
+}
+/* Ensure consistent width to prevent jumping (unchanged) */
+.message-row .w-20 {
+    min-width: 5rem;
+}
+/* ... rest of existing CSS for responsive list ... */
+@media (min-width: 640px) {
+    .message-row .w-20 {
+        min-width: 6rem;
+    }
+    .message-row .w-32 {
+        min-width: 8rem;
+    }
+}
+@media (max-width: 640px) {
+    .message-row {
+        flex-wrap: wrap;
+        gap: 0.5rem;
+    }
+    .message-row .w-20 {
+        width: auto;
+        flex: 1 1 100%;
+        order: 1;
+    }
+    .message-row .flex-1 {
+        order: 2;
+        flex: 1 1 100%;
+    }
+    .message-row .w-12 {
+        width: auto;
+        order: 3;
+    }
+    .message-row .w-24 {
+        width: auto;
+        order: 4;
+    }
+    .star-icon {
+        display: none;
+    }
+}
+</style>
+
+<script>
+// The JavaScript remains the same as its logic is correct.
+document.addEventListener('DOMContentLoaded', () => {
+    // Select All Checkbox
+    const selectAll = document.getElementById('selectAll');
+    const checkboxes = document.querySelectorAll('.message-checkbox');
+    selectAll.addEventListener('change', () => {
+        checkboxes.forEach(checkbox => {
+            checkbox.checked = selectAll.checked;
+        });
+    });
+
+    // Modal Elements
+    const modal = document.getElementById('messageModal');
+    const modalContent = modal.querySelector('.message-modal');
+    const modalSubject = document.getElementById('modalSubject');
+    const modalMessage = document.getElementById('modalMessage');
+    const modalSenderGreeting = document.getElementById('modalSenderGreeting');
+    const modalSender = document.getElementById('modalSender');
+    const modalEmail = document.getElementById('modalEmail');
+    const modalPhone = document.getElementById('modalPhone');
+    const modalCountry = document.getElementById('modalCountry');
+    const modalType = document.getElementById('modalType');
+    const modalDate = document.getElementById('modalDate');
+    const modalTime = document.getElementById('modalTime');
+    const modalCreated = document.getElementById('modalCreated');
+    const modalMessageId = document.getElementById('modalMessageId');
+    const modalDateWrapper = document.getElementById('modalDateWrapper');
+    const modalTimeWrapper = document.getElementById('modalTimeWrapper');
+    const closeModalButton = document.getElementById('closeModal');
+
+
+    // Message Row Click Handler
+    const messageRows = document.querySelectorAll('.message-row');
+
+    messageRows.forEach(row => {
+        row.addEventListener('click', (event) => {
+            const interactiveElements = event.target.closest('input[type="checkbox"], button, svg');
+            if (interactiveElements) {
+                return;
+            }
+            const messageId = row.getAttribute('data-message-id');
+            // --- START: Simulated Data Fetch (Replace with Django URL fetch) ---
+            const firstName = row.querySelector('.w-20, .w-32').textContent.trim().split(/\s+/)[0];
+            const lastName = row.querySelector('.w-20, .w-32').textContent.trim().split(/\s+/).slice(1).join(' ');
+            const contact = {
+                id: messageId,
+                subject: row.querySelector('.flex-1 span:first-child').textContent,
+                message: row.querySelector('.flex-1 span:last-child').textContent.replace('—', '').trim(),
+                first_name: firstName,
+                last_name: lastName,
+                // These should be fetched from the server using the messageId
+                email: 'example@email.com', 
+                phone_number: '123-456-7890', 
+                country_code: 'US', 
+                form_type: Math.random() < 0.5 ? 'Message' : 'Scheduled Call', 
+                date: '2025-10-25', 
+                time_slot: '10:00 AM', 
+                created_at: row.querySelector('.date-column').textContent.trim()
+            };
+            // --- END: Simulated Data Fetch ---
+
+            // Populate modal
+            modalSubject.textContent = contact.subject;
+            modalMessage.textContent = contact.message;
+            modalSenderGreeting.textContent = `Hello Admin,`; // Custom greeting
+            modalSender.textContent = `${contact.first_name} ${contact.last_name}`;
+            modalEmail.textContent = contact.email;
+            modalPhone.textContent = contact.phone_number || 'N/A';
+            modalCountry.textContent = contact.country_code || 'N/A';
+            modalType.textContent = contact.form_type;
+            modalCreated.textContent = contact.created_at;
+            modalMessageId.textContent = contact.id;
+
+            // Conditional fields for "Scheduled Call"
+            if (contact.form_type === 'Scheduled Call') {
+                modalDateWrapper.style.display = 'flex';
+                modalTimeWrapper.style.display = 'flex';
+                modalDate.textContent = contact.date || 'N/A';
+                modalTime.textContent = contact.time_slot || 'N/A';
+            } else {
+                modalDateWrapper.style.display = 'none';
+                modalTimeWrapper.style.display = 'none';
+            }
+
+
+            // Show modal with animation classes
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            // Force reflow to ensure transition runs
+            void modalContent.offsetWidth; 
+            modalContent.classList.add('active');
+
+            // Mark as read (visual update)
+            row.classList.remove('bg-blue-50');
+            row.querySelectorAll('.font-semibold').forEach(el => {
+                el.classList.remove('font-semibold');
+            });
+            
+            // --- Mark as Read AJAX call ---
+            fetch(`/admin/contact-messages/${messageId}/mark-read/`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}',
+                    'Content-Type': 'application/json'
+                }
+            }).catch(err => console.error('Error marking as read:', err));
+        });
+    });
+
+    // Close Modal Handler
+    const hideModal = () => {
+        modalContent.classList.remove('active');
+        // Wait for the transition to finish before hiding the container
+        setTimeout(() => {
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }, 300); // Match this to your transition duration
+    }
+
+    // Close Modal on button click
+    closeModalButton.addEventListener('click', hideModal);
+
+    // Close modal on outside click
+    modal.addEventListener('click', (event) => {
+        if (event.target === modal) {
+            hideModal();
+        }
+    });
+
+    // Star Toggle - (Existing logic, kept for completeness)
+    const stars = document.querySelectorAll('.star-icon');
+    stars.forEach(star => {
+        star.addEventListener('click', (event) => {
+            event.stopPropagation();
+            const messageId = star.closest('.message-row').getAttribute('data-message-id');
+            const isStarred = star.getAttribute('fill') === 'currentColor';
+            star.setAttribute('fill', isStarred ? 'none' : 'currentColor');
+            star.classList.toggle('text-yellow-500', !isStarred);
+            star.classList.toggle('text-gray-400', isStarred);
+            fetch(`/admin/contact-messages/${messageId}/toggle-star/`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}',
+                    'Content-Type': 'application/json'
+                }
+            }).catch(err => console.error('Error toggling star:', err));
+        });
+    });
+
+    // Archive and Delete Buttons - (Existing logic, kept for completeness)
+    const archiveButtons = document.querySelectorAll('.archive-btn');
+    const deleteButtons = document.querySelectorAll('.delete-btn');
+    archiveButtons.forEach(btn => {
+        btn.addEventListener('click', (event) => {
+            event.stopPropagation();
+            const messageId = btn.getAttribute('data-message-id');
+            fetch(`/admin/contact-messages/${messageId}/archive/`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}',
+                    'Content-Type': 'application/json'
+                }
+            }).then(() => {
+                btn.closest('.message-row').remove();
+            }).catch(err => console.error('Error archiving:', err));
+        });
+    });
+    deleteButtons.forEach(btn => {
+        btn.addEventListener('click', (event) => {
+            event.stopPropagation();
+            const messageId = btn.getAttribute('data-message-id');
+            fetch(`/admin/contact-messages/${messageId}/delete/`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}',
+                    'Content-Type': 'application/json'
+                }
+            }).then(() => {
+                btn.closest('.message-row').remove();
+            }).catch(err => console.error('Error deleting:', err));
+        });
+    });
+
+    // Subject Filter - (Existing logic, kept for completeness)
+    const subjectFilter = document.getElementById('subjectFilter');
+    subjectFilter.addEventListener('change', () => {
+        const selectedSubject = subjectFilter.value;
+        messageRows.forEach(row => {
+            const subject = row.querySelector('.flex-1 span:first-child').textContent;
+            row.style.display = selectedSubject === '' || subject === selectedSubject ? 'flex' : 'none';
+        });
+    });
+});
+</script>
+{% endblock %}

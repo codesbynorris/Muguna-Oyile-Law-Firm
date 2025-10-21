@@ -60,7 +60,28 @@ class Category(models.Model):
         return self.articles.count()
 
 
+class Categories(models.Model):
+    name = models.CharField(max_length=100)
+    slug = models.SlugField(unique=True, blank=True)
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.name)
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return self.name
+
+    @property
+    def article_count(self):
+        return self.articles.count()
+
 class Article(models.Model):
+    TYPE_CHOICES = [
+        ('publication', 'Publication'),
+        ('article', 'Article'),
+        ('news', 'News'),
+    ]
     title = models.CharField(max_length=200)
     slug = models.SlugField(unique=True, blank=True)
     category = models.ForeignKey(Category, on_delete=models.PROTECT, related_name="articles")
@@ -68,6 +89,7 @@ class Article(models.Model):
     content = models.TextField()
     image = models.ImageField(upload_to="articles/", blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
+    type = models.CharField(max_length=20, choices=TYPE_CHOICES, default='publication')
 
     class Meta:
         ordering = ["-created_at"]
@@ -85,6 +107,12 @@ class Article(models.Model):
     def __str__(self):
         return self.title
 
+class Quote(models.Model):
+    text = models.TextField()
+    author = models.CharField(max_length=100)
+
+    def __str__(self):
+        return f"{self.text} — {self.author}"
 
 # ---------------------------
 # Contact Messages & Scheduled Calls
@@ -263,3 +291,21 @@ class TeamMember(models.Model):
 
     def __str__(self):
         return self.name
+    
+class Feedback(models.Model):
+    FEEDBACK_TYPES = [
+        ('suggestion', 'Suggestion'),
+        ('complaint', 'Complaint'),
+        ('compliment', 'Compliment'),
+        ('other', 'Other'),
+    ]
+
+    name = models.CharField(max_length=100, blank=True, null=True)
+    email = models.EmailField(blank=True, null=True)
+    feedback_type = models.CharField(max_length=20, choices=FEEDBACK_TYPES)
+    comments = models.TextField()
+    rating = models.IntegerField(default=0)
+    submitted_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.feedback_type.title()} - {self.name or 'Anonymous'}"

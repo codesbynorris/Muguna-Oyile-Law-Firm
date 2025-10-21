@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>Muguna Oyile Law Firm - Call Cancellation Notice</title>
+  <style>
+    /* Reset styles for email clients */
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: var(--body-font, 'Montserrat', sans-serif);
+      color: var(--text-color, #333);
+      background-color: var(--light-4, #f4f4f4);
+      line-height: 1.5;
+    }
+
+    /* Root variables */
+    :root {
+      --primary-color: #182942;
+      --primary-accent: #ebd19e;
+      --primary-dark: #0f1b2e;
+      --primary-light: #223558;
+      --secondary-blue-1: #314769;
+      --secondary-blue-2: #384c69;
+      --secondary-blue-3: #405069;
+      --secondary-blue-4: #475568;
+      --secondary-blue-5: #4e5968;
+      --gray-1: #535353;
+      --gray-2: #717171;
+      --gray-3: #8e8e8e;
+      --gray-4: #ababab;
+      --gray-5: #c9c9c9;
+      --light-1: #d2d2d2;
+      --light-2: #dddddd;
+      --light-3: #e9e9e9;
+      --light-4: #f4f4f4;
+      --light-5: #ffffff;
+      --heading-font: 'Hoefler Text', serif;
+      --body-font: 'Montserrat', sans-serif;
+      --text-color: #333;
+      --text-light: #030303;
+      --text-lighter: #999;
+      --bg-light: #f9f9f9;
+    }
+
+    /* Container styles */
+    .email-container {
+      max-width: 600px;
+      margin: 20px auto;
+      background-color: var(--light-5);
+      border: 1px solid var(--light-2);
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+    }
+
+    /* Header styles */
+    .header {
+      background-color: var(--primary-color);
+      padding: 25px 30px;
+      text-align: center;
+      border-bottom: 3px solid var(--primary-accent);
+    }
+
+    .header img {
+      max-width: 180px;
+      height: auto;
+      display: block;
+      margin: 0 auto 10px;
+    }
+
+    .header h1 {
+      font-family: var(--heading-font);
+      color: var(--light-5);
+      font-size: 26px;
+      margin: 0;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+    }
+
+    /* Content styles */
+    .content {
+      padding: 35px 40px;
+      background-color: var(--light-5);
+      color: var(--text-color);
+      font-size: 15px;
+    }
+
+    .content h2 {
+      font-family: var(--heading-font);
+      font-size: 20px;
+      font-weight: 600;
+      color: var(--primary-dark);
+      margin: 0 0 20px;
+    }
+
+    .content p {
+      margin: 0 0 20px;
+      font-size: 15px;
+    }
+
+    .content strong {
+      color: var(--secondary-blue-1);
+      font-weight: 600;
+    }
+
+    .details {
+      background-color: var(--light-4);
+      padding: 20px;
+      border-radius: 6px;
+      border-left: 4px solid var(--primary-accent);
+      margin: 25px 0;
+    }
+
+    .details p {
+      margin: 0 0 10px;
+      font-size: 14px;
+      color: var(--text-color);
+    }
+
+    .details p strong {
+      color: var(--secondary-blue-1);
+      font-weight: 600;
+    }
+
+    /* Call-to-action button */
+    .btn {
+      display: inline-block;
+      padding: 12px 24px;
+      background-color: var(--primary-light);
+      color: var(--light-5);
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 14px;
+      border-radius: 4px;
+      margin: 20px 0;
+      text-align: center;
+    }
+
+    .btn:hover {
+      background-color: var(--secondary-blue-1);
+    }
+
+    /* Footer styles */
+    .footer {
+      background-color: var(--primary-dark);
+      color: var(--light-3);
+      text-align: center;
+      padding: 20px 30px;
+      font-size: 13px;
+      border-top: 1px solid var(--secondary-blue-5);
+    }
+
+    .footer p {
+      margin: 5px 0;
+    }
+
+    .footer a {
+      color: var(--primary-accent);
+      text-decoration: none;
+    }
+
+    .footer a:hover {
+      text-decoration: underline;
+    }
+
+    /* Responsive design */
+    @media screen and (max-width: 600px) {
+      .email-container {
+        width: 100%;
+        margin: 10px auto;
+        border-radius: 0;
+      }
+
+      .header {
+        padding: 20px;
+      }
+
+      .header img {
+        max-width: 150px;
+      }
+
+      .header h1 {
+        font-size: 22px;
+      }
+
+      .content {
+        padding: 25px;
+        font-size: 14px;
+      }
+
+      .content h2 {
+        font-size: 18px;
+      }
+
+      .details {
+        padding: 15px;
+      }
+
+      .btn {
+        width: 100%;
+        box-sizing: border-box;
+      }
+
+      .footer {
+        padding: 15px;
+        font-size: 12px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="email-container">
+    <div class="header">
+      <img src="{{ site_url }}/static/images/muguna-oyile-logo.png" alt="Muguna Oyile Law Firm Logo">
+      <h1>Muguna Oyile Law Firm</h1>
+    </div>
+
+    <div class="content">
+      <h2>Dear {{ call.first_name }},</h2>
+      <p>We regret to inform you that your scheduled call regarding <strong>{{ call.subject }}</strong> has been cancelled.</p>
+
+      <div class="details">
+        <p><strong>Original Date:</strong> {{ call.date }}</p>
+        <p><strong>Original Time:</strong> {{ call.time_slot }}</p>
+      </div>
+
+      <p>To reschedule your call, please click the button below:</p>
+      <a href="{{ scheduling_url }}" class="btn">Reschedule Your Call</a>
+
+      <p>We apologize for any inconvenience and look forward to speaking with you soon.</p>
+    </div>
+
+    <div class="footer">
+      <p>&copy; {{ year }} Muguna Oyile Law Firm. All rights reserved.</p>
+      <p><a href="{{ site_url }}">www.mugunaoyilelaw.com</a> | <a href="mailto:info@mugunaoyilelaw.com">info@mugunaoyilelaw.com</a> | +1 (123) 456-7890</p>
+    </div>
+  </div>
+</body>
+</html>

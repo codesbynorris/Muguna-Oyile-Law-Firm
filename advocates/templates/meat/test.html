@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New Device Sign-in (Tailwind)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Customizing Tailwind colors to match Jumia's orange */
+        /* This is optional but helps with accuracy */
+        .jumia-orange {
+            color: #ff9900;
+        }
+        .bg-jumia-orange {
+            background-color: #ff9900;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 flex justify-center py-5">
+
+    <div class="email-container max-w-xl w-full bg-white border border-gray-200 shadow-sm">
+
+        <div class="logo-section text-center py-5">
+            <div class="text-2xl font-bold jumia-orange">
+                Jumia
+            </div>
+        </div>
+
+        <div class="content-area px-10">
+            <h1 class="text-xl font-medium jumia-orange mb-5">
+                New device sign in
+            </h1>
+
+            <p class="text-sm text-gray-700 mb-1">
+                Hello Henry,
+            </p>
+
+            <p class="text-sm text-gray-700 leading-relaxed mb-6">
+                Your Jumia account was used to sign in on the following device. Please review the details below to confirm it was you.
+            </p>
+
+            <div class="details-section text-sm text-gray-700 mb-8">
+                <div class="flex leading-relaxed">
+                    <span class="w-40 text-gray-600 font-normal">Date & Time of Login:</span>
+                    <span class="font-bold">2025-10-20 21:31:17 UTC</span>
+                </div>
+                <div class="flex leading-relaxed">
+                    <span class="w-40 text-gray-600 font-normal">Login country:</span>
+                    <span class="font-bold">Kenya</span>
+                </div>
+                <div class="flex leading-relaxed">
+                    <span class="w-40 text-gray-600 font-normal">Login city:</span>
+                    <span class="font-bold">Nairobi</span>
+                </div>
+                <div class="flex leading-relaxed">
+                    <span class="w-40 text-gray-600 font-normal">Type of device:</span>
+                    <span class="font-bold">Unknown Windows 10</span>
+                </div>
+                <div class="flex leading-relaxed">
+                    <span class="w-40 text-gray-600 font-normal">IP address:</span>
+                    <span class="font-bold">197.248.38.103</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer-text text-center text-xs text-gray-600 py-6 border-t border-gray-100 px-10">
+            If this was you, no action is required. If this wasn't you, follow the 
+            <a href="#" class="text-blue-600 hover:text-blue-800 font-bold">link to secure the account</a>.
+        </div>
+    </div>
+
+</body>
+</html>

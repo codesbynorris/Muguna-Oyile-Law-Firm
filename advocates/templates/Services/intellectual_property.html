@@ -4,7 +4,10 @@
 {% block title %}Intellectual Property | Muguna & Oyile{% endblock %}
 
 {% block content %}
-    <div class="hero-section w-full relative">
+    <div class="hero-section w-full relative"
+        style="background-image: url('https://i.postimg.cc/bJd2kwLM/Whats-App-Image-2025-09-21-at-12-58-10-4d151e6c.jpg');
+                background-size: cover;
+                background-position: center;">
         <div class="overlay"></div>
 
         <!-- Adaptive Content Box -->
@@ -26,9 +29,10 @@
                 We are committed to staying abreast of the latest developments in IP law both locally and internationally, ensuring that our clients receive the most up-to-date and relevant advice. Whether you are a startup, a growing business, or an established enterprise, we can help you navigate the complexities of intellectual property law and build a strong IP portfolio that supports your business goals. We also conduct IP audits to identify and assess the value of your intellectual property assets.
             </p>
 
-            <button class="bg-slate-800 text-white font-semibold py-3 px-8 rounded-full hover:bg-slate-700 transition-colors duration-300 shadow-md mt-8">
-                CONTACT US
-            </button>
+            <a href="{% url 'contact' %}" 
+                class="inline-block bg-slate-800 text-white font-semibold py-3 px-8 rounded-full hover:bg-slate-700 transition-colors duration-300 shadow-md">
+                    CONTACT US
+        </a>
         </div>
     </div>
 {% endblock %}

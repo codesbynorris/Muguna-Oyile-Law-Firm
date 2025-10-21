@@ -1,3 +1,4 @@
+from django.forms import ValidationError
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.core.mail import EmailMultiAlternatives
@@ -10,7 +11,7 @@ from datetime import timedelta, datetime
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.timezone import localdate
 from .forms import ArticleForm
-from .models import Category, TeamMember
+from .models import Category, Feedback, Quote, TeamMember
 from django.contrib.sites.shortcuts import get_current_site
 from django.core.mail import EmailMessage
 import json
@@ -105,6 +106,9 @@ def home(request):
 def about(request):
     return render(request, "about.html")
 
+def test(request):
+    return render(request, "countrycode.html")
+
 
 def team(request):
     members = TeamMember.objects.all()
@@ -118,7 +122,11 @@ def privacy_policy(request):
 def terms_of_service(request):
     return render(request, "T&C/termsofservice.html")
 
+def feedback(request):
+    return render(request, "feedback/FAQs.html")
 
+def cookie_policy(request):
+    return render(request, 'T&C/cookie_policy.html')
 # ---------------------------
 # Service Pages
 # ---------------------------
@@ -154,34 +162,50 @@ def team_list(request):
 # ---------------------------
 # Articles
 # ---------------------------
+
+
 def article_list(request, category_slug=None):
+    filter_type = request.GET.get('filter', 'publication')
+    if filter_type not in ['publication', 'article', 'news']:
+        filter_type = 'publication'
+    
     categories = Category.objects.all()
     articles = Article.objects.all()
     category = None
+    active_category = None
 
     if category_slug:
         category = get_object_or_404(Category, slug=category_slug)
         articles = articles.filter(category=category)
+        active_category = category
+    else:
+        articles = articles.filter(type=filter_type) if filter_type else articles
+
+    quotes = Quote.objects.all()
 
     context = {
         "articles": articles,
         "categories": categories,
-        "active_category": category,
+        "active_category": active_category,
+        "quotes": quotes,
+        "filter_type": filter_type if not category_slug else None,
     }
-    return render(request, "articles/article_list.html", context)
-
+    return render(request, "articles/articles_insights.html", context)
 
 def article_detail(request, slug):
     article = get_object_or_404(Article, slug=slug)
     categories = Category.objects.all()
+    quotes = Quote.objects.all()
     context = {
         "article": article,
         "categories": categories,
+        "quotes": quotes,
     }
     return render(request, "articles/article_detail.html", context)
 
 def write_blog(request):
     categories = [(c.id, c.name) for c in Category.objects.all()]
+    type_choices = Article.TYPE_CHOICES  # For the type dropdown
 
     if request.method == "POST":
         title = request.POST.get("title")
@@ -189,6 +213,7 @@ def write_blog(request):
         category_id = request.POST.get("category")
         image = request.FILES.get("image")
         author = request.POST.get("author")
+        type = request.POST.get("type")
 
         category = Category.objects.get(id=category_id)
 
@@ -198,17 +223,111 @@ def write_blog(request):
             category=category,
             image=image,
             author=author,
-            slug=slugify(title),  # 👈 ensures slug is set
+            type=type,
+            slug=slugify(title),
         )
 
-        return redirect("article_detail", slug=article.slug)
+        return redirect("articles:article_detail", slug=article.slug)
 
-    return render(request, "admin_dashboard/write_blog.html", {
+    return render(request, "articles/write_blog.html", {
         "categories": categories,
-    }) 
+        "type_choices": type_choices,
+    })
 # ---------------------------
 # Contact & Schedule Call
 # ---------------------------
+def contact(request):
+    contact_form = ContactMessageForm()
+    call_form = ScheduledCallForm()
+
+    if request.method == "POST":
+        form_type = request.POST.get("form_type")
+
+        # ---------------------------
+        # Contact Message Form
+        # ---------------------------
+        if form_type == "message":
+            contact_form = ContactMessageForm(request.POST)
+            if contact_form.is_valid():
+                contact = contact_form.save(commit=False)
+                contact.is_read = False
+                contact.is_red_flag = False
+                contact.save()
+
+                # Auto red flag if older than 48h
+                if contact.created_at <= timezone.now() - timedelta(hours=48):
+                    contact.is_red_flag = True
+                    contact.save()
+
+                # Email to admin
+                send_html_email(
+                    subject=f"📩 New Contact Message - {contact.subject}",
+                    template="emails/contact_admin.html",
+                    context={"contact": contact, "firm_name": "Law Firm"},
+                    to_email=settings.CONTACT_RECEIVER_EMAIL,
+                )
+
+                # Email to client
+                send_html_email(
+                    subject="✅ We received your message",
+                    template="emails/contact_user.html",
+                    context={"contact": contact, "firm_name": "Law Firm"},
+                    to_email=contact.email,
+                )
+
+                messages.success(request, "Your message has been sent successfully!")
+                return redirect("contact")
+
+        # ---------------------------
+        # Schedule Call Form
+        # ---------------------------
+        elif form_type == "schedule":
+            call_form = ScheduledCallForm(request.POST)
+            if call_form.is_valid():
+                date = call_form.cleaned_data["date"]
+                time_slot = call_form.cleaned_data["time_slot"]
+
+                # Prevent double booking
+                if ScheduledCall.objects.filter(date=date, time_slot=time_slot).exists():
+                    messages.error(request, "This slot is already booked. Please choose another.")
+                    return redirect("contact")
+
+                call = call_form.save(commit=False)
+                call.is_read = False
+                call.is_red_flag = False
+                call.is_confirmed = False
+                call.save()
+
+                # Auto red flag if older than 48h
+                if call.created_at <= timezone.now() - timedelta(hours=48):
+                    call.is_red_flag = True
+                    call.save()
+
+                # Email to admin
+                send_html_email(
+                    subject=f"📅 New Call Request - {call.first_name} {call.last_name}",
+                    template="emails/call_admin.html",
+                    context={"call": call, "firm_name": "Law Firm"},
+                    to_email=settings.CONTACT_RECEIVER_EMAIL,
+                )
+
+                # Email to client
+                send_html_email(
+                    subject="⏳ Call request received",
+                    template="emails/call_user.html",
+                    context={"call": call, "firm_name": "Law Firm"},
+                    to_email=call.email,
+                )
+
+                messages.success(request, "Your call request has been submitted!")
+                return redirect("contact")
+
+    return render(
+        request,
+        "contact.html",
+        {"contact_form": contact_form, "call_form": call_form, "legal_services": LEGAL_SERVICES},
+    )
+
 def contact_us(request):
     contact_form = ContactMessageForm()
     call_form = ScheduledCallForm()
@@ -685,3 +804,33 @@ def schedule_call(request):
         messages.success(request, "Your call request has been submitted successfully!")
         return redirect('contact')
     return render(request, "schedule_call.html")
+
+def feedback_page(request):
+    if request.method == "POST":
+        print("✅ Received POST request")
+        print("Form data:", request.POST)
+        feedback_type = request.POST.get("feedback-type")
+        name = request.POST.get("name")
+        email = request.POST.get("email")
+        comments = request.POST.get("comments")
+        rating = request.POST.get("rating")
+        print(f"Feedback: type={feedback_type}, name={name}, email={email}, comments={comments}, rating={rating}")
+
+        try:
+            feedback = Feedback.objects.create(
+                name=name,
+                email=email,
+                feedback_type=feedback_type,
+                comments=comments,
+                rating=int(rating) if rating else 0,
+            )
+            print(f"Feedback saved successfully: {feedback}")
+            return JsonResponse({"success": True})
+        except ValidationError as e:
+            print(f"Validation error: {e}")
+            return JsonResponse({"success": False, "error": str(e)}, status=400)
+        except Exception as e:
+            print(f"Error saving feedback: {e}")
+            return JsonResponse({"success": False, "error": "An error occurred while saving feedback."}, status=500)
+
+    return render(request, "feedback/FAQs.html")

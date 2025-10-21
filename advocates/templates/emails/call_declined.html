@@ -1,121 +1,62 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <meta charset="utf-8">
-  <title>Call Update</title>
-  <style>
-    body {
-      font-family: 'Inter', Arial, sans-serif;
-      background-color: #f7f8fc;
-      color: #444;
-      margin: 0;
-      padding: 0;
-    }
-
-    .email-container {
-      max-width: 600px;
-      margin: 40px auto;
-      background: #fff;
-      border-radius: 12px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-      overflow: hidden;
-    }
-
-    .header {
-      background-color: #0B1B40;
-      padding: 25px 20px;
-      text-align: center;
-    }
-
-    .header img {
-      width: 90px;
-      height: auto;
-      margin-bottom: 10px;
-    }
-
-    .header h1 {
-      color: #C9A227;
-      font-size: 20px;
-      font-weight: 600;
-      margin: 0;
-    }
-
-    .content {
-      padding: 30px;
-    }
-
-    .content h2 {
-      color: #0B1B40;
-      margin-top: 0;
-    }
-
-    .details {
-      background: #f4f6fb;
-      border-left: 4px solid #C9A227;
-      padding: 15px;
-      margin: 20px 0;
-    }
-
-    /* Button */
-    .btn {
-      display: inline-block;
-      padding: 12px 25px;
-      width: 220px;
-      max-width: 80%;
-      margin: 20px 0;
-      font-size: 16px;
-      font-weight: 600;
-      color: #fff;
-      background-color: #0B3D91;
-      border-radius: 8px;
-      text-decoration: none;
-    }
-
-    .footer {
-      text-align: center;
-      font-size: 13px;
-      color: #888;
-      padding: 20px;
-      background: #f9fafc;
-    }
-
-    /* Responsive */
-    @media screen and (max-width: 480px) {
-      .content {
-        padding: 20px 15px;
-      }
-      .btn {
-        width: 100%;
-        text-align: center;
-      }
-    }
-  </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>{{ firm_name }} - Call Cancellation Notice</title>
 </head>
-<body>
-  <div class="email-container">
-    <div class="header">
-      <img src="{{ site_url }}/static/images/muguna-oyile-logo.png" alt="Muguna Oyile Law Firm Logo">
-      <h1>Muguna Oyile Law Firm</h1>
-    </div>
+<body style="margin: 0; padding: 0; font-family: 'Montserrat', sans-serif; color: #333; background-color: #f4f4f4; line-height: 1.5;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="max-width: 600px; margin: 20px auto; background-color: #ffffff; border: 1px solid #dddddd; border-radius: 8px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);">
+    <!-- Header -->
+    <tr>
+      <td style="background-color: #182942; padding: 25px 30px; text-align: center; border-bottom: 3px solid #ebd19e;">
+        <img src="{{ site_url }}/static/images/muguna-oyile-logo.png" alt="Muguna Oyile Law Firm Logo" style="max-width: 180px; height: auto; display: block; margin: 0 auto 10px;">
+        <h1 style="font-family: 'Hoefler Text', serif; color: #ffffff; font-size: 26px; margin: 0; font-weight: 600; letter-spacing: 0.5px;">Muguna Oyile Law Firm</h1>
+      </td>
+    </tr>
+    <!-- Content -->
+    <tr>
+      <td style="padding: 35px 40px; background-color: #ffffff; color: #333; font-size: 15px;">
+        <h2 style="font-family: 'Hoefler Text', serif; font-size: 20px; font-weight: 600; color: #0f1b2e; margin: 0 0 20px;">Dear {{ call.first_name }},</h2>
+        <p style="margin: 0 0 20px; font-size: 15px;">We regret to inform you that your scheduled call regarding <strong style="color: #314769; font-weight: 600;">{{ call.subject }}</strong> has been cancelled.</p>
 
-    <div class="content">
-      <h2>Dear {{ call.first_name }},</h2>
-      <p>We regret to inform you that your scheduled call regarding <strong>{{ call.subject }}</strong> has been cancelled.</p>
+        <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #f4f4f4; padding: 20px; border-radius: 6px; border-left: 4px solid #ebd19e; margin: 25px 0;">
+          <tr>
+            <td style="margin: 0 0 10px; font-size: 14px; color: #333;">
+              <strong style="color: #314769; font-weight: 600;">Original Date:</strong> {{ call.date }}
+            </td>
+          </tr>
+          <tr>
+            <td style="margin: 0 0 10px; font-size: 14px; color: #333;">
+              <strong style="color: #314769; font-weight: 600;">Original Time:</strong> {{ call.time_slot }}
+            </td>
+          </tr>
+        </table>
 
-      <div class="details">
-        <p><strong>Original Date:</strong> {{ call.date }}</p>
-        <p><strong>Original Time:</strong> {{ call.time_slot }}</p>
-      </div>
+        <p style="margin: 0 0 20px; font-size: 15px;">To reschedule your call, please click the button below:</p>
+        <table width="100%" cellpadding="0" cellspacing="0">
+          <tr>
+            <td style="text-align: center;">
+              <a href="{{ scheduling_url }}" style="display: inline-block; padding: 12px 24px; background-color: #223558; color: #ffffff; text-decoration: none; font-weight: 600; font-size: 14px; border-radius: 4px; margin: 20px 0;">Reschedule Your Call</a>
+            </td>
+          </tr>
+        </table>
 
-      <p>To reschedule your call, please click the button below:</p>
-      <a href="{{ scheduling_url }}" class="btn">Reschedule Your Call</a>
-
-      <p>We apologize for any inconvenience and look forward to speaking with you soon.</p>
-    </div>
-
-    <div class="footer">
-      © {{ year }} Muguna Oyile Law Firm. All rights reserved.
-    </div>
-  </div>
+        <p style="margin: 0 0 20px; font-size: 15px;">We apologize for any inconvenience and look forward to speaking with you soon.</p>
+      </td>
+    </tr>
+    <!-- Footer -->
+    <tr>
+      <td style="background-color: #0f1b2e; color: #e9e9e9; text-align: center; padding: 20px 30px; font-size: 13px; border-top: 1px solid #4e5968;">
+        <p style="margin: 5px 0;">&copy; {{ year }} Muguna Oyile Law Firm. All rights reserved.</p>
+        <p style="margin: 5px 0;">
+          <a href="{{ site_url }}" style="color: #ebd19e; text-decoration: none;">www.mugunaoyilelaw.com</a> |
+          <a href="mailto:info@mugunaoyilelaw.com" style="color: #ebd19e; text-decoration: none;">info@mugunaoyilelaw.com</a> |
+          <a href="tel:+11234567890" style="color: #ebd19e; text-decoration: none;">+1 (123) 456-7890</a>
+        </p>
+      </td>
+    </tr>
+  </table>
 </body>
 </html>

@@ -4,7 +4,10 @@
 {% block title %}Support Services | Muguna & Oyile{% endblock %}
 
 {% block content %}
-    <div class="hero-section w-full relative">
+    <div class="hero-section w-full relative"
+         style="background-image: url('https://i.postimg.cc/mrT7Lv2W/something-like-a-person-in-a-suit-helping-a-group-of-people.jpg');
+                background-size: cover;
+                background-position: center;">
         <div class="overlay"></div>
 
         <!-- Adaptive Content Box -->
@@ -30,9 +33,10 @@
                 With professionalism and efficiency at the core of what we do, we remain a trusted partner for individuals, businesses, and institutions seeking reliable and results-oriented legal support.
             </p>
 
-            <button class="bg-slate-800 text-white font-semibold py-3 px-8 rounded-full hover:bg-slate-700 transition-colors duration-300 shadow-md mt-8">
-                CONTACT US
-            </button>
+            <a href="{% url 'contact' %}" 
+                class="inline-block bg-slate-800 text-white font-semibold py-3 px-8 rounded-full hover:bg-slate-700 transition-colors duration-300 shadow-md">
+                    CONTACT US
+            </a>
         </div>
     </div>
 {% endblock %}

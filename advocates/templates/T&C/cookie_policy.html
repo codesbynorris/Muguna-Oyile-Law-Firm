@@ -1,0 +1,85 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Cookie Policy | Muguna & Oyile Advocates LLP{% endblock %}
+
+{% block content %}
+<section class="min-h-screen bg-gradient-to-br from-gray-100 via-[#f9f8f6] to-gray-50 py-12 px-6">
+  <div class="max-w-4xl mx-auto bg-white p-8 md:p-12 rounded-3xl shadow-2xl border border-gray-200">
+
+    <!-- Header -->
+<div class="mb-10 text-center">
+  <h1 class="text-4xl font-semibold text-[var(--primary)] inline-block relative mb-3">
+    Cookie Policy
+    <span 
+      class="block w-20 h-1 rounded-full mt-2 mx-auto" 
+      style="background-color: var(--primary-accent);">
+    </span>
+  </h1>
+
+</div>
+
+
+
+    <!-- Intro -->
+    <p class="text-gray-700 leading-relaxed mb-6">
+      At <strong class="text-[var(--primary)]">Muguna & Oyile Advocates</strong>, we value your privacy and are committed to transparency in how we use cookies.
+      Our website uses only a minimal number of cookies that are essential for security, functionality, and user experience.
+      These cookies do not collect any personally identifiable information and are necessary for the website to operate correctly.
+    </p>
+
+    <!-- Table -->
+    <div class="overflow-x-auto mt-8 rounded-xl shadow-md">
+      <table class="min-w-full border border-gray-200 rounded-xl overflow-hidden">
+        <thead class="bg-[var(--primary)] text-white">
+          <tr>
+            <th class="py-3 px-4 text-left font-semibold text-black">Cookie Name</th>
+            <th class="py-3 px-4 text-left font-semibold text-black">Purpose</th>
+            <th class="py-3 px-4 text-left font-semibold text-black">Type</th>
+            <th class="py-3 px-4 text-left font-semibold text-black">Duration</th>
+          </tr>
+        </thead>
+        <tbody class="text-gray-700 divide-y divide-gray-100 bg-white">
+          <tr class="hover:bg-[#fefbf5] transition">
+            <td class="py-3 px-4 font-medium text-[var(--primary)]">csrftoken</td>
+            <td class="py-3 px-4">Protects our online forms (contact, feedback, call scheduling) from CSRF attacks, ensuring submissions are secure.</td>
+            <td class="py-3 px-4">Security</td>
+            <td class="py-3 px-4">Session</td>
+          </tr>
+          <tr class="hover:bg-[#fefbf5] transition">
+            <td class="py-3 px-4 font-medium text-[var(--primary)]">cookiesAccepted</td>
+            <td class="py-3 px-4">Remembers whether you accepted our cookie notice to avoid showing the banner again.</td>
+            <td class="py-3 px-4">Preference</td>
+            <td class="py-3 px-4">12 months</td>
+          </tr>
+          <tr class="hover:bg-[#fefbf5] transition">
+            <td class="py-3 px-4 font-medium text-[var(--primary)]">sessionid</td>
+            <td class="py-3 px-4">Used only by site administrators for secure dashboard logins. Not used for public visitors.</td>
+            <td class="py-3 px-4">Authentication</td>
+            <td class="py-3 px-4">Session</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Closing -->
+    <div class="mt-10 bg-[#fefbf5] border-l-4 border-[var(--primary-accent)] p-6 rounded-2xl shadow-inner">
+      <p class="text-gray-700 leading-relaxed">
+        We do <strong class="text-[var(--primary)]">not</strong> use any analytics, advertising, tracking, or third-party cookies. 
+        Your visit to our website remains completely private and secure.
+      </p>
+
+      <p class="mt-4 text-gray-700">
+        For further details about how we handle personal information, please refer to our
+        <a href="{% url 'privacy_policy' %}" class="text-[var(--accent)] font-semibold underline hover:text-[var(--primary)] transition">
+          Privacy Policy
+        </a>
+        or contact us at
+        <a href="mailto:info@mugunaoyile.co.ke" class="text-[var(--accent)] font-semibold underline hover:text-[var(--primary)] transition">
+          info@mugunaoyile.co.ke
+        </a>.
+      </p>
+    </div>
+  </div>
+</section>
+{% endblock %}

@@ -8,6 +8,8 @@ from django.conf.urls import include
 from advocates import views as main_views
 from advocates import admin_views  # <-- now this works
 
+app_name = 'articles'
+
 urlpatterns = [
     path('admin/', admin.site.urls),
 
@@ -17,10 +19,14 @@ urlpatterns = [
     # ---------------------------
     path('', main_views.home, name='home'),
     path('about/', main_views.about, name='about'),
+    path('test/', main_views.test, name='test'),
+
     path('teams/', main_views.team, name='team'),
     path('contact/', main_views.contact_us, name='contact'),
     path('privacy-policy/', main_views.privacy_policy, name='privacy_policy'),
     path('terms-of-services/', main_views.terms_of_service, name='terms_of_service'),
+    path('feedback/', main_views.feedback, name='feedback'),
+    path('cookie-policy/', main_views.cookie_policy, name='cookie_policy'),
 
     # ---------------------------
     # Articles
@@ -48,6 +54,7 @@ urlpatterns = [
     path('admin-dashboard/contacts/', admin_views.contacts_list, name='admin_dashboard_contacts'),
     path('admin-dashboard/calls/', admin_views.scheduled_calls_admin, name='admin_dashboard_calls'),
     path('admin-dashboard/activity/', admin_views.activity_log_list, name='admin_dashboard_activity'),
+    path("admin-dashboard/feedback/", admin_views.feedback_dashboard, name="feedback_page"),
 
     # Call actions
     path('admin-dashboard/call/confirm/<int:call_id>/', admin_views.confirm_call, name='admin_confirm_call'),

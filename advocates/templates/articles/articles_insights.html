@@ -1,0 +1,212 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Articles & Insights | Muguna & Oyile Advocates{% endblock %}
+
+{% block content %}
+<!-- Page Heading -->
+<section class="text-center mb-6 lg:mb-8">
+  <div class="relative inline-block">
+  <h1 class="text-3xl lg:text-4xl font-bold text-grey-800 tracking-tight mb-4">
+    Articles & Insights
+  </h1>
+<span class="absolute bottom-1 left-1/2 -translate-x-1/2 w-16 h-1 bg-[#ebd19e] rounded-full"></span>
+  </div>
+  <p class="text-lg text-gray-600 max-w-3xl mx-auto leading-relaxed">
+    Stay informed with our expert legal analysis, insights, and commentary on the latest developments in law and business.
+  </p>
+</section>
+
+<!-- Slideshow of Quotes -->
+<section class="mb-12 max-w-7xl mx-auto">
+  <div class="relative max-w-3xl w-full mx-auto rounded-2xl overflow-hidden shadow-lg">
+    <div class="flex transition-transform duration-700 ease-in-out" id="quoteSlideshow">
+      {% for quote in quotes %}
+      <div class="min-w-full flex-shrink-0 bg-[var(--primary-dark)] text-white p-10 text-center rounded-2xl">
+        <p class="text-xl italic font-serif leading-relaxed">"{{ quote.text }}"</p>
+        <p class="mt-4 text-sm font-medium">— {{ quote.author }}</p>
+      </div>
+      {% empty %}
+      <div class="min-w-full flex-shrink-0 bg-indigo-900 text-white p-10 text-center rounded-2xl">
+        <p class="text-xl italic font-serif leading-relaxed">"No quotes available at the moment."</p>
+      </div>
+      {% endfor %}
+    </div>
+    <!-- Navigation Arrows -->
+    <button
+      class="absolute top-1/2 left-4 transform -translate-y-1/2 bg-white text-gray-800 p-3 rounded-full shadow hover:bg-gray-200 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-indigo-200"
+      onclick="moveSlide(-1)">
+      <i class="fas fa-chevron-left"></i>
+    </button>
+    <button
+      class="absolute top-1/2 right-4 transform -translate-y-1/2 bg-white text-gray-800 p-3 rounded-full shadow hover:bg-gray-200 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-indigo-200"
+      onclick="moveSlide(1)">
+      <i class="fas fa-chevron-right"></i>
+    </button>
+  </div>
+</section>
+
+<!-- Filter Tabs -->
+<section class="mb-12 max-w-7xl mx-auto">
+  <div class="flex justify-center space-x-6 bg-gray-50 p-2 rounded-lg shadow-sm">
+    <button
+      class="filter-tab group relative px-6 py-3 text-gray-800 font-semibold text-sm uppercase tracking-wide border-b-2 border-transparent hover:border-indigo-600 hover:text-indigo-600 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-indigo-200 {% if filter_type == 'publication' or not filter_type %}border-indigo-600 text-indigo-600 bg-indigo-50 shadow-md{% endif %}"
+      onclick="filterContent('publication')">
+      Publications
+      <span class="absolute bottom-0 left-0 w-full h-0.5 bg-indigo-600 transform {% if filter_type == 'publication' or not filter_type %}scale-x-100{% else %}scale-x-0 group-hover:scale-x-100{% endif %} transition-transform duration-300"></span>
+    </button>
+    <button
+      class="filter-tab group relative px-6 py-3 text-gray-800 font-semibold text-sm uppercase tracking-wide border-b-2 border-transparent hover:border-indigo-600 hover:text-indigo-600 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-indigo-200 {% if filter_type == 'article' %}border-indigo-600 text-indigo-600 bg-indigo-50 shadow-md{% endif %}"
+      onclick="filterContent('article')">
+      Articles
+      <span class="absolute bottom-0 left-0 w-full h-0.5 bg-indigo-600 transform {% if filter_type == 'article' %}scale-x-100{% else %}scale-x-0 group-hover:scale-x-100{% endif %} transition-transform duration-300"></span>
+    </button>
+    <button
+      class="filter-tab group relative px-6 py-3 text-gray-800 font-semibold text-sm uppercase tracking-wide border-b-2 border-transparent hover:border-indigo-600 hover:text-indigo-600 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-indigo-200 {% if filter_type == 'news' %}border-indigo-600 text-indigo-600 bg-indigo-50 shadow-md{% endif %}"
+      onclick="filterContent('news')">
+      News
+      <span class="absolute bottom-0 left-0 w-full h-0.5 bg-indigo-600 transform {% if filter_type == 'news' %}scale-x-100{% else %}scale-x-0 group-hover:scale-x-100{% endif %} transition-transform duration-300"></span>
+    </button>
+  </div>
+</section>
+
+<div class="flex flex-col lg:flex-row gap-8 lg:gap-12">
+  <!-- Articles Grid -->
+  <section class="lg:w-3/4 px-4 sm:px-6">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 lg:pl-6" id="contentGrid">
+      {% if filter_type == 'publication' or not filter_type %}
+      {% for article in articles %}
+      {% if article.type == 'publication' or not filter_type %}
+      <article class="bg-white rounded-xl shadow-lg hover:shadow-2xl transition-all overflow-hidden">
+        <!-- Title Block -->
+        <div class="h-48 flex items-center justify-center px-4 text-center {{ article.theme_color }}">
+          <h3 class="font-serif text-xl sm:text-2xl font-bold text-white leading-snug">
+            <a href="{% url 'article_detail' article.slug %}" class="hover:opacity-80 transition">
+              {{ article.title }}
+            </a>
+          </h3>
+        </div>
+        <!-- Body -->
+        <div class="p-6">
+          <p class="text-sm text-gray-600 mb-4">
+            {{ article.content|truncatewords:20 }}
+          </p>
+          <div class="text-xs text-gray-500 flex justify-between items-center">
+            <span>By {{ article.author }}</span>
+            <span>{{ article.created_at|date:"F d, Y" }}</span>
+          </div>
+          <a href="{% url 'article_detail' article.slug %}"
+            class="mt-4 inline-block text-blue-900 hover:text-amber-500 font-medium">
+            Read More →
+          </a>
+        </div>
+      </article>
+      {% endif %}
+      {% empty %}
+      <p class="text-gray-600">No publications available.</p>
+      {% endfor %}
+
+      {% elif filter_type == 'article' %}
+      {% for article in articles %}
+      {% if article.type == 'article' %}
+      <article class="bg-white rounded-xl shadow-lg hover:shadow-2xl transition-all overflow-hidden">
+        <div class="h-48 flex items-center justify-center px-4 text-center {{ article.theme_color }}">
+          <h3 class="font-serif text-xl sm:text-2xl font-bold text-white leading-snug">
+            <a href="{% url 'article_detail' article.slug %}" class="hover:opacity-80 transition">
+              {{ article.title }}
+            </a>
+          </h3>
+        </div>
+        <div class="p-6">
+          <p class="text-sm text-gray-600 mb-4">
+            {{ article.content|truncatewords:20 }}
+          </p>
+          <div class="text-xs text-gray-500 flex justify-between items-center">
+            <span>By {{ article.author }}</span>
+            <span>{{ article.created_at|date:"F d, Y" }}</span>
+          </div>
+          <a href="{% url 'article_detail' article.slug %}"
+            class="mt-4 inline-block text-blue-900 hover:text-amber-500 font-medium">
+            Read More →
+          </a>
+        </div>
+      </article>
+      {% endif %}
+      {% empty %}
+      <p class="text-gray-600">No articles available.</p>
+      {% endfor %}
+
+      {% elif filter_type == 'news' %}
+      {% for article in articles %}
+      {% if article.type == 'news' %}
+      <article class="bg-white rounded-xl shadow-lg hover:shadow-2xl transition-all overflow-hidden">
+        <div class="h-48 flex items-center justify-center px-4 text-center {{ article.theme_color }}">
+          <h3 class="font-serif text-xl sm:text-2xl font-bold text-white leading-snug">
+            <a href="{% url 'article_detail' article.slug %}" class="hover:opacity-80 transition">
+              {{ article.title }}
+            </a>
+          </h3>
+        </div>
+        <div class="p-6">
+          <p class="text-sm text-gray-600 mb-4">
+            {{ article.content|truncatewords:20 }}
+          </p>
+          <div class="text-xs text-gray-500 flex justify-between items-center">
+            <span>By {{ article.author }}</span>
+            <span>{{ article.created_at|date:"F d, Y" }}</span>
+          </div>
+          <a href="{% url 'article_detail' article.slug %}"
+            class="mt-4 inline-block text-blue-900 hover:text-amber-500 font-medium">
+            Read More →
+          </a>
+        </div>
+      </article>
+      {% endif %}
+      {% empty %}
+      <p class="text-gray-600">No news available.</p>
+      {% endfor %}
+      {% endif %}
+    </div>
+  </section>
+
+  <!-- Sidebar -->
+  <aside class="lg:w-1/4 hidden lg:block space-y-8">
+    <div class="bg-white p-6 rounded-xl shadow-lg">
+      <h3 class="text-lg font-semibold text-blue-900 border-b-2 border-amber-500 pb-2 mb-4">Categories</h3>
+      <ul class="space-y-2 text-sm">
+        {% for category in categories %}
+        <li>
+          <a href="{% url 'article_by_category' category.slug %}"
+            class="block text-gray-600 hover:text-amber-500">
+            {{ category.name }} ({{ category.article_count }})
+          </a>
+        </li>
+        {% empty %}
+        <li class="text-gray-400">No categories available.</li>
+        {% endfor %}
+      </ul>
+    </div>
+  </aside>
+</div>
+
+<!-- JavaScript for Slideshow -->
+<script>
+  let currentSlide = 0;
+  const slides = document.querySelectorAll('#quoteSlideshow > div');
+  const totalSlides = slides.length;
+
+  function moveSlide(direction) {
+    currentSlide = (currentSlide + direction + totalSlides) % totalSlides;
+    const slideshow = document.getElementById('quoteSlideshow');
+    slideshow.style.transform = `translateX(-${currentSlide * 100}%)`;
+  }
+
+  // Auto-slide every 5 seconds
+  setInterval(() => moveSlide(1), 5000);
+
+  // Filter Content
+  function filterContent(type) {
+    window.location.href = `?filter=${type}`;
+  }
+</script>
+{% endblock %}

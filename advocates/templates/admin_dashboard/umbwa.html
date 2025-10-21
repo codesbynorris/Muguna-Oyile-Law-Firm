@@ -1,0 +1,121 @@
+{% extends "admin_dashboard/base_admin.html" %}
+{% load static %}
+
+{% block title %}Scheduled Calls{% endblock %}
+
+{% block dashboard_content %}
+<div class="p-4 sm:p-6">
+    <h1 class="text-2xl sm:text-3xl font-bold mb-6 text-gray-800 font-header">Scheduled Calls</h1>
+
+    <div class="mb-6 flex justify-end bg-white p-4 rounded-xl shadow-md border border-gray-200">
+        <button class="text-gray-500 hover:text-indigo-600 transition-colors" title="Refresh" onclick="window.location.reload()">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m15.356-2H21v5"></path>
+            </svg>
+        </button>
+    </div>
+
+    <div class="overflow-x-auto border border-gray-200 rounded-2xl shadow-2xl bg-white">
+        <table class="min-w-[800px] w-full table-auto border-collapse">
+            <thead class="bg-indigo-50 sticky top-0 z-10 border-b border-indigo-100">
+                <tr>
+                    <th class="px-4 py-3 text-left font-semibold text-indigo-700 tracking-wider text-sm font-content">Name</th>
+                    <th class="px-4 py-3 text-left font-semibold text-indigo-700 tracking-wider text-sm font-content">Email</th>
+                    <th class="px-4 py-3 text-left font-semibold text-indigo-700 tracking-wider text-sm font-content">Phone</th>
+                    <th class="px-4 py-3 text-left font-semibold text-indigo-700 tracking-wider text-sm font-content">Date</th>
+                    <th class="px-4 py-3 text-left font-semibold text-indigo-700 tracking-wider text-sm font-content">Time Slot</th>
+                    <th class="px-4 py-3 text-center font-semibold text-indigo-700 tracking-wider text-sm font-content">Confirmed</th>
+                    <th class="px-4 py-3 text-center font-semibold text-indigo-700 tracking-wider text-sm font-content">Actions</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-100">
+                {% for call in calls %}
+                <tr class="hover:bg-indigo-50/30 transition-colors duration-150">
+                    <td class="px-4 py-3 text-sm font-semibold text-gray-800 font-content">{{ call.first_name }} {{ call.last_name }}</td>
+                    <td class="px-4 py-3 text-sm text-gray-600 font-content">{{ call.email }}</td>
+                    <td class="px-4 py-3 text-sm text-gray-600 font-content">{{ call.phone_number }}</td>
+                    <td class="px-4 py-3 text-sm text-gray-600 font-content">{{ call.date|date:"M d, Y" }}</td>
+                    <td class="px-4 py-3 text-sm font-medium text-indigo-600 font-content">{{ call.time_slot }}</td>
+                    
+                    <td class="px-4 py-3 text-center">
+                        {% if call.is_confirmed %}
+                            <span class="inline-flex items-center px-3 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 border border-green-200">
+                                Confirmed
+                            </span>
+                        {% else %}
+                            <span class="inline-flex items-center px-3 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800 border border-yellow-200">
+                                Pending
+                            </span>
+                        {% endif %}
+                    </td>
+                    
+                    <td class="px-4 py-3 space-x-2 text-center">
+                        {% if not call.is_confirmed %}
+                            <a href="{% url 'admin_confirm_call' call.id %}" 
+                               class="inline-flex items-center justify-center px-3 py-1 border border-transparent text-xs font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 transition duration-150 shadow-sm"
+                               title="Confirm this call">
+                                Confirm
+                            </a>
+                            <a href="{% url 'admin_decline_call' call.id %}" 
+                               class="inline-flex items-center justify-center px-3 py-1 border border-transparent text-xs font-medium rounded-md text-red-700 bg-red-100 hover:bg-red-200 transition duration-150 shadow-sm"
+                               title="Decline this call">
+                                Decline
+                            </a>
+                        {% else %}
+                            <span class="text-gray-400 text-xs">Action Complete</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="7" class="px-4 py-10 text-center text-gray-500 font-content">
+                        No scheduled calls found.
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<style>
+/* Custom styles from the Contact Messages page for consistency */
+:root {
+    --font-header: 'EB Garamond', serif;
+    --font-content: 'Open Sans', sans-serif;
+}
+.font-header {
+    font-family: var(--font-header);
+}
+.font-content {
+    font-family: var(--font-content);
+}
+.rounded-2xl {
+    border-radius: 1rem; /* Consistent with the new professional look, close to the other page's 3xl */
+}
+.shadow-2xl {
+    /* Using a consistent professional shadow */
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1); 
+}
+
+/* Scrollbar for table (Updated to indigo theme) */
+.overflow-x-auto::-webkit-scrollbar {
+    height: 8px;
+}
+.overflow-x-auto::-webkit-scrollbar-thumb {
+    background-color: #6366F1; /* Indigo-500 */
+    border-radius: 10px;
+}
+.overflow-x-auto::-webkit-scrollbar-thumb:hover {
+    background-color: #4F46E5; /* Indigo-600 */
+}
+
+/* Responsive tweaks */
+@media(max-width:768px){
+    table th, table td {
+        padding: 0.75rem 0.5rem; /* Better padding for touchscreens */
+        font-size: 0.875rem;
+    }
+}
+</style>
+{% endblock %}

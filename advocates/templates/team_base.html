@@ -30,7 +30,19 @@
   <link href="https://fonts.googleapis.com/css2?family=Hoefler+Text&family=Montserrat:wght@300;400;500;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <link rel="stylesheet" href="{% static 'css/style.css' %}">
-    <link rel="stylesheet" href="{% static 'css/team.css' %}">
+  <link rel="stylesheet" href="{% static 'css/team.css' %}">
+
+  <!-- EB Garamond (Google Fonts) -->
+  <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Pinyon+Script&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Allura&family=Dancing+Script&family=Pinyon+Script&family=Sacramento&family=Satisfy&display=swap" rel="stylesheet">
+
+
+    <!-- Open Sauce One (CDN Fonts) -->
+  <link href="https://fonts.cdnfonts.com/css/open-sauce-one" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap" rel="stylesheet">
+
+  <script src="https://cdn.tailwindcss.com"></script>
 
   {% block extra_css %}{% endblock %}
 </head>
@@ -57,10 +69,10 @@
   <li class="dropdown">
     <a href="#" class="dropdown-toggle"><i class="fas fa-gavel"></i> Services <i class="fas fa-caret-down"></i></a>
     <ul class="dropdown-menu">
-      <li><a href="{% url 'consultancy' %}#consultancy"><i class="fas fa-lightbulb"></i> Consultancy</a></li>
-      <li><a href="{% url 'property' %}#property"><i class="fas fa-building"></i> Property & Real Estate</a></li>
-      <li><a href="{% url 'dispute_resolution' %}#dispute"><i class="fas fa-balance-scale-left"></i> Dispute Resolution</a></li>
-      <li><a href="{% url 'corporate' %}#corporate"><i class="fas fa-briefcase"></i> Corporate & Commercial</a></li>
+      <li><a href="#"><i class="fas fa-lightbulb"></i> Consultancy</a></li>
+      <li><a href="#"><i class="fas fa-building"></i> Property & Real Estate</a></li>
+      <li><a href="#"><i class="fas fa-balance-scale-left"></i> Dispute Resolution</a></li>
+      <li><a href="#"><i class="fas fa-briefcase"></i> Corporate & Commercial</a></li>
     </ul>
   </li>
 
@@ -100,25 +112,26 @@
           <h3>Quick Links</h3>
           <ul>
             <li><a href="{% url 'home' %}">Home</a></li>
-            <li><a href="#">Services</a></li>
             <li><a href="{% url 'about' %}">About Us</a></li>
             <li><a href="{% url 'team' %}">Team</a></li>
             <li><a href="{% url 'contact' %}">Contact</a></li>
+            <li><a href="{% url 'feedback' %}">Feedback and FAQs</a></li>
+
           </ul>
         </div>
         <div class="footer-column">
           <h3>Services</h3>
           <ul>
-            <li><a href="{% url 'consultancy' %}#consultancy">Consultancy Services</a></li>
-            <li><a href="{% url 'property' %}#property">Property & Real Estate</a></li>
-            <li><a href="{% url 'dispute_resolution' %}#dispute">Dispute Resolution</a></li>            
-            <li><a href="{% url 'corporate' %}#corporate">Corporate & Commercial</a></li>
+            <li><a href="#">Consultancy Services</a></li>
+            <li><a href="#">Property & Real Estate</a></li>
+            <li><a href="#">Dispute Resolution</a></li>            
+            <li><a href="#">Corporate & Commercial</a></li>
           </ul>
         </div>
         <div class="footer-column">
           <h3>Newsletter</h3>
           <p>Subscribe to our newsletter for legal updates and insights.</p>
-          <form class="newsletter-form" method="post" action="{% url 'newsletter_subscribe' %}">
+          <form class="newsletter-form" method="post" action="#">
             {% csrf_token %}
             <input type="email" name="email" placeholder="Your email address" required>
             <button type="submit" class="btn btn-secondary">Subscribe</button>

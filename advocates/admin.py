@@ -1,27 +1,18 @@
 from django.contrib import admin, messages
 from django.core.mail import send_mail
 from django.conf import settings
-from .models import ContactMessage, ScheduledCall, Category, Article, TeamMember
+from .models import ContactMessage, Feedback, Quote, ScheduledCall, Category, Article, TeamMember, Category
 
 # -------------------------------
 # Admin for Categories & Articles
 # -------------------------------
-@admin.register(Category)
-class CategoryAdmin(admin.ModelAdmin):
-    list_display = ("name", "article_count")
-    prepopulated_fields = {"slug": ("name",)}
+
 
 @admin.register(TeamMember)
 class TeamMemberAdmin(admin.ModelAdmin):
     list_display = ("name", "role", "slug")
     prepopulated_fields = {"slug": ("name",)}
 
-@admin.register(Article)
-class ArticleAdmin(admin.ModelAdmin):
-    list_display = ("title", "category", "author", "created_at")
-    list_filter = ("category", "created_at")
-    search_fields = ("title", "content", "author")
-    prepopulated_fields = {"slug": ("title",)}
 
 @admin.register(ContactMessage)
 class ContactMessageAdmin(admin.ModelAdmin):
@@ -117,3 +108,29 @@ class ScheduledCallAdmin(admin.ModelAdmin):
         self.message_user(request, f"{updated} call(s) declined and emails sent.", messages.WARNING)
 
     decline_calls.short_description = "❌ Decline selected calls"
+
+@admin.register(Feedback)
+class FeedbackAdmin(admin.ModelAdmin):
+    list_display = ('name', 'email', 'feedback_type', 'rating', 'submitted_at')
+    list_filter = ('feedback_type', 'rating', 'submitted_at')
+    search_fields = ('name', 'email', 'comments')
+
+@admin.register(Quote)
+class QuoteAdmin(admin.ModelAdmin):
+    list_display = ('text', 'author')
+    search_fields = ('text', 'author')
+
+@admin.register(Category)
+class CategoryAdmin(admin.ModelAdmin):
+    prepopulated_fields = {'slug': ('name',)}
+    search_fields = ('name',)
+    list_display = ('name', 'article_count')
+
+@admin.register(Article)
+class ArticleAdmin(admin.ModelAdmin):
+    list_display = ('title', 'type', 'author', 'category', 'created_at')
+    list_filter = ('type', 'category')
+    search_fields = ('title', 'author', 'content')
+    prepopulated_fields = {'slug': ('title',)}
+    date_hierarchy = 'created_at'
+

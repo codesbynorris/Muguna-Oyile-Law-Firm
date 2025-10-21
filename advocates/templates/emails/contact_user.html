@@ -1,156 +1,84 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Message Received</title>
-    <style>
-        body {
-            font-family: 'Inter', Arial, sans-serif;
-            line-height: 1.6;
-            color: #333;
-            margin: 0;
-            padding: 20px;
-            background-color: #f7f8fc;
-        }
-
-        .email-container {
-            max-width: 600px;
-            margin: 0 auto;
-            background-color: #ffffff;
-            padding: 30px;
-            border-radius: 12px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-        }
-
-        /* Header */
-        .header {
-            text-align: center;
-            padding-bottom: 20px;
-        }
-
-        .header img {
-            width: 90px;
-            height: auto;
-            margin-bottom: 10px;
-        }
-
-        .header h2 {
-            color: #0B3D91;
-            font-size: 24px;
-            font-weight: 600;
-            margin: 0;
-        }
-
-        .ticket {
-            background-color: #fef5e6;
-            border-left: 5px solid #ffcc66;
-            padding: 15px;
-            margin: 20px 0;
-            font-size: 16px;
-            color: #444;
-            border-radius: 6px;
-            text-align: center;
-        }
-
-        .details-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 20px;
-        }
-
-        .details-table td {
-            padding: 5px 0;
-            vertical-align: top;
-        }
-
-        .details-table td.label {
-            font-weight: 600;
-            color: #0B3D91;
-            width: 130px;
-        }
-
-        .btn {
-            display: block;
-            width: 220px;
-            max-width: 80%;
-            padding: 12px 0;
-            font-size: 16px;
-            font-weight: 600;
-            color: #fff;
-            background-color: #0B3D91;
-            border-radius: 8px;
-            text-decoration: none;
-            text-align: center;
-            margin: 20px auto;
-        }
-
-        .footer {
-            font-size: 14px;
-            color: #888;
-            text-align: center;
-            margin-top: 30px;
-        }
-
-        @media screen and (max-width: 480px) {
-            .btn {
-                width: 100%;
-            }
-        }
-    </style>
+ <meta charset="UTF-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <meta http-equiv="X-UA-Compatible" content="IE=edge">
+ <title>{{ firm_name }} - Message Received</title>
 </head>
-<body>
-    <div class="email-container">
-        <!-- Header -->
-        <div class="header">
-            <img src="{{ site_url }}/static/images/muguna-oyile-logo.png" alt="Firm Logo">
-            <h2>{{ firm_name }} - Message Received</h2>
-        </div>
+<body style="margin: 0; padding: 0; font-family: 'Montserrat', sans-serif; color: #333; background-color: #f4f4f4; line-height: 1.5;">
+ <table width="100%" cellpadding="0" cellspacing="0" style="max-width: 600px; margin: 20px auto; background-color: #ffffff; border: 1px solid #dddddd; border-radius: 8px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);">
+ <!-- Header -->
+ <tr>
+ <td style="background-color: #182942; padding: 25px 30px; text-align: center; border-bottom: 3px solid #ebd19e;">
+ <img src="{{ site_url }}/static/images/muguna-oyile-logo.png" alt="Muguna Oyile Law Firm Logo" style="max-width: 180px; height: auto; display: block; margin: 0 auto 10px;">
+ <h2 style="font-family: 'Hoefler Text', serif; color: #ffffff; font-size: 24px; margin: 0; font-weight: 600; letter-spacing: 0.5px;">{{ firm_name }} - Message Received</h2>
+ </td>
+ </tr>
+ <!-- Content -->
+ <tr>
+ <td style="padding: 35px 40px; background-color: #ffffff; color: #333; font-size: 15px;">
+ <p style="margin: 0 0 20px; font-size: 15px;"><strong style="color: #0f1b2e; font-weight: 600;">Hello {{ contact.first_name }},</strong></p>
+ <p style="margin: 0 0 20px; font-size: 15px;">Thank you for reaching out to {{ firm_name }}. We have received your message and will respond as soon as possible.</p>
 
-        <!-- Greeting -->
-        <p><strong>Hello {{ contact.first_name }},</strong></p>
-        <p>Thank you for reaching out to {{ firm_name }}. We have received your message and will respond as soon as possible.</p>
+ <!-- Ticket ID -->
+ <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #f4f4f4; padding: 15px; border-radius: 6px; border-left: 4px solid #ebd19e; margin: 20px 0;">
+ <tr>
+ <td style="font-size: 15px; font-weight: 600; color: #314769;">
+ &#9993; <strong style="color: #0f1b2e;">Your Ticket ID: {{ ticket_id }}</strong>
+ </td>
+ </tr>
+ </table>
 
-        <!-- Ticket ID -->
-        <div class="ticket">
-            &#9993; <strong>Your Ticket ID: {{ ticket_id }}</strong>
-        </div>
+ <!-- Submitted Details -->
+ <p style="margin: 0 0 20px; font-size: 15px;"><strong style="color: #0f1b2e; font-weight: 600;">Your Submitted Details:</strong></p>
+ <table width="100%" cellpadding="0" cellspacing="0" style="border-collapse: collapse; margin: 20px 0; background-color: #f4f4f4; border-radius: 6px; border-left: 4px solid #ebd19e;">
+ <tr>
+ <td style="padding: 10px 15px; font-size: 14px; color: #333; border-bottom: 1px solid #dddddd; font-weight: 600; color: #314769; width: 120px;">Name:</td>
+ <td style="padding: 10px 15px; font-size: 14px; color: #333; border-bottom: 1px solid #dddddd;">{{ contact.first_name }} {{ contact.last_name }}</td>
+ </tr>
+ <tr>
+ <td style="padding: 10px 15px; font-size: 14px; color: #333; border-bottom: 1px solid #dddddd; font-weight: 600; color: #314769; width: 120px;">Email:</td>
+ <td style="padding: 10px 15px; font-size: 14px; color: #333; border-bottom: 1px solid #dddddd;">{{ contact.email }}</td>
+ </tr>
+ <tr>
+ <td style="padding: 10px 15px; font-size: 14px; color: #333; border-bottom: 1px solid #dddddd; font-weight: 600; color: #314769; width: 120px;">Phone:</td>
+ <td style="padding: 10px 15px; font-size: 14px; color: #333; border-bottom: 1px solid #dddddd;">{{ contact.phone_number }}</td>
+ </tr>
+ <tr>
+ <td style="padding: 10px 15px; font-size: 14px; color: #333; border-bottom: 1px solid #dddddd; font-weight: 600; color: #314769; width: 120px;">Subject:</td>
+ <td style="padding: 10px 15px; font-size: 14px; color: #333; border-bottom: 1px solid #dddddd;">{{ contact.get_subject_display }}</td>
+ </tr>
+ <tr>
+ <td style="padding: 10px 15px; font-size: 14px; color: #333; font-weight: 600; color: #314769; width: 120px;">Message:</td>
+ <td style="padding: 10px 15px; font-size: 14px; color: #333; line-height: 1.6;">{{ contact.message|linebreaks }}</td>
+ </tr>
+ </table>
 
-        <!-- Submitted Details -->
-        <p><strong>Your Submitted Details:</strong></p>
-        <table class="details-table">
-            <tr>
-                <td class="label">Name:</td>
-                <td>{{ contact.first_name }} {{ contact.last_name }}</td>
-            </tr>
-            <tr>
-                <td class="label">Email:</td>
-                <td>{{ contact.email }}</td>
-            </tr>
-            <tr>
-                <td class="label">Phone:</td>
-                <td>{{ contact.phone_number }}</td>
-            </tr>
-            <tr>
-                <td class="label">Subject:</td>
-                <td>{{ contact.get_subject_display }}</td>
-            </tr>
-            <tr>
-                <td class="label">Message:</td>
-                <td>{{ contact.message|linebreaks }}</td>
-            </tr>
-        </table>
+ <!-- Call-to-Action Button -->
+ <p style="margin: 0 0 20px; font-size: 15px;">Please use the button below to view the status of your ticket:</p>
+ <table width="100%" cellpadding="0" cellspacing="0">
+ <tr>
+ <td style="text-align: center;">
+ <a href="{{ admin_ticket_url }}" style="display: inline-block; padding: 12px 24px; background-color: #223558; color: #ffffff; text-decoration: none; font-weight: 600; font-size: 14px; border-radius: 4px; margin: 20px 0;">View Your Ticket</a>
+ </td>
+ </tr>
+ </table>
 
-        <!-- Button to Admin / Ticket -->
-        <a href="{{ admin_ticket_url }}" class="btn">View Your Ticket</a>
-
-        <p>If your matter is urgent, don't hesitate to call or WhatsApp us directly.</p>
-
-        <!-- Footer -->
-        <div class="footer">
-            Warm regards,<br>
-            <strong>The {{ firm_name }} Team</strong>
-        </div>
-    </div>
+ <p style="margin: 0 0 20px; font-size: 15px;">If your matter is urgent, please feel free to call or WhatsApp us directly at <a href="tel:+11234567890" style="color: #ebd19e; text-decoration: none;">+1 (123) 456-7890</a>.</p>
+ </td>
+ </tr>
+ <!-- Footer -->
+ <tr>
+ <td style="background-color: #0f1b2e; color: #e9e9e9; text-align: center; padding: 20px 30px; font-size: 13px; border-top: 1px solid #4e5968;">
+ <p style="margin: 5px 0;">Warm regards,<br><strong style="color: #e9e9e9;">The {{ firm_name }} Team</strong></p>
+ <p style="margin: 5px 0;">
+ <a href="{{ site_url }}" style="color: #ebd19e; text-decoration: none;">www.mugunaoyilelaw.com</a> |
+ <a href="mailto:info@mugunaoyilelaw.com" style="color: #ebd19e; text-decoration: none;">info@mugunaoyilelaw.com</a> |
+ <a href="tel:+11234567890" style="color: #ebd19e; text-decoration: none;">+1 (123) 456-7890</a>
+ </p>
+ </td>
+ </tr>
+ </table>
 </body>
 </html>

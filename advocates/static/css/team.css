@@ -31,7 +31,7 @@
         }
 
         * { margin:0; padding:0; box-sizing:border-box; }
-        body { font-family:'Montserrat', sans-serif; color:var(--text-color); line-height:1.6; background-color:var(--neutral-5); }
+        body { font-family:'Open Sauce One', sans-serif; color:var(--text-color); line-height:1.6; background-color:var(--neutral-5); }
         h1,h2 { font-weight:700; }
         .subtitle { font-size:0.8rem; font-weight:600; color:var(--accent-color); letter-spacing:2px; margin-bottom:10px; }
         section { padding:0; max-width:1200px; margin:0 auto; }

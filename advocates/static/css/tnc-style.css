@@ -1,7 +1,5 @@
 /* Prevent default padding */
-main#main-content {
-    padding-top: 0;
-  }
+
   
   /* Push content below the dynamic header using the live CSS variable */
   .tm-header-container {

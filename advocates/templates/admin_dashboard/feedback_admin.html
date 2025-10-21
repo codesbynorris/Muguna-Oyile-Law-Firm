@@ -1,0 +1,85 @@
+{% extends "admin_dashboard/base_admin.html" %}
+{% block title %}Manage Blogs{% endblock %}
+
+{% block dashboard_content %}
+    <div class="max-w-6xl w-full bg-white shadow-xl rounded-2xl p-8">
+        <h1 class="text-3xl font-bold text-primary mb-6 text-center">Client Feedback Overview</h1>
+
+        <!-- Filter Buttons -->
+        <div class="flex flex-wrap justify-center gap-3 mb-6">
+            <a href="?type=all"
+               class="px-4 py-2 rounded-lg border font-semibold transition duration-300 
+               {% if selected_type == 'all' %}bg-primary text-white border-primary{% else %}border-gray-300 text-primary hover:bg-gray-100{% endif %}">
+                All
+            </a>
+
+            <a href="?type=complaint"
+               class="px-4 py-2 rounded-lg border font-semibold transition duration-300 
+               {% if selected_type == 'complaint' %}bg-primary text-white border-primary{% else %}border-gray-300 text-primary hover:bg-gray-100{% endif %}">
+                Complaints
+            </a>
+
+            <a href="?type=compliment"
+               class="px-4 py-2 rounded-lg border font-semibold transition duration-300 
+               {% if selected_type == 'compliment' %}bg-primary text-white border-primary{% else %}border-gray-300 text-primary hover:bg-gray-100{% endif %}">
+                Compliments
+            </a>
+
+            <a href="?type=suggestion"
+               class="px-4 py-2 rounded-lg border font-semibold transition duration-300 
+               {% if selected_type == 'suggestion' %}bg-primary text-white border-primary{% else %}border-gray-300 text-primary hover:bg-gray-100{% endif %}">
+                Suggestions
+            </a>
+
+            <a href="?type=other"
+               class="px-4 py-2 rounded-lg border font-semibold transition duration-300 
+               {% if selected_type == 'other' %}bg-primary text-white border-primary{% else %}border-gray-300 text-primary hover:bg-gray-100{% endif %}">
+                Other
+            </a>
+        </div>
+
+        <!-- Feedback Table -->
+        <div class="overflow-x-auto bg-white shadow-md rounded-xl">
+            <table class="min-w-full text-left border-collapse">
+                <thead class="bg-primary text-white">
+                    <tr>
+                        <th class="py-3 px-4">Name</th>
+                        <th class="py-3 px-4">Email</th>
+                        <th class="py-3 px-4">Type</th>
+                        <th class="py-3 px-4">Comments</th>
+                        <th class="py-3 px-4">Rating</th>
+                        <th class="py-3 px-4">Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for f in feedbacks %}
+                    <tr class="border-b hover:bg-gray-50">
+                        <td class="py-3 px-4">{{ f.name|default:"Anonymous" }}</td>
+                        <td class="py-3 px-4">{{ f.email|default:"—" }}</td>
+                        <td class="py-3 px-4 capitalize">{{ f.feedback_type }}</td>
+                        <td class="py-3 px-4">{{ f.comments }}</td>
+                        <td class="py-3 px-4">
+                            <span class="text-yellow-500">
+                                {% for i in "12345"|make_list %}
+                                    {% if forloop.counter <= f.rating %}★{% else %}☆{% endif %}
+                                {% endfor %}
+                            </span>
+                        </td>
+                        <td class="py-3 px-4 text-gray-500 text-sm">{{ f.submitted_at|date:"M d, Y H:i" }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="6" class="text-center text-gray-500 py-6">
+                            No feedback available for this category.
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <footer class="text-center text-sm text-gray-500 mt-8">
+        &copy; {{ now|date:"Y" }} Muguna & Oyile Advocates. All Rights Reserved.
+    </footer>
+{% endblock %}

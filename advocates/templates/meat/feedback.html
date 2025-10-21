@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feedback & FAQs</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;500;600;700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'primary': '#182942', // Richer Dark Blue
+                        'accent': '#ebd19e', // Beige/Gold Accent
+                        'primary-dark': '#0f1b2e',
+                        'primary-light': '#223558',
+                        'gray-light': '#f7f7f7', // Slightly lighter gray for background
+                        'gray-medium': '#8e8e8e', // Darker gray for subtle text
+                        'border-color': '#e9e9e9',
+                        'success': '#28a745',
+                        'error': '#e74c3c',
+                        'warning': '#ffc107',
+                    },
+                    fontFamily: {
+                        heading: ['EB Garamond', 'serif'],
+                        body: ['Open Sans', 'sans-serif'],
+                    },
+                    boxShadow: {
+                        'custom': '0 10px 30px rgba(0, 0, 0, 0.1)',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Custom styles for star rating selection */
+        .rating-group input:checked ~ label {
+            color: theme('colors.warning');
+            text-shadow: 0 0 2px rgba(0,0,0,0.1);
+        }
+        .rating-group label:hover,
+        .rating-group label:hover ~ label {
+            color: theme('colors.warning');
+        }
+        
+        /* Smooth height transition for accordion */
+        .faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease-in-out, padding-bottom 0.4s ease-in-out;
+        }
+        .faq-answer.active {
+            max-height: 500px;
+            padding-bottom: 1rem;
+        }
+
+        /* Smooth height transition for the main content area */
+        #content-wrapper {
+            transition: min-height 0.5s ease-in-out;
+        }
+    </style>
+</head>
+<body class="bg-gray-light text-primary font-body min-h-screen flex items-center justify-center p-4 text-base">
+    <div class="max-w-4xl mx-auto shadow-custom bg-white rounded-xl overflow-hidden w-full">
+
+        <header class="bg-primary text-white p-6 md:p-10 text-center rounded-t-xl relative">
+            <div class="bg-accent absolute inset-x-0 bottom-0 h-4"></div>
+            
+            <h1 class="text-4xl md:text-5xl font-bold mb-3 font-heading text-accent">Feedback & FAQs</h1>
+            <p class="text-base max-w-2xl mx-auto mb-10 text-gray-200">We value your feedback and are here to answer your questions. Explore our FAQs or share your thoughts below.</p>
+
+            <nav class="categories flex justify-center flex-wrap -mx-1 -mb-10">
+                <div class="w-full bg-gray-light py-5 px-4 flex justify-center flex-wrap md:flex-nowrap space-x-0 md:space-x-4">
+                    
+                    <div class="category-item w-1/2 md:w-1/4 p-3 -mt-10 cursor-pointer bg-white border-b-4 border-accent transition duration-300 shadow-md hover:shadow-lg rounded-t-lg" data-category="general">
+                        <i class="fas fa-lightbulb text-2xl block mb-1 text-accent"></i>
+                        <span class="text-sm font-semibold text-primary">General Questions</span>
+                    </div>
+                    <div class="category-item w-1/2 md:w-1/4 p-3 -mt-10 cursor-pointer bg-white border-b-4 border-transparent hover:border-accent transition duration-300 shadow-md hover:shadow-lg rounded-t-lg" data-category="law">
+                        <i class="fas fa-balance-scale text-2xl block mb-1 text-accent"></i>
+                        <span class="text-sm font-semibold text-primary">Law</span>
+                    </div>
+                    <div class="category-item w-1/2 md:w-1/4 p-3 -mt-10 cursor-pointer bg-white border-b-4 border-transparent hover:border-accent transition duration-300 shadow-md hover:shadow-lg rounded-t-lg" data-category="safety">
+                        <i class="fas fa-shield-alt text-2xl block mb-1 text-accent"></i>
+                        <span class="text-sm font-semibold text-primary">Safety & Security</span>
+                    </div>
+                    <div class="category-item w-1/2 md:w-1/4 p-3 -mt-10 cursor-pointer bg-white border-b-4 border-transparent hover:border-accent transition duration-300 shadow-md hover:shadow-lg rounded-t-lg" data-category="feedback">
+                        <i class="fas fa-comment-dots text-2xl block mb-1 text-accent"></i>
+                        <span class="text-sm font-semibold text-primary">Feedback Form</span>
+                    </div>
+                </div>
+            </nav>
+        </header>
+        
+        <main class="p-6 md:p-10">
+            <div id="content-wrapper"> 
+                
+                <section id="faq-section" class="faq-list divide-y divide-border-color">
+                    <div class="faq-item py-4 transition-all duration-300 hover:bg-gray-light/50" data-category="general">
+                        <h2 class="faq-question flex justify-between items-center text-xl font-semibold cursor-pointer text-primary transition-colors duration-300">
+                            Why is my feedback important?
+                            <i class="fas fa-chevron-down text-gray-medium text-sm transition-transform duration-300"></i>
+                        </h2>
+                        <div class="faq-answer mt-2 text-gray-medium text-base">
+                            <p>Your feedback helps us understand your experience and improve our services to better meet your needs.</p>
+                        </div>
+                    </div>
+                    <div class="faq-item py-4 transition-all duration-300 hover:bg-gray-light/50" data-category="general">
+                        <h2 class="faq-question flex justify-between items-center text-xl font-semibold cursor-pointer text-primary transition-colors duration-300">
+                            How long does it take to process my feedback?
+                            <i class="fas fa-chevron-down text-gray-medium text-sm transition-transform duration-300"></i>
+                        </h2>
+                        <div class="faq-answer mt-2 text-gray-medium text-base">
+                            <p>We typically review feedback within 3-5 business days, depending on the volume and complexity of the submissions.</p>
+                        </div>
+                    </div>
+                    <div class="faq-item py-4 transition-all duration-300 hover:bg-gray-light/50" data-category="general">
+                        <h2 class="faq-question flex justify-between items-center text-xl font-semibold cursor-pointer text-primary transition-colors duration-300">
+                            Can I submit feedback anonymously?
+                            <i class="fas fa-chevron-down text-gray-medium text-sm transition-transform duration-300"></i>
+                        </h2>
+                        <div class="faq-answer mt-2 text-gray-medium text-base">
+                            <p>Yes, you can submit feedback anonymously by leaving the name and email fields blank, though providing contact details helps us follow up if needed.</p>
+                        </div>
+                    </div>
+
+                    <div class="faq-item py-4 hidden transition-all duration-300 hover:bg-gray-light/50" data-category="law">
+                        <h2 class="faq-question flex justify-between items-center text-xl font-semibold cursor-pointer text-primary transition-colors duration-300">
+                            Are there legal restrictions on the type of feedback I can provide?
+                            <i class="fas fa-chevron-down text-gray-medium text-sm transition-transform duration-300"></i>
+                        </h2>
+                        <div class="faq-answer mt-2 text-gray-medium text-base">
+                            <p>Feedback should comply with applicable laws, including avoiding defamatory, offensive, or illegal content. We reserve the right to review and moderate submissions.</p>
+                        </div>
+                    </div>
+                    <div class="faq-item py-4 hidden transition-all duration-300 hover:bg-gray-light/50" data-category="law">
+                        <h2 class="faq-question flex justify-between items-center text-xl font-semibold cursor-pointer text-primary transition-colors duration-300">
+                            Does my feedback comply with data protection laws?
+                            <i class="fas fa-chevron-down text-gray-medium text-sm transition-transform duration-300"></i>
+                        </h2>
+                        <div class="faq-answer mt-2 text-gray-medium text-base">
+                            <p>We ensure that all feedback is processed in compliance with data protection regulations, such as GDPR, where applicable.</p>
+                        </div>
+                    </div>
+                    <div class="faq-item py-4 hidden transition-all duration-300 hover:bg-gray-light/50" data-category="law">
+                        <h2 class="faq-question flex justify-between items-center text-xl font-semibold cursor-pointer text-primary transition-colors duration-300">
+                            Can my feedback be used in legal proceedings?
+                            <i class="fas fa-chevron-down text-gray-medium text-sm transition-transform duration-300"></i>
+                        </h2>
+                        <div class="faq-answer mt-2 text-gray-medium text-base">
+                            <p>Feedback is generally used for internal improvement, but it may be subject to legal requests or proceedings if required by law.</p>
+                        </div>
+                    </div>
+
+                    <div class="faq-item py-4 hidden transition-all duration-300 hover:bg-gray-light/50" data-category="safety">
+                        <h2 class="faq-question flex justify-between items-center text-xl font-semibold cursor-pointer text-primary transition-colors duration-300">
+                            How is my data used when I submit feedback?
+                            <i class="fas fa-chevron-down text-gray-medium text-sm transition-transform duration-300"></i>
+                        </h2>
+                        <div class="faq-answer mt-2 text-gray-medium text-base">
+                            <p>Your data is used solely to process your feedback and improve our services, in accordance with our privacy policy.</p>
+                        </div>
+                    </div>
+                    <div class="faq-item py-4 hidden transition-all duration-300 hover:bg-gray-light/50" data-category="safety">
+                        <h2 class="faq-question flex justify-between items-center text-xl font-semibold cursor-pointer text-primary transition-colors duration-300">
+                            Do I need to consent to data collection to submit feedback?
+                            <i class="fas fa-chevron-down text-gray-medium text-sm transition-transform duration-300"></i>
+                        </h2>
+                        <div class="faq-answer mt-2 text-gray-medium text-base">
+                            <p>By submitting feedback, you consent to our data collection practices as outlined in our privacy policy. Anonymous submissions are also accepted.</p>
+                        </div>
+                    </div>
+                    <div class="faq-item py-4 hidden transition-all duration-300 hover:bg-gray-light/50" data-category="safety">
+                        <h2 class="faq-question flex justify-between items-center text-xl font-semibold cursor-pointer text-primary transition-colors duration-300">
+                            How do the Terms & Conditions apply to feedback?
+                            <i class="fas fa-chevron-down text-gray-medium text-sm transition-transform duration-300"></i>
+                        </h2>
+                        <div class="faq-answer mt-2 text-gray-medium text-base">
+                            <p>Feedback submissions are subject to our Terms & Conditions, which outline acceptable use and content guidelines.</p>
+                        </div>
+                    </div>
+                </section>
+
+
+                <section id="feedback-form-section" class="contact-section pt-6 hidden">
+                    <h3 class="text-2xl mb-6 text-primary-light font-heading border-b border-border-color pb-2">Share Your Feedback</h3>
+                    
+                    <div class="progress-bar h-1 bg-border-color rounded-full mb-6 overflow-hidden shadow-inner">
+                        <div id="progress" class="h-full bg-accent w-0 transition-all duration-300"></div>
+                    </div>
+
+                    <form id="feedback-form" class="contact-form flex flex-col space-y-5">
+                        <div class="form-row flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4">
+                            <div class="flex-1">
+                                <input type="text" id="name" name="name" placeholder="Full Name (Optional)" class="w-full p-3 border border-border-color rounded-lg focus:ring-2 focus:ring-accent focus:border-accent transition-colors">
+                                <span class="error-message text-error text-xs mt-1 block hidden" id="name-error">Please enter a valid name (at least 2 characters).</span>
+                            </div>
+                            <div class="flex-1">
+                                <input type="email" id="email" name="email" placeholder="Email Address (Optional)" class="w-full p-3 border border-border-color rounded-lg focus:ring-2 focus:ring-accent focus:border-accent transition-colors">
+                                <span class="error-message text-error text-xs mt-1 block hidden" id="email-error">Please enter a valid email address.</span>
+                            </div>
+                        </div>
+
+                        <select id="feedback-type" name="feedback-type" class="p-3 border border-border-color rounded-lg focus:ring-2 focus:ring-accent focus:border-accent transition-colors text-primary-dark/80">
+                            <option value="" disabled selected>Select feedback type *</option>
+                            <option value="suggestion">Suggestion</option>
+                            <option value="complaint">Complaint</option>
+                            <option value="compliment">Compliment</option>
+                            <option value="other">Other</option>
+                        </select>
+
+                        <textarea id="comments" name="comments" placeholder="Your Feedback... (Required)" rows="5" class="p-3 border border-border-color rounded-lg focus:ring-2 focus:ring-accent focus:border-accent transition-colors resize-y" required aria-describedby="comments-error"></textarea>
+                        <span class="error-message text-error text-xs mt-1 block hidden" id="comments-error">Please provide feedback (at least 10 characters).</span>
+                        
+                        <div class="rating-group flex gap-1 justify-start items-center text-primary-dark">
+                            <span class="text-base font-semibold mr-2">Rate Your Experience:</span>
+                            <input type="radio" id="star1" name="rating" value="1" class="hidden" required>
+                            <label for="star1" class="cursor-pointer text-3xl text-border-color transition-colors" title="1 star">★</label>
+                            <input type="radio" id="star2" name="rating" value="2" class="hidden">
+                            <label for="star2" class="cursor-pointer text-3xl text-border-color transition-colors" title="2 stars">★</label>
+                            <input type="radio" id="star3" name="rating" value="3" class="hidden">
+                            <label for="star3" class="cursor-pointer text-3xl text-border-color transition-colors" title="3 stars">★</label>
+                            <input type="radio" id="star4" name="rating" value="4" class="hidden">
+                            <label for="star4" class="cursor-pointer text-3xl text-border-color transition-colors" title="4 stars">★</label>
+                            <input type="radio" id="star5" name="rating" value="5" class="hidden">
+                            <label for="star5" class="cursor-pointer text-3xl text-border-color transition-colors" title="5 stars">★</label>
+                        </div>
+
+                        <button type="submit" id="submit-btn" class="send-message-btn bg-primary text-white p-4 rounded-lg font-bold text-lg tracking-wider hover:bg-primary-dark transition duration-300 disabled:bg-gray-medium disabled:cursor-not-allowed shadow-md hover:shadow-lg">Submit Feedback</button>
+                    </form>
+                </section>
+            </div>
+        </main>
+
+        <footer class="bg-primary-dark text-gray-medium text-center p-5 rounded-b-xl">
+            <p class="text-sm">© 2025 Your Company. All rights reserved.</p>
+        </footer>
+    </div>
+
+    <div class="modal fixed inset-0 bg-black/70 flex items-center justify-center opacity-0 pointer-events-none transition-opacity duration-300 z-50" id="success-modal">
+        <div class="modal-content bg-white p-8 rounded-lg text-center max-w-sm w-full transform scale-90 transition-all duration-300 shadow-xl">
+            <i class="fas fa-check-circle text-success text-5xl mb-4"></i>
+            <h3 class="text-2xl mb-2 text-primary font-heading font-semibold">Thank You!</h3>
+            <p class="text-gray-medium mb-6 text-base">Your feedback has been successfully submitted. We appreciate your input!</p>
+            <button onclick="closeModal()" class="bg-primary text-white p-3 px-6 rounded-lg font-semibold hover:bg-primary-dark transition duration-300 shadow-md">Close</button>
+        </div>
+    </div>
+
+    <script>
+        const form = document.getElementById('feedback-form');
+        const faqSection = document.getElementById('faq-section');
+        const feedbackSection = document.getElementById('feedback-form-section');
+        const contentWrapper = document.getElementById('content-wrapper');
+
+        const progressBar = document.getElementById('progress');
+        const submitBtn = document.getElementById('submit-btn');
+        const modal = document.getElementById('success-modal');
+        const modalContent = modal.querySelector('.modal-content');
+        const fields = form?.querySelectorAll('input:not([type="radio"]), select, textarea');
+        const faqQuestions = document.querySelectorAll('.faq-question');
+        const categoryItems = document.querySelectorAll('.category-item');
+        const faqItems = document.querySelectorAll('.faq-item');
+        const ratingInputs = document.querySelectorAll('input[name="rating"]');
+
+        // --- Height Management ---
+        let initialFaqHeight = 0;
+        let formHeight = 0;
+        let currentActiveCategory = 'general';
+
+        function setContentWrapperHeight(height) {
+            contentWrapper.style.minHeight = `${height}px`;
+        }
+        
+        // This function recalculates and sets the minHeight for the wrapper based on the *currently visible* content's full height.
+        function updateContentHeight() {
+            if (currentActiveCategory === 'feedback') {
+                // If the form is visible, use its fixed height
+                setContentWrapperHeight(formHeight);
+            } else {
+                // If FAQs are visible, recalculate the height of the FAQ section (since answers might be open)
+                let visibleFaqSectionHeight = 0;
+                
+                // Temporarily ensure the FAQ section is visible to measure
+                const wasHidden = faqSection.classList.contains('hidden');
+                if (wasHidden) faqSection.classList.remove('hidden');
+
+                // Recalculate based on current state (open answers increase this)
+                visibleFaqSectionHeight = faqSection.offsetHeight;
+                
+                if (wasHidden) faqSection.classList.add('hidden');
+
+                // Use the calculated height, but ensure it's not less than the initial closed height
+                setContentWrapperHeight(Math.max(initialFaqHeight, visibleFaqSectionHeight));
+            }
+        }
+
+        function setInitialHeights() {
+            // Temporarily make both visible to measure their full height
+            faqSection.classList.remove('hidden');
+            feedbackSection.classList.remove('hidden');
+
+            // Measure the heights
+            // initialFaqHeight should be measured when all answers are closed
+            faqQuestions.forEach(q => {
+                q.nextElementSibling.classList.remove('active');
+            });
+            initialFaqHeight = faqSection.offsetHeight;
+            formHeight = feedbackSection.offsetHeight;
+
+            // Set the wrapper's initial minHeight to the larger of the two
+            const maxHeight = Math.max(initialFaqHeight, formHeight);
+            contentWrapper.style.minHeight = `${maxHeight}px`;
+
+            // Reset the initial state (FAQ visible, Form hidden)
+            faqSection.classList.remove('hidden');
+            feedbackSection.classList.add('hidden');
+            updateContentHeight();
+        }
+
+        // Run on load, resize, and DOM changes
+        window.addEventListener('load', setInitialHeights);
+        window.addEventListener('resize', setInitialHeights);
+
+
+        // --- Form Validation & Submission ---
+
+        function checkFormValidity() {
+            let totalRequired = 3; // Comments, Feedback Type, Rating
+            let filledRequired = 0;
+
+            const isTypeSelected = document.getElementById('feedback-type').value !== '';
+            const isCommentsValid = document.getElementById('comments').checkValidity();
+            const isRatingSelected = Array.from(ratingInputs).some(r => r.checked);
+
+            if (isCommentsValid) filledRequired++;
+            if (isTypeSelected) filledRequired++;
+            if (isRatingSelected) filledRequired++;
+
+            const progress = (filledRequired / totalRequired) * 100;
+            progressBar.style.width = `${progress}%`;
+
+            const formValid = (filledRequired === totalRequired);
+            submitBtn.disabled = !formValid;
+        }
+
+        function validateField(field) {
+            // Only validate required fields when they have been interacted with, or optional fields if content exists
+            if (!field.hasAttribute('required') && field.value.trim() === '') return;
+
+            const errorElement = document.getElementById(`${field.id}-error`);
+
+            if (field.checkValidity() === false) {
+                field.classList.add('border-error', 'text-error');
+                field.classList.remove('focus:border-accent');
+                errorElement?.classList.remove('hidden');
+            } else {
+                field.classList.remove('border-error', 'text-error');
+                field.classList.add('focus:border-accent');
+                errorElement?.classList.add('hidden');
+            }
+        }
+
+        if (form) {
+            checkFormValidity();
+            fields.forEach(field => {
+                field.addEventListener('input', () => {
+                    validateField(field);
+                    checkFormValidity();
+                });
+                field.addEventListener('blur', () => validateField(field));
+            });
+            ratingInputs.forEach(input => input.addEventListener('change', checkFormValidity));
+
+            form.addEventListener('submit', e => {
+                e.preventDefault();
+                // Final full form validation check here
+                if (!submitBtn.disabled) {
+                    submitBtn.disabled = true;
+                    submitBtn.classList.add('relative', 'cursor-not-allowed');
+                    submitBtn.innerHTML = 'Submitting... <span class="absolute right-4 top-1/2 -translate-y-1/2 border-2 border-t-transparent border-white rounded-full w-4 h-4 animate-spin"></span>';
+                    
+                    setTimeout(() => {
+                        submitBtn.classList.remove('relative', 'cursor-not-allowed');
+                        submitBtn.innerHTML = 'Submit Feedback';
+                        
+                        modal.classList.remove('pointer-events-none', 'opacity-0');
+                        modalContent.classList.remove('scale-90');
+
+                        form.reset();
+                        progressBar.style.width = '0%';
+                        checkFormValidity(); 
+                        fields.forEach(field => field.classList.remove('border-error', 'text-error'));
+                    }, 1500);
+                }
+            });
+        }
+
+        function closeModal() {
+            modal.classList.add('pointer-events-none', 'opacity-0');
+            modalContent.classList.add('scale-90');
+        }
+
+        // --- FAQ Toggle (Accordion) ---
+        faqQuestions.forEach(question => {
+            question.addEventListener('click', () => {
+                const faqItem = question.closest('.faq-item');
+                const answer = question.nextElementSibling;
+                const chevron = question.querySelector('i');
+                const isActive = answer.classList.contains('active');
+
+                // Close all other open items
+                document.querySelectorAll('.faq-item.active').forEach(item => {
+                    item.classList.remove('active');
+                    item.querySelector('.faq-answer').classList.remove('active');
+                    item.querySelector('.faq-question i').classList.remove('rotate-180');
+                });
+                
+                // Open the clicked item if it was not already active
+                if (!isActive) {
+                    faqItem.classList.add('active');
+                    answer.classList.add('active');
+                    chevron.classList.add('rotate-180');
+                }
+                
+                // Update content height after the transition finishes to ensure stability
+                setTimeout(updateContentHeight, 450);
+            });
+        });
+
+        // --- Category Filtering (Updated for Height Consistency) ---
+        categoryItems.forEach(item => {
+            item.addEventListener('click', () => {
+                const category = item.getAttribute('data-category');
+                currentActiveCategory = category;
+
+                // 1. Update Category Item Styles
+                categoryItems.forEach(i => {
+                    i.classList.remove('border-accent');
+                    i.classList.add('border-transparent');
+                });
+                item.classList.add('border-accent');
+                item.classList.remove('border-transparent');
+
+                // 2. Hide all and show selected
+                if (category === 'feedback') {
+                    // Switch to form: Hide FAQ, Show Form, Set Form Height
+                    faqSection.classList.add('hidden');
+                    feedbackSection.classList.remove('hidden');
+                    setContentWrapperHeight(formHeight);
+                } else {
+                    // Switch to FAQ: Hide Form, Show FAQ, Set FAQ Height, Filter FAQs
+                    feedbackSection.classList.add('hidden');
+                    faqSection.classList.remove('hidden');
+                    setContentWrapperHeight(initialFaqHeight); // Set to initial closed height first
+
+                    // Filter FAQ items
+                    faqItems.forEach(faq => {
+                        // Close any open answers when switching categories
+                        faq.classList.remove('active');
+                        const answer = faq.querySelector('.faq-answer');
+                        if (answer) answer.classList.remove('active');
+                        const chevron = faq.querySelector('.faq-question i');
+                        if (chevron) chevron.classList.remove('rotate-180');
+
+                        if (faq.getAttribute('data-category') === category) {
+                            faq.classList.remove('hidden');
+                        } else {
+                            faq.classList.add('hidden');
+                        }
+                    });
+                }
+                
+                // Ensure the height update runs
+                updateContentHeight();
+                
+                // Scroll to the top of the main content area for smooth transition
+                document.querySelector('main').scrollIntoView({ behavior: 'smooth' });
+            });
+        });
+
+        // Initialize: Set "General Questions" as active on load
+        document.querySelector('[data-category="general"]').click();
+    </script>
+</body>
+</html>

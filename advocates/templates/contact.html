@@ -1,22 +1,10 @@
+{% extends 'contact/contact_base.html' %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Contact Us — Full Page</title>
 
-  <!-- Tailwind -->
-  <script src="https://cdn.tailwindcss.com"></script>
+{% block title %}Contact | Muguna & Oyile{% endblock %}
 
-  <!-- Google Font -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;600;700&family=Open+Sans:wght@400;500;600&display=swap" rel="stylesheet">
-
-  <!-- Font Awesome -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-
-  <style>
+{% block content %}
+    <style>
     :root{
       --brand: #011425;
       --accent: #4f46e5;
@@ -96,12 +84,24 @@
       box-shadow: 0 10px 30px rgba(2,6,23,0.07);
       z-index: 60;
     }
-    .country-list li {
-      padding: 0.6rem 0.9rem;
-      cursor: pointer;
-      font-size: 0.95rem;
+    .country-list.hidden {
+      display: none;
     }
-    .country-list li:hover { background: #eef2ff; }
+    .country-list li {
+      padding: 0.75rem 1rem;
+      cursor: pointer;
+      font-size: 0.875rem; /* text-sm */
+      display: flex;
+      align-items: center;
+      transition: background-color 0.1s ease;
+    }
+    .country-list li:hover, .country-list li.focused {
+      background: #fff7ed; /* Matches hover:bg-orange-50 */
+    }
+    .country-list li[aria-selected="true"] {
+      background: #eef2ff;
+      font-weight: 600;
+    }
 
     /* ---------- Calendar: ensure it fits its box ---------- */
     .calendar-card {
@@ -140,10 +140,10 @@
     .time-slots {
       max-height: 260px;
       overflow-y: auto;
-      display:flex;
-      gap:10px;
-      flex-wrap:wrap;
-      padding:4px;
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      padding: 4px;
     }
     .time-slot {
       padding: 8px 12px;
@@ -155,612 +155,865 @@
       font-size: .92rem;
     }
     .time-slot:hover { transform: scale(1.03); background: #eef2ff; }
-    .time-slot.selected { background: var(--brand); color: white; font-weight:600; }
+    .time-slot.selected { background: var(--brand); color: white; font-weight: 600; }
 
     @media (max-width: 768px){
-      .calendar-days { height: 220px; gap:5px; }
+      .calendar-days { height: 220px; gap: 5px; }
       .time-slots { max-height: 220px; }
     }
-  </style>
-</head>
-<body>
-  <!-- Outer wrapper -->
-  <div class="min-h-screen flex items-center justify-center px-4 py-8">
-    <div class="bg-white rounded-3xl shadow-2xl max-w-6xl w-full overflow-hidden">
+    </style>
 
-      <!-- ---------- Top shared heading (spans both columns) ---------- -->
-      <div class="px-8 lg:px-12 py-8 text-center">
-        <h1 class="text-3xl lg:text-4xl font-bold text-gray-800">Contact Us</h1>
-        <div class="heading-deco" aria-hidden="true"></div>
-        <p class="text-gray-600 max-w-3xl mx-auto">
-          Do you have a question? A workplace? Or need any legal advice? Let's talk. We're here to help.
-        </p>
-      </div>
-
-      <!-- ---------- Main grid: left = form/scheduler, right = contact info ---------- -->
-      <div class="grid grid-cols-1 lg:grid-cols-3 gap-0">
-
-        <!-- LEFT (form + schedule) -->
-        <div class="lg:col-span-2 p-6 lg:p-12">
-          <!-- Toggle: Send a message / Schedule a call -->
-          <div class="mb-8">
-            <div class="inline-flex items-center p-1 bg-gray-100 rounded-full">
-              <button id="contactModeBtn" type="button" class="toggle-button active">Send a Message</button>
-              <button id="scheduleModeBtn" type="button" class="toggle-button ml-2">Schedule a Call</button>
-            </div>
-          </div>
-
-          <!-- Form (posts to Django view) -->
-          <form id="mainForm" class="grid grid-cols-1 md:grid-cols-2 gap-6" action="{% url 'contact' %}" method="post" novalidate>
-            {% csrf_token %}
-
-            <!-- hidden control fields -->
-            <input type="hidden" name="form_type" id="formType" value="message">
-            <input type="hidden" name="date" id="hiddenDate" value="">
-            <input type="hidden" name="time_slot" id="hiddenTimeSlot" value="">
-            <input type="hidden" name="country_code" id="hiddenCountryCode" value="+254">
-
-            <!-- First name -->
-            <div>
-              <label for="firstName" class="block text-sm font-medium text-gray-700 mb-2">First Name</label>
-              <input id="firstName" name="first_name" type="text" required placeholder="Enter your first name"
-                     class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
+    <!-- Outer wrapper -->
+    <div class="min-h-screen flex items-center justify-center px-4 py-8">
+        <div class="bg-white rounded-3xl shadow-2xl max-w-6xl w-full overflow-hidden">
+            <!-- Top shared heading (spans both columns) -->
+            <div class="px-8 lg:px-12 py-8 text-center">
+                <h1 class="text-3xl lg:text-4xl font-bold text-gray-800">Contact Us</h1>
+                <div class="heading-deco" aria-hidden="true"></div>
+                <p class="text-gray-600 max-w-3xl mx-auto">
+                    Do you have a question? Or need any legal advice? Let's talk, Engage us!
+                </p>
             </div>
 
-            <!-- Last name -->
-            <div>
-              <label for="lastName" class="block text-sm font-medium text-gray-700 mb-2">Last Name</label>
-              <input id="lastName" name="last_name" type="text" required placeholder="Enter your last name"
-                     class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
-            </div>
+            <!-- Main grid: left = form/scheduler, right = contact info -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-0">
+                <!-- LEFT (form + schedule) -->
+                <div class="lg:col-span-2 p-6 lg:p-12">
+                    <!-- Toggle: Send a message / Schedule a call -->
+                    <div class="mb-8">
+                        <div class="inline-flex items-center p-1 bg-gray-100 rounded-full">
+                            <button id="contactModeBtn" type="button" class="toggle-button active">Send a Message</button>
+                            <button id="scheduleModeBtn" type="button" class="toggle-button ml-2">Schedule a Call</button>
+                        </div>
+                    </div>
 
-            <!-- Email -->
-            <div>
-              <label for="email" class="block text-sm font-medium text-gray-700 mb-2">Email</label>
-              <input id="email" name="email" type="email" required placeholder="Enter your email"
-                     class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
-            </div>
+                    <!-- Form (posts to Django view) -->
+                    <form id="mainForm" class="grid grid-cols-1 md:grid-cols-2 gap-6" action="{% url 'contact' %}" method="post" novalidate>
+                        {% csrf_token %}
 
-            <!-- Phone: compact country selector + wider phone input -->
-            <div>
-              <label class="block text-sm font-medium text-gray-700 mb-2">Contact Details</label>
+                        <!-- Hidden control fields -->
+                        <input type="hidden" name="form_type" id="formType" value="message">
+                        <input type="hidden" name="date" id="hiddenDate" value="">
+                        <input type="hidden" name="time_slot" id="hiddenTimeSlot" value="">
+                        <input type="hidden" name="country_code" id="hiddenCountryCode" value="+254">
 
-              <div class="flex items-stretch">
-                <!-- Searchable country selector (compact) -->
-                <div class="country-dropdown w-24 relative">
-                  <input id="countrySearch" type="text" readonly value="KE +254"
-                         class="w-full p-3 border border-gray-300 rounded-l-lg bg-gray-50 text-center cursor-pointer"
-                         aria-haspopup="listbox" aria-expanded="false" />
-                  <!-- hidden code value that will be used programmatically -->
-                  <input type="hidden" id="countryCode" name="country_code_display" value="+254">
+                        <!-- First name -->
+                        <div>
+                            <label for="firstName" class="block text-sm font-medium text-gray-700 mb-2">First Name*</label>
+                            <input id="firstName" name="first_name" type="text" required placeholder="Enter your first name"
+                                   class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                        </div>
 
-                  <!-- list -->
-                  <ul id="countryList" class="country-list hidden" role="listbox" tabindex="-1" aria-label="Country codes">
-                    <li data-code="+254">KE +254 (Kenya)</li>
-                    <li data-code="+256">UG +256 (Uganda)</li>
-                    <li data-code="+255">TZ +255 (Tanzania)</li>
-                    <li data-code="+257">BI +257 (Burundi)</li>
-                    <li data-code="+250">RW +250 (Rwanda)</li>
-                    <li data-code="+211">SS +211 (South Sudan)</li>
-                    <li data-code="+252">SO +252 (Somalia)</li>
-                    <li data-code="+253">DJ +253 (Djibouti)</li>
-                    <li data-code="+269">KM +269 (Comoros)</li>
-                    <li data-code="+248">SC +248 (Seychelles)</li>
-                    <li data-code="+260">ZM +260 (Zambia)</li>
-                    <li data-code="+263">ZW +263 (Zimbabwe)</li>
-                  </ul>
+                        <!-- Last name -->
+                        <div>
+                            <label for="lastName" class="block text-sm font-medium text-gray-700 mb-2">Last Name*</label>
+                            <input id="lastName" name="last_name" type="text" required placeholder="Enter your last name"
+                                   class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                        </div>
+
+                        <!-- Email -->
+                        <div>
+                            <label for="email" class="block text-sm font-medium text-gray-700 mb-2">Email*</label>
+                            <input id="email" name="email" type="email" required placeholder="Enter your email"
+                                   class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                        </div>
+
+                        <!-- Phone: compact country selector + wider phone input -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Contact Details*</label>
+                            <div class="flex items-stretch">
+                                <!-- Searchable country selector (compact) -->
+                                <div class="country-dropdown w-64 relative">
+                                    <input id="countrySearch" type="text" value="Kenya" readonly placeholder="Select a country"
+                                           class="w-full p-3 border border-gray-300 rounded-l-lg bg-gray-50 text-left cursor-pointer focus:ring-2 focus:ring-indigo-500"
+                                           aria-haspopup="listbox" aria-expanded="false" />
+                                    <!-- Hidden code value for form submission -->
+                                    <input type="hidden" id="countryCode" name="country_code_display" value="+254">
+
+                                    <!-- Country list -->
+                                    <ul id="countryList" class="country-list hidden" role="listbox" tabindex="-1" aria-label="Country codes">
+                                              <li data-code="+254" data-name="Kenya" class="py-2 px-3 hover:bg-orange-50 cursor-pointer">🇰🇪 Kenya (+254)</li>
+      <li data-code="+93" data-name="Afghanistan" class="py-2 px-3 hover:bg-orange-50 cursor-pointer">🇦🇫 Afghanistan (+93)</li>
+      <li data-code="+355" data-name="Albania" class="py-2 px-3 hover:bg-orange-50 cursor-pointer">🇦🇱 Albania (+355)</li>
+      <li data-code="+213" data-name="Algeria" class="py-2 px-3 hover:bg-orange-50 cursor-pointer">🇩🇿 Algeria (+213)</li>
+      <li data-code="+376" data-name="Andorra" class="py-2 px-3 hover:bg-orange-50 cursor-pointer">🇦🇩 Andorra (+376)</li>
+      <li data-code="+244" data-name="Angola" class="py-2 px-3 hover:bg-orange-50 cursor-pointer">🇦🇴 Angola (+244)</li>
+      <li data-code="+1-268" data-name="Antigua and Barbuda" class="py-2 px-3 hover:bg-orange-50 cursor-pointer">🇦🇬 Antigua and Barbuda (+1-268)</li>
+      <li data-code="+54" data-name="Argentina" class="py-2 px-3 hover:bg-orange-50 cursor-pointer">🇦🇷 Argentina (+54)</li>
+      <li data-code="+374" data-name="Armenia" class="py-2 px-3 hover:bg-orange-50 cursor-pointer">🇦🇲 Armenia (+374)</li>
+      <li data-code="+61" data-name="Australia" class="py-2 px-3 hover:bg-orange-50 cursor-pointer">🇦🇺 Australia (+61)</li>
+      <li data-code="+43" data-name="Austria" class="py-2 px-3 hover:bg-orange-50 cursor-pointer">🇦🇹 Austria (+43)</li>
+      <li data-code="+994" data-name="Azerbaijan" class="py-2 px-3 hover:bg-orange-50 cursor-pointer">🇦🇿 Azerbaijan (+994)</li>
+      <li data-code="+1-242" data-name="Bahamas" class="py-2 px-3 hover:bg-orange-50 cursor-pointer">🇧🇸 Bahamas (+1-242)</li>
+      <li data-code="+973" data-name="Bahrain" class="py-2 px-3 hover:bg-orange-50 cursor-pointer">🇧🇭 Bahrain (+973)</li>
+      <li data-code="+880" data-name="Bangladesh" class="py-2 px-3 hover:bg-orange-50 cursor-pointer">🇧🇩 Bangladesh (+880)</li>
+      <li data-code="+1-246" data-name="Barbados" class="py-2 px-3 hover:bg-orange-50 cursor-pointer">🇧🇧 Barbados (+1-246)</li>
+      <li data-code="+375" data-name="Belarus" class="py-2 px-3 hover:bg-orange-50 cursor-pointer">🇧🇾 Belarus (+375)</li>
+      <li data-code="+32" data-name="Belgium" class="py-2 px-3 hover:bg-orange-50 cursor-pointer">🇧🇪 Belgium (+32)</li>
+      <li data-code="+501" data-name="Belize" class="py-2 px-3 hover:bg-orange-50 cursor-pointer">🇧🇿 Belize (+501)</li>
+      <li data-code="+229" data-name="Benin" class="py-2 px-3 hover:bg-orange-50 cursor-pointer">🇧🇯 Benin (+229)</li>
+      <li data-code="+975" data-name="Bhutan" class="py-2 px-3 hover:bg-orange-50 cursor-pointer">🇧🇹 Bhutan (+975)</li>
+      <li data-code="+591" data-name="Bolivia (Plurinational State of)" class="py-2 px-3 hover:bg-orange-50 cursor-pointer">🇧🇴 Bolivia (Plurinational State of) (+591)</li>
+      <li data-code="+387" data-name="Bosnia and Herzegovina" class="py-2 px-3 hover:bg-orange-50 cursor-pointer">🇧🇦 Bosnia and Herzegovina (+387)</li>
+      <li data-code="+267" data-name="Botswana" class="py-2 px-3 hover:bg-orange-50 cursor-pointer">🇧🇼 Botswana (+267)</li>
+      <li data-code="+55" data-name="Brazil" class="py-2 px-3 hover:bg-orange-50 cursor-pointer">🇧🇷 Brazil (+55)</li>
+      <li data-code="+673" data-name="Brunei Darussalam" class="py-2 px-3 hover:bg-orange-50 cursor-pointer">🇧🇳 Brunei Darussalam (+673)</li>
+      <li data-code="+359" data-name="Bulgaria" class="py-2 px-3 hover:bg-orange-50 cursor-pointer">🇧🇬 Bulgaria (+359)</li>
+      <li data-code="+226" data-name="Burkina Faso" class="py-2 px-3 hover:bg-orange-50 cursor-pointer">🇧🇫 Burkina Faso (+226)</li>
+      <li data-code="+257" data-name="Burundi" class="py-2 px-3 hover:bg-orange-50 cursor-pointer">🇧🇮 Burundi (+257)</li>
+      <li data-code="+238" data-name="Cabo Verde" class="py-2 px-3 hover:bg-orange-50 cursor-pointer">🇨🇻 Cabo Verde (+238)</li>
+      <li data-code="+855" data-name="Cambodia" class="py-2 px-3 hover:bg-orange-50 cursor-pointer">🇰🇭 Cambodia (+855)</li>
+      <li data-code="+237" data-name="Cameroon" class="py-2 px-3 hover:bg-orange-50 cursor-pointer">🇨🇲 Cameroon (+237)</li>
+      <li data-code="+1" data-name="Canada" class="py-2 px-3 hover:bg-orange-50 cursor-pointer">🇨🇦 Canada (+1)</li>
+      <li data-code="+236" data-name="Central African Republic" class="py-2 px-3 hover:bg-orange-50 cursor-pointer">🇨🇫 Central African Republic (+236)</li>
+      <li data-code="+235" data-name="Chad" class="py-2 px-3 hover:bg-orange-50 cursor-pointer">🇹🇩 Chad (+235)</li>
+      <li data-code="+56" data-name="Chile" class="py-2 px-3 hover:bg-orange-50 cursor-pointer">🇨🇱 Chile (+56)</li>
+      <li data-code="+86" data-name="China" class="py-2 px-3 hover:bg-orange-50 cursor-pointer">🇨🇳 China (+86)</li>
+      <li data-code="+57" data-name="Colombia" class="py-2 px-3 hover:bg-orange-50 cursor-pointer">🇨🇴 Colombia (+57)</li>
+      <li data-code="+269" data-name="Comoros" class="py-2 px-3 hover:bg-orange-50 cursor-pointer">🇰🇲 Comoros (+269)</li>
+      <li data-code="+242" data-name="Congo" class="py-2 px-3 hover:bg-orange-50 cursor-pointer">🇨🇬 Congo (+242)</li>
+      <li data-code="+243" data-name="Congo (Democratic Republic of the)" class="py-2 px-3 hover:bg-orange-50 cursor-pointer">🇨🇩 Congo (Democratic Republic of the) (+243)</li>
+      <li data-code="+506" data-name="Costa Rica" class="py-2 px-3 hover:bg-orange-50 cursor-pointer">🇨🇷 Costa Rica (+506)</li>
+      <li data-code="+225" data-name="Côte d'Ivoire" class="py-2 px-3 hover:bg-orange-50 cursor-pointer">🇨🇮 Côte d'Ivoire (+225)</li>
+      <li data-code="+385" data-name="Croatia" class="py-2 px-3 hover:bg-orange-50 cursor-pointer">🇭🇷 Croatia (+385)</li>
+      <li data-code="+53" data-name="Cuba" class="py-2 px-3 hover:bg-orange-50 cursor-pointer">🇨🇺 Cuba (+53)</li>
+      <li data-code="+357" data-name="Cyprus" class="py-2 px-3 hover:bg-orange-50 cursor-pointer">🇨🇾 Cyprus (+357)</li>
+      <li data-code="+420" data-name="Czechia" class="py-2 px-3 hover:bg-orange-50 cursor-pointer">🇨🇿 Czechia (+420)</li>
+      <li data-code="+45" data-name="Denmark" class="py-2 px-3 hover:bg-orange-50 cursor-pointer">🇩🇰 Denmark (+45)</li>
+      <li data-code="+253" data-name="Djibouti" class="py-2 px-3 hover:bg-orange-50 cursor-pointer">🇩🇯 Djibouti (+253)</li>
+      <li data-code="+1-767" data-name="Dominica" class="py-2 px-3 hover:bg-orange-50 cursor-pointer">🇩🇲 Dominica (+1-767)</li>
+      <li data-code="+1-809" data-name="Dominican Republic" class="py-2 px-3 hover:bg-orange-50 cursor-pointer">🇩🇴 Dominican Republic (+1-809)</li>
+      <li data-code="+593" data-name="Ecuador" class="py-2 px-3 hover:bg-orange-50 cursor-pointer">🇪🇨 Ecuador (+593)</li>
+      <li data-code="+20" data-name="Egypt" class="py-2 px-3 hover:bg-orange-50 cursor-pointer">🇪🇬 Egypt (+20)</li>
+      <li data-code="+503" data-name="El Salvador" class="py-2 px-3 hover:bg-orange-50 cursor-pointer">🇸🇻 El Salvador (+503)</li>
+      <li data-code="+240" data-name="Equatorial Guinea" class="py-2 px-3 hover:bg-orange-50 cursor-pointer">🇬🇶 Equatorial Guinea (+240)</li>
+      <li data-code="+291" data-name="Eritrea" class="py-2 px-3 hover:bg-orange-50 cursor-pointer">🇪🇷 Eritrea (+291)</li>
+      <li data-code="+372" data-name="Estonia" class="py-2 px-3 hover:bg-orange-50 cursor-pointer">🇪🇪 Estonia (+372)</li>
+      <li data-code="+268" data-name="Eswatini" class="py-2 px-3 hover:bg-orange-50 cursor-pointer">🇸🇿 Eswatini (+268)</li>
+      <li data-code="+251" data-name="Ethiopia" class="py-2 px-3 hover:bg-orange-50 cursor-pointer">🇪🇹 Ethiopia (+251)</li>
+      <li data-code="+679" data-name="Fiji" class="py-2 px-3 hover:bg-orange-50 cursor-pointer">🇫🇯 Fiji (+679)</li>
+      <li data-code="+358" data-name="Finland" class="py-2 px-3 hover:bg-orange-50 cursor-pointer">🇫🇮 Finland (+358)</li>
+      <li data-code="+33" data-name="France" class="py-2 px-3 hover:bg-orange-50 cursor-pointer">🇫🇷 France (+33)</li>
+      <li data-code="+241" data-name="Gabon" class="py-2 px-3 hover:bg-orange-50 cursor-pointer">🇬🇦 Gabon (+241)</li>
+      <li data-code="+220" data-name="Gambia" class="py-2 px-3 hover:bg-orange-50 cursor-pointer">🇬🇲 Gambia (+220)</li>
+      <li data-code="+995" data-name="Georgia" class="py-2 px-3 hover:bg-orange-50 cursor-pointer">🇬🇪 Georgia (+995)</li>
+      <li data-code="+49" data-name="Germany" class="py-2 px-3 hover:bg-orange-50 cursor-pointer">🇩🇪 Germany (+49)</li>
+      <li data-code="+233" data-name="Ghana" class="py-2 px-3 hover:bg-orange-50 cursor-pointer">🇬🇭 Ghana (+233)</li>
+      <li data-code="+30" data-name="Greece" class="py-2 px-3 hover:bg-orange-50 cursor-pointer">🇬🇷 Greece (+30)</li>
+      <li data-code="+1-473" data-name="Grenada" class="py-2 px-3 hover:bg-orange-50 cursor-pointer">🇬🇩 Grenada (+1-473)</li>
+      <li data-code="+502" data-name="Guatemala" class="py-2 px-3 hover:bg-orange-50 cursor-pointer">🇬🇹 Guatemala (+502)</li>
+      <li data-code="+224" data-name="Guinea" class="py-2 px-3 hover:bg-orange-50 cursor-pointer">🇬🇳 Guinea (+224)</li>
+      <li data-code="+245" data-name="Guinea-Bissau" class="py-2 px-3 hover:bg-orange-50 cursor-pointer">🇬🇼 Guinea-Bissau (+245)</li>
+      <li data-code="+592" data-name="Guyana" class="py-2 px-3 hover:bg-orange-50 cursor-pointer">🇬🇾 Guyana (+592)</li>
+      <li data-code="+509" data-name="Haiti" class="py-2 px-3 hover:bg-orange-50 cursor-pointer">🇭🇹 Haiti (+509)</li>
+      <li data-code="+504" data-name="Honduras" class="py-2 px-3 hover:bg-orange-50 cursor-pointer">🇭🇳 Honduras (+504)</li>
+      <li data-code="+36" data-name="Hungary" class="py-2 px-3 hover:bg-orange-50 cursor-pointer">🇭🇺 Hungary (+36)</li>
+      <li data-code="+354" data-name="Iceland" class="py-2 px-3 hover:bg-orange-50 cursor-pointer">🇮🇸 Iceland (+354)</li>
+      <li data-code="+91" data-name="India" class="py-2 px-3 hover:bg-orange-50 cursor-pointer">🇮🇳 India (+91)</li>
+      <li data-code="+62" data-name="Indonesia" class="py-2 px-3 hover:bg-orange-50 cursor-pointer">🇮🇩 Indonesia (+62)</li>
+      <li data-code="+98" data-name="Iran (Islamic Republic of)" class="py-2 px-3 hover:bg-orange-50 cursor-pointer">🇮🇷 Iran (Islamic Republic of) (+98)</li>
+      <li data-code="+964" data-name="Iraq" class="py-2 px-3 hover:bg-orange-50 cursor-pointer">🇮🇶 Iraq (+964)</li>
+      <li data-code="+353" data-name="Ireland" class="py-2 px-3 hover:bg-orange-50 cursor-pointer">🇮🇪 Ireland (+353)</li>
+      <li data-code="+972" data-name="Israel" class="py-2 px-3 hover:bg-orange-50 cursor-pointer">🇮🇱 Israel (+972)</li>
+      <li data-code="+39" data-name="Italy" class="py-2 px-3 hover:bg-orange-50 cursor-pointer">🇮🇹 Italy (+39)</li>
+      <li data-code="+1-876" data-name="Jamaica" class="py-2 px-3 hover:bg-orange-50 cursor-pointer">🇯🇲 Jamaica (+1-876)</li>
+      <li data-code="+81" data-name="Japan" class="py-2 px-3 hover:bg-orange-50 cursor-pointer">🇯🇵 Japan (+81)</li>
+      <li data-code="+962" data-name="Jordan" class="py-2 px-3 hover:bg-orange-50 cursor-pointer">🇯🇴 Jordan (+962)</li>
+      <li data-code="+7" data-name="Kazakhstan" class="py-2 px-3 hover:bg-orange-50 cursor-pointer">🇰🇿 Kazakhstan (+7)</li>
+      <li data-code="+850" data-name="Korea (Democratic People's Republic of)" class="py-2 px-3 hover:bg-orange-50 cursor-pointer">🇰🇵 Korea (Democratic People's Republic of) (+850)</li>
+      <li data-code="+82" data-name="Korea (Republic of)" class="py-2 px-3 hover:bg-orange-50 cursor-pointer">🇰🇷 Korea (Republic of) (+82)</li>
+      <li data-code="+965" data-name="Kuwait" class="py-2 px-3 hover:bg-orange-50 cursor-pointer">🇰🇼 Kuwait (+965)</li>
+      <li data-code="+996" data-name="Kyrgyzstan" class="py-2 px-3 hover:bg-orange-50 cursor-pointer">🇰🇬 Kyrgyzstan (+996)</li>
+      <li data-code="+856" data-name="Lao People's Democratic Republic" class="py-2 px-3 hover:bg-orange-50 cursor-pointer">🇱🇦 Lao People's Democratic Republic (+856)</li>
+      <li data-code="+371" data-name="Latvia" class="py-2 px-3 hover:bg-orange-50 cursor-pointer">🇱🇻 Latvia (+371)</li>
+      <li data-code="+961" data-name="Lebanon" class="py-2 px-3 hover:bg-orange-50 cursor-pointer">🇱🇧 Lebanon (+961)</li>
+      <li data-code="+266" data-name="Lesotho" class="py-2 px-3 hover:bg-orange-50 cursor-pointer">🇱🇸 Lesotho (+266)</li>
+      <li data-code="+231" data-name="Liberia" class="py-2 px-3 hover:bg-orange-50 cursor-pointer">🇱🇷 Liberia (+231)</li>
+      <li data-code="+218" data-name="Libya" class="py-2 px-3 hover:bg-orange-50 cursor-pointer">🇱🇾 Libya (+218)</li>
+      <li data-code="+423" data-name="Liechtenstein" class="py-2 px-3 hover:bg-orange-50 cursor-pointer">🇱🇮 Liechtenstein (+423)</li>
+      <li data-code="+370" data-name="Lithuania" class="py-2 px-3 hover:bg-orange-50 cursor-pointer">🇱🇹 Lithuania (+370)</li>
+      <li data-code="+352" data-name="Luxembourg" class="py-2 px-3 hover:bg-orange-50 cursor-pointer">🇱🇺 Luxembourg (+352)</li>
+      <li data-code="+261" data-name="Madagascar" class="py-2 px-3 hover:bg-orange-50 cursor-pointer">🇲🇬 Madagascar (+261)</li>
+      <li data-code="+265" data-name="Malawi" class="py-2 px-3 hover:bg-orange-50 cursor-pointer">🇲🇼 Malawi (+265)</li>
+      <li data-code="+60" data-name="Malaysia" class="py-2 px-3 hover:bg-orange-50 cursor-pointer">🇲🇾 Malaysia (+60)</li>
+      <li data-code="+960" data-name="Maldives" class="py-2 px-3 hover:bg-orange-50 cursor-pointer">🇲🇻 Maldives (+960)</li>
+      <li data-code="+223" data-name="Mali" class="py-2 px-3 hover:bg-orange-50 cursor-pointer">🇲🇱 Mali (+223)</li>
+      <li data-code="+356" data-name="Malta" class="py-2 px-3 hover:bg-orange-50 cursor-pointer">🇲🇹 Malta (+356)</li>
+      <li data-code="+692" data-name="Marshall Islands" class="py-2 px-3 hover:bg-orange-50 cursor-pointer">🇲🇭 Marshall Islands (+692)</li>
+      <li data-code="+222" data-name="Mauritania" class="py-2 px-3 hover:bg-orange-50 cursor-pointer">🇲🇷 Mauritania (+222)</li>
+      <li data-code="+230" data-name="Mauritius" class="py-2 px-3 hover:bg-orange-50 cursor-pointer">🇲🇺 Mauritius (+230)</li>
+      <li data-code="+52" data-name="Mexico" class="py-2 px-3 hover:bg-orange-50 cursor-pointer">🇲🇽 Mexico (+52)</li>
+      <li data-code="+691" data-name="Micronesia (Federated States of)" class="py-2 px-3 hover:bg-orange-50 cursor-pointer">🇫🇲 Micronesia (Federated States of) (+691)</li>
+      <li data-code="+373" data-name="Moldova (Republic of)" class="py-2 px-3 hover:bg-orange-50 cursor-pointer">🇲🇩 Moldova (Republic of) (+373)</li>
+      <li data-code="+377" data-name="Monaco" class="py-2 px-3 hover:bg-orange-50 cursor-pointer">🇲🇨 Monaco (+377)</li>
+      <li data-code="+976" data-name="Mongolia" class="py-2 px-3 hover:bg-orange-50 cursor-pointer">🇲🇳 Mongolia (+976)</li>
+      <li data-code="+382" data-name="Montenegro" class="py-2 px-3 hover:bg-orange-50 cursor-pointer">🇲🇪 Montenegro (+382)</li>
+      <li data-code="+212" data-name="Morocco" class="py-2 px-3 hover:bg-orange-50 cursor-pointer">🇲🇦 Morocco (+212)</li>
+      <li data-code="+258" data-name="Mozambique" class="py-2 px-3 hover:bg-orange-50 cursor-pointer">🇲🇿 Mozambique (+258)</li>
+      <li data-code="+95" data-name="Myanmar" class="py-2 px-3 hover:bg-orange-50 cursor-pointer">🇲🇲 Myanmar (+95)</li>
+      <li data-code="+264" data-name="Namibia" class="py-2 px-3 hover:bg-orange-50 cursor-pointer">🇳🇦 Namibia (+264)</li>
+      <li data-code="+674" data-name="Nauru" class="py-2 px-3 hover:bg-orange-50 cursor-pointer">🇳🇷 Nauru (+674)</li>
+      <li data-code="+977" data-name="Nepal" class="py-2 px-3 hover:bg-orange-50 cursor-pointer">🇳🇵 Nepal (+977)</li>
+      <li data-code="+31" data-name="Netherlands" class="py-2 px-3 hover:bg-orange-50 cursor-pointer">🇳🇱 Netherlands (+31)</li>
+      <li data-code="+64" data-name="New Zealand" class="py-2 px-3 hover:bg-orange-50 cursor-pointer">🇳🇿 New Zealand (+64)</li>
+      <li data-code="+505" data-name="Nicaragua" class="py-2 px-3 hover:bg-orange-50 cursor-pointer">🇳🇮 Nicaragua (+505)</li>
+      <li data-code="+227" data-name="Niger" class="py-2 px-3 hover:bg-orange-50 cursor-pointer">🇳🇪 Niger (+227)</li>
+      <li data-code="+234" data-name="Nigeria" class="py-2 px-3 hover:bg-orange-50 cursor-pointer">🇳🇬 Nigeria (+234)</li>
+      <li data-code="+389" data-name="North Macedonia" class="py-2 px-3 hover:bg-orange-50 cursor-pointer">🇲🇰 North Macedonia (+389)</li>
+      <li data-code="+47" data-name="Norway" class="py-2 px-3 hover:bg-orange-50 cursor-pointer">🇳🇴 Norway (+47)</li>
+      <li data-code="+968" data-name="Oman" class="py-2 px-3 hover:bg-orange-50 cursor-pointer">🇴🇲 Oman (+968)</li>
+      <li data-code="+92" data-name="Pakistan" class="py-2 px-3 hover:bg-orange-50 cursor-pointer">🇵🇰 Pakistan (+92)</li>
+      <li data-code="+680" data-name="Palau" class="py-2 px-3 hover:bg-orange-50 cursor-pointer">🇵🇼 Palau (+680)</li>
+      <li data-code="+507" data-name="Panama" class="py-2 px-3 hover:bg-orange-50 cursor-pointer">🇵🇦 Panama (+507)</li>
+      <li data-code="+675" data-name="Papua New Guinea" class="py-2 px-3 hover:bg-orange-50 cursor-pointer">🇵🇬 Papua New Guinea (+675)</li>
+      <li data-code="+595" data-name="Paraguay" class="py-2 px-3 hover:bg-orange-50 cursor-pointer">🇵🇾 Paraguay (+595)</li>
+      <li data-code="+51" data-name="Peru" class="py-2 px-3 hover:bg-orange-50 cursor-pointer">🇵🇪 Peru (+51)</li>
+      <li data-code="+63" data-name="Philippines" class="py-2 px-3 hover:bg-orange-50 cursor-pointer">🇵🇭 Philippines (+63)</li>
+      <li data-code="+48" data-name="Poland" class="py-2 px-3 hover:bg-orange-50 cursor-pointer">🇵🇱 Poland (+48)</li>
+      <li data-code="+351" data-name="Portugal" class="py-2 px-3 hover:bg-orange-50 cursor-pointer">🇵🇹 Portugal (+351)</li>
+      <li data-code="+974" data-name="Qatar" class="py-2 px-3 hover:bg-orange-50 cursor-pointer">🇶🇦 Qatar (+974)</li>
+      <li data-code="+40" data-name="Romania" class="py-2 px-3 hover:bg-orange-50 cursor-pointer">🇷🇴 Romania (+40)</li>
+      <li data-code="+7" data-name="Russian Federation" class="py-2 px-3 hover:bg-orange-50 cursor-pointer">🇷🇺 Russian Federation (+7)</li>
+      <li data-code="+250" data-name="Rwanda" class="py-2 px-3 hover:bg-orange-50 cursor-pointer">🇷🇼 Rwanda (+250)</li>
+      <li data-code="+1-869" data-name="Saint Kitts and Nevis" class="py-2 px-3 hover:bg-orange-50 cursor-pointer">🇰🇳 Saint Kitts and Nevis (+1-869)</li>
+      <li data-code="+1-758" data-name="Saint Lucia" class="py-2 px-3 hover:bg-orange-50 cursor-pointer">🇱🇨 Saint Lucia (+1-758)</li>
+      <li data-code="+1-784" data-name="Saint Vincent and the Grenadines" class="py-2 px-3 hover:bg-orange-50 cursor-pointer">🇻🇨 Saint Vincent and the Grenadines (+1-784)</li>
+      <li data-code="+685" data-name="Samoa" class="py-2 px-3 hover:bg-orange-50 cursor-pointer">🇼🇸 Samoa (+685)</li>
+      <li data-code="+378" data-name="San Marino" class="py-2 px-3 hover:bg-orange-50 cursor-pointer">🇸🇲 San Marino (+378)</li>
+      <li data-code="+239" data-name="Sao Tome and Principe" class="py-2 px-3 hover:bg-orange-50 cursor-pointer">🇸🇹 Sao Tome and Principe (+239)</li>
+      <li data-code="+966" data-name="Saudi Arabia" class="py-2 px-3 hover:bg-orange-50 cursor-pointer">🇸🇦 Saudi Arabia (+966)</li>
+      <li data-code="+221" data-name="Senegal" class="py-2 px-3 hover:bg-orange-50 cursor-pointer">🇸🇳 Senegal (+221)</li>
+      <li data-code="+381" data-name="Serbia" class="py-2 px-3 hover:bg-orange-50 cursor-pointer">🇷🇸 Serbia (+381)</li>
+      <li data-code="+248" data-name="Seychelles" class="py-2 px-3 hover:bg-orange-50 cursor-pointer">🇸🇨 Seychelles (+248)</li>
+      <li data-code="+232" data-name="Sierra Leone" class="py-2 px-3 hover:bg-orange-50 cursor-pointer">🇸🇱 Sierra Leone (+232)</li>
+      <li data-code="+65" data-name="Singapore" class="py-2 px-3 hover:bg-orange-50 cursor-pointer">🇸🇬 Singapore (+65)</li>
+      <li data-code="+421" data-name="Slovakia" class="py-2 px-3 hover:bg-orange-50 cursor-pointer">🇸🇰 Slovakia (+421)</li>
+      <li data-code="+386" data-name="Slovenia" class="py-2 px-3 hover:bg-orange-50 cursor-pointer">🇸🇮 Slovenia (+386)</li>
+      <li data-code="+677" data-name="Solomon Islands" class="py-2 px-3 hover:bg-orange-50 cursor-pointer">🇸🇧 Solomon Islands (+677)</li>
+      <li data-code="+252" data-name="Somalia" class="py-2 px-3 hover:bg-orange-50 cursor-pointer">🇸🇴 Somalia (+252)</li>
+      <li data-code="+27" data-name="South Africa" class="py-2 px-3 hover:bg-orange-50 cursor-pointer">🇿🇦 South Africa (+27)</li>
+      <li data-code="+211" data-name="South Sudan" class="py-2 px-3 hover:bg-orange-50 cursor-pointer">🇸🇸 South Sudan (+211)</li>
+      <li data-code="+34" data-name="Spain" class="py-2 px-3 hover:bg-orange-50 cursor-pointer">🇪🇸 Spain (+34)</li>
+      <li data-code="+94" data-name="Sri Lanka" class="py-2 px-3 hover:bg-orange-50 cursor-pointer">🇱🇰 Sri Lanka (+94)</li>
+      <li data-code="+249" data-name="Sudan" class="py-2 px-3 hover:bg-orange-50 cursor-pointer">🇸🇩 Sudan (+249)</li>
+      <li data-code="+597" data-name="Suriname" class="py-2 px-3 hover:bg-orange-50 cursor-pointer">🇸🇷 Suriname (+597)</li>
+      <li data-code="+46" data-name="Sweden" class="py-2 px-3 hover:bg-orange-50 cursor-pointer">🇸🇪 Sweden (+46)</li>
+      <li data-code="+41" data-name="Switzerland" class="py-2 px-3 hover:bg-orange-50 cursor-pointer">🇨🇭 Switzerland (+41)</li>
+      <li data-code="+963" data-name="Syrian Arab Republic" class="py-2 px-3 hover:bg-orange-50 cursor-pointer">🇸🇾 Syrian Arab Republic (+963)</li>
+      <li data-code="+992" data-name="Tajikistan" class="py-2 px-3 hover:bg-orange-50 cursor-pointer">🇹🇯 Tajikistan (+992)</li>
+      <li data-code="+66" data-name="Thailand" class="py-2 px-3 hover:bg-orange-50 cursor-pointer">🇹🇭 Thailand (+66)</li>
+      <li data-code="+670" data-name="Timor-Leste" class="py-2 px-3 hover:bg-orange-50 cursor-pointer">🇹🇱 Timor-Leste (+670)</li>
+      <li data-code="+228" data-name="Togo" class="py-2 px-3 hover:bg-orange-50 cursor-pointer">🇹🇬 Togo (+228)</li>
+      <li data-code="+676" data-name="Tonga" class="py-2 px-3 hover:bg-orange-50 cursor-pointer">🇹🇴 Tonga (+676)</li>
+      <li data-code="+1-868" data-name="Trinidad and Tobago" class="py-2 px-3 hover:bg-orange-50 cursor-pointer">🇹🇹 Trinidad and Tobago (+1-868)</li>
+      <li data-code="+216" data-name="Tunisia" class="py-2 px-3 hover:bg-orange-50 cursor-pointer">🇹🇳 Tunisia (+216)</li>
+      <li data-code="+90" data-name="Turkey" class="py-2 px-3 hover:bg-orange-50 cursor-pointer">🇹🇷 Turkey (+90)</li>
+      <li data-code="+993" data-name="Turkmenistan" class="py-2 px-3 hover:bg-orange-50 cursor-pointer">🇹🇲 Turkmenistan (+993)</li>
+      <li data-code="+688" data-name="Tuvalu" class="py-2 px-3 hover:bg-orange-50 cursor-pointer">🇹🇻 Tuvalu (+688)</li>
+      <li data-code="+256" data-name="Uganda" class="py-2 px-3 hover:bg-orange-50 cursor-pointer">🇺🇬 Uganda (+256)</li>
+      <li data-code="+380" data-name="Ukraine" class="py-2 px-3 hover:bg-orange-50 cursor-pointer">🇺🇦 Ukraine (+380)</li>
+      <li data-code="+971" data-name="United Arab Emirates" class="py-2 px-3 hover:bg-orange-50 cursor-pointer">🇦🇪 United Arab Emirates (+971)</li>
+      <li data-code="+44" data-name="United Kingdom of Great Britain and Northern Ireland" class="py-2 px-3 hover:bg-orange-50 cursor-pointer">🇬🇧 United Kingdom of Great Britain and Northern Ireland (+44)</li>
+      <li data-code="+1" data-name="United States of America" class="py-2 px-3 hover:bg-orange-50 cursor-pointer">🇺🇸 United States of America (+1)</li>
+      <li data-code="+598" data-name="Uruguay" class="py-2 px-3 hover:bg-orange-50 cursor-pointer">🇺🇾 Uruguay (+598)</li>
+      <li data-code="+998" data-name="Uzbekistan" class="py-2 px-3 hover:bg-orange-50 cursor-pointer">🇺🇿 Uzbekistan (+998)</li>
+      <li data-code="+678" data-name="Vanuatu" class="py-2 px-3 hover:bg-orange-50 cursor-pointer">🇻🇺 Vanuatu (+678)</li>
+      <li data-code="+58" data-name="Venezuela (Bolivarian Republic of)" class="py-2 px-3 hover:bg-orange-50 cursor-pointer">🇻🇪 Venezuela (Bolivarian Republic of) (+58)</li>
+      <li data-code="+84" data-name="Viet Nam" class="py-2 px-3 hover:bg-orange-50 cursor-pointer">🇻🇳 Viet Nam (+84)</li>
+      <li data-code="+967" data-name="Yemen" class="py-2 px-3 hover:bg-orange-50 cursor-pointer">🇾🇪 Yemen (+967)</li>
+      <li data-code="+260" data-name="Zambia" class="py-2 px-3 hover:bg-orange-50 cursor-pointer">🇿🇲 Zambia (+260)</li>
+      <li data-code="+263" data-name="Zimbabwe" class="py-2 px-3 hover:bg-orange-50 cursor-pointer">🇿🇼 Zimbabwe (+263)</li>
+                                      
+                                    </ul>
+                                </div>
+
+                                <!-- Phone number input -->
+                                <input id="contactNumber" name="phone_number" type="tel" placeholder="Enter your contact number"
+                                       class="flex-1 p-3 border border-t border-b border-r border-gray-300 rounded-r-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                       inputmode="tel" />
+                            </div>
+                        </div>
+
+                        <!-- Subject (spans two columns) -->
+                        <div class="md:col-span-2">
+                            <label for="subject" class="block text-sm font-medium text-gray-700 mb-2">Subject*</label>
+                            <select id="subject" name="subject" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                                <option value="consultancy">Consultancy Services</option>
+                                <option value="dispute">Dispute Resolution</option>
+                                <option value="corporate">Corporate & Commercial Law</option>
+                                <option value="intellectual">Intellectual Property</option>
+                            </select>
+                        </div>
+
+                        <!-- Message area (default contact mode) -->
+                        <div id="messageArea" class="md:col-span-2">
+                            <label for="message" class="block text-sm font-medium text-gray-700 mb-2">Message*</label>
+                            <textarea id="message" name="message" rows="5" placeholder="Type your message here..."
+                                      class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"></textarea>
+                        </div>
+
+                        <!-- Schedule area (hidden by default, occupies same grid area as message) -->
+                        <div id="scheduleArea" class="md:col-span-2 hidden space-y-4">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <!-- Calendar panel -->
+                                <div class="calendar-card">
+                                    <div class="flex items-center justify-between mb-3">
+                                        <button id="prevMonthBtn" type="button" class="p-2 rounded bg-gray-100"><i class="fas fa-chevron-left"></i></button>
+                                        <div id="calendarTitle" class="text-sm font-semibold text-gray-800"></div>
+                                        <button id="nextMonthBtn" type="button" class="p-2 rounded bg-gray-100"><i class="fas fa-chevron-right"></i></button>
+                                    </div>
+
+                                    <!-- Weekday labels -->
+                                    <div class="grid grid-cols-7 gap-2 mb-2">
+                                        <div class="weekday-head">Mo</div>
+                                        <div class="weekday-head">Tu</div>
+                                        <div class="weekday-head">We</div>
+                                        <div class="weekday-head">Th</div>
+                                        <div class="weekday-head">Fr</div>
+                                        <div class="weekday-head">Sa</div>
+                                        <div class="weekday-head">Su</div>
+                                    </div>
+
+                                    <!-- Days grid -->
+                                    <div id="calendarDays" class="calendar-days" role="grid" aria-label="Calendar days"></div>
+                                </div>
+
+                                <!-- Time slots panel -->
+                                <div class="calendar-card flex flex-col">
+                                    <div id="selectedDateDisplay" class="font-semibold text-gray-800 mb-3">Select a date to see available times.</div>
+                                    <div id="timeSlots" class="time-slots"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Submit button (spans two columns) -->
+                        <div class="md:col-span-2">
+                            <button id="submitBtn" type="submit"
+                                    class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 px-6 rounded-xl shadow-lg transition">
+                                Send Message
+                            </button>
+                        </div>
+                    </form>
                 </div>
 
-                <!-- phone number input (name matches model) -->
-                <input id="contactNumber" name="phone_number" type="tel" placeholder="Enter your contact number"
-                       class="flex-1 p-3 border border-t border-b border-r border-gray-300 rounded-r-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                       inputmode="tel" />
-              </div>
+                <!-- RIGHT (contact info) -->
+                <aside class="lg:col-span-1 bg-[var(--brand)] text-white p-8 lg:p-12 flex flex-col justify-between">
+                    <div>
+                        <p class="text-xl italic font-bold">Hello! Guten Tag! Bonjour!</p> <br>
+                        <p class="text-gray-200 mb-6"></p>
+
+                        <ul class="space-y-6 text-sm">
+                            <!-- Call / WhatsApp -->
+                            <li class="bg-gray-800 bg-opacity-30 p-4 rounded-xl shadow-lg transition-all duration-300">
+                                <div class="flex items-start gap-3">
+                                    <i class="fas fa-phone-alt text-indigo-400 mt-1"></i>
+                                    <div>
+                                        <div class="text-gray-200">Call / WhatsApp</div>
+                                        <a href="tel:+254746152650" class="text-white font-semibold hover:underline block">
+                                            +254 746 152650
+                                        </a>
+                                    </div>
+                                </div>
+                            </li>
+
+                            <!-- Email -->
+                            <li class="bg-gray-800 bg-opacity-30 p-4 rounded-xl shadow-lg transition-all duration-300">
+                                <div class="flex items-start gap-3">
+                                    <i class="fas fa-envelope text-indigo-400 mt-1"></i>
+                                    <div>
+                                        <div class="text-gray-200">Email</div>
+                                        <a href="mailto:info.mugunaoyile@gmail.com" class="text-white font-semibold hover:underline block">
+                                            info@mugunaoyile.com
+                                        </a>
+                                    </div>
+                                </div>
+                            </li>
+
+                            <!-- Office Address -->
+                            <li class="bg-gray-800 bg-opacity-30 p-4 rounded-xl shadow-lg transition-all duration-300">
+                                <div class="flex items-start gap-3">
+                                    <i class="fas fa-map-marker-alt text-indigo-400 mt-1"></i>
+                                    <div>
+                                        <div class="text-gray-200">Our Office</div>
+                                        <p class="text-white font-semibold">
+                                            24th Floor, Britam Towers, Upper Hill,
+                                            Hospital Road<br>
+                                            P.O Box 78544-00507, NAIROBI
+                                        </p>
+                                    </div>
+                                </div>
+                            </li>
+
+                            <!-- Office Hours -->
+                            <li class="bg-gray-800 bg-opacity-30 p-4 rounded-xl shadow-lg transition-all duration-300">
+                                <div class="flex items-start gap-3">
+                                    <i class="fas fa-clock text-indigo-400 mt-1"></i>
+                                    <div>
+                                        <div class="text-gray-200">Office Hours</div>
+                                        <p class="text-white font-semibold text-[12px]">
+                                            Monday – Friday: 8:00 AM – 5:00 PM <br>
+                                            Saturday: 9:00 AM - 12:00 PM <br>
+                                            Sunday: Closed
+                                        </p>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="mt-6 pt-6 border-t border-white/10">
+                        <div class="flex items-center justify-between">
+                            <span class="text-gray-200">Connect with us</span>
+                            <div class="flex items-center gap-3 text-xl">
+                                <a href="#" aria-label="facebook" class="hover:text-gray-300"><i class="fab fa-facebook-f"></i></a>
+                                <a href="#" aria-label="instagram" class="hover:text-gray-300"><i class="fab fa-instagram"></i></a>
+                                <a href="#" aria-label="linkedin" class="hover:text-gray-300"><i class="fab fa-linkedin-in"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                </aside>
             </div>
-
-            <!-- Subject (spans two columns) -->
-            <div class="md:col-span-2">
-              <label for="subject" class="block text-sm font-medium text-gray-700 mb-2">Subject</label>
-
-              <select id="subject" name="subject" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                <option value="consultancy">Consultancy Services</option>
-                <option value="dispute">Dispute Resolution</option>
-                <option value="corporate">Corporate & Commercial Law</option>
-                <option value="intellectual">Intellectual Property</option>
-              </select>
-            </div>
-
-            <!-- Message area (default contact mode) -->
-            <div id="messageArea" class="md:col-span-2">
-              <label for="message" class="block text-sm font-medium text-gray-700 mb-2">Message</label>
-              <textarea id="message" name="message" rows="5" placeholder="Type your message here..."
-                        class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"></textarea>
-            </div>
-
-            <!-- Schedule area (hidden by default, occupies same grid area as message) -->
-            <div id="scheduleArea" class="md:col-span-2 hidden space-y-4">
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <!-- Calendar panel -->
-                <div class="calendar-card">
-                  <div class="flex items-center justify-between mb-3">
-                    <button id="prevMonthBtn" type="button" class="p-2 rounded bg-gray-100"><i class="fas fa-chevron-left"></i></button>
-                    <div id="calendarTitle" class="text-sm font-semibold text-gray-800"></div>
-                    <button id="nextMonthBtn" type="button" class="p-2 rounded bg-gray-100"><i class="fas fa-chevron-right"></i></button>
-                  </div>
-
-                  <!-- Weekday labels -->
-                  <div class="grid grid-cols-7 gap-2 mb-2">
-                    <div class="weekday-head">Mo</div>
-                    <div class="weekday-head">Tu</div>
-                    <div class="weekday-head">We</div>
-                    <div class="weekday-head">Th</div>
-                    <div class="weekday-head">Fr</div>
-                    <div class="weekday-head">Sa</div>
-                    <div class="weekday-head">Su</div>
-                  </div>
-
-                  <!-- Days grid (keeps stable size so it always fits in container) -->
-                  <div id="calendarDays" class="calendar-days" role="grid" aria-label="Calendar days"></div>
-                </div>
-
-                <!-- Time slots panel -->
-                <div class="calendar-card flex flex-col">
-                  <div id="selectedDateDisplay" class="font-semibold text-gray-800 mb-3">Select a date to see available times.</div>
-                  <div id="timeSlots" class="time-slots"></div>
-                </div>
-              </div>
-            </div>
-
-            <!-- Submit button (spans two columns) -->
-            <div class="md:col-span-2">
-              <button id="submitBtn" type="submit"
-                      class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 px-6 rounded-xl shadow-lg transition">
-                Send Message
-              </button>
-            </div>
-          </form>
         </div>
+    </div>
 
-        <!-- RIGHT (contact info) -->
-        <aside class="lg:col-span-1 bg-[var(--brand)] text-white p-8 lg:p-12 flex flex-col justify-between">
-          <div>
-            <p class="text-xl italic font-bold">Hello! Guten Tag! Bonjour!</p> <br>
-            <p class="text-gray-200 mb-6">We are always here to help you! <br>  <br>Feel free to reach out to us through any of these support channels.</p>
-
-            <ul class="space-y-6 text-sm">
-              <!-- Call / WhatsApp -->
-              <li class="bg-gray-800 bg-opacity-30 p-4 rounded-xl shadow-lg transition-all duration-300">
-                <div class="flex items-start gap-3">
-                  <i class="fas fa-phone-alt text-indigo-400 mt-1"></i>
-                  <div>
-                    <div class="text-gray-200">Call / WhatsApp</div>
-                    <a href="tel:+254746152650" class="text-white font-semibold hover:underline block">
-                      +254 746 152650
-                    </a>
-                  </div>
-                </div>
-              </li>
-
-              <!-- Email -->
-              <li class="bg-gray-800 bg-opacity-30 p-4 rounded-xl shadow-lg transition-all duration-300">
-                <div class="flex items-start gap-3">
-                  <i class="fas fa-envelope text-indigo-400 mt-1"></i>
-                  <div>
-                    <div class="text-gray-200">Email</div>
-                    <a href="mailto:info.mugunaoyile@gmail.com" class="text-white font-semibold hover:underline block">
-                      info@mugunaoyile.com
-                    </a>
-                  </div>
-                </div>
-              </li>
-
-              <!-- Office Address -->
-              <li class="bg-gray-800 bg-opacity-30 p-4 rounded-xl shadow-lg transition-all duration-300">
-                <div class="flex items-start gap-3">
-                  <i class="fas fa-map-marker-alt text-indigo-400 mt-1"></i>
-                  <div>
-                    <div class="text-gray-200">Our Office</div>
-                    <p class="text-white font-semibold">
-                      24th Floor, Britam Towers, Upper Hill,
-                      Hospital Road<br>
-                      P.O Box 78544-00507, NAIROBI
-                    </p>
-                  </div>
-                </div>
-              </li>
-
-              <!-- Office Hours -->
-              <li class="bg-gray-800 bg-opacity-30 p-4 rounded-xl shadow-lg transition-all duration-300">
-                <div class="flex items-start gap-3">
-                  <i class="fas fa-clock text-indigo-400 mt-1"></i>
-                  <div>
-                    <div class="text-gray-200">Office Hours</div>
-                    <p class="text-white font-semibold">
-                      Monday – Friday: 8:00 AM – 5:00 PM <br>
-                      Saturday & Sunday: Closed
-                    </p>
-                  </div>
-                </div>
-              </li>
-            </ul>
-
-          </div>
-
-          <div class="mt-6 pt-6 border-t border-white/10">
-            <div class="flex items-center justify-between">
-              <span class="text-gray-200">Connect with us</span>
-              <div class="flex items-center gap-3 text-xl">
-                <a href="#" aria-label="facebook" class="hover:text-gray-300"><i class="fab fa-facebook-f"></i></a>
-                <a href="#" aria-label="instagram" class="hover:text-gray-300"><i class="fab fa-instagram"></i></a>
-                <a href="#" aria-label="linkedin" class="hover:text-gray-300"><i class="fab fa-linkedin-in"></i></a>
-              </div>
+    <!-- Confirmation modal -->
+    <div id="confirmationModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/40">
+        <div class="bg-white rounded-2xl shadow-xl p-8 max-w-md w-full text-center">
+            <div class="mb-4">
+                <i class="fas fa-check-circle text-green-500 text-4xl"></i>
             </div>
-          </div>
-        </aside>
-      </div>
+            <h3 id="confirmationTitle" class="text-xl font-semibold mb-2">Success</h3>
+            <p id="confirmationMessage" class="text-gray-700 mb-6"></p>
+            <div class="flex justify-center">
+                <button id="closeModal" class="px-6 py-2 rounded-lg bg-indigo-600 text-white hover:bg-indigo-700">Close</button>
+            </div>
+        </div>
     </div>
-  </div>
 
-  <!-- Confirmation modal -->
-  <div id="confirmationModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/40">
-    <div class="bg-white rounded-2xl shadow-xl p-8 max-w-md w-full text-center">
-      <div class="mb-4">
-        <i class="fas fa-check-circle text-green-500 text-4xl"></i>
-      </div>
-      <h3 id="confirmationTitle" class="text-xl font-semibold mb-2">Success</h3>
-      <p id="confirmationMessage" class="text-gray-700 mb-6"></p>
-      <div class="flex justify-center">
-        <button id="closeModal" class="px-6 py-2 rounded-lg bg-indigo-600 text-white hover:bg-indigo-700">Close</button>
-      </div>
-    </div>
-  </div>
+    <script>
+        // -----------------------------
+        // Mode toggle: Contact vs Schedule
+        // -----------------------------
+        const contactModeBtn = document.getElementById('contactModeBtn');
+        const scheduleModeBtn = document.getElementById('scheduleModeBtn');
+        const messageArea = document.getElementById('messageArea');
+        const scheduleArea = document.getElementById('scheduleArea');
+        const submitBtn = document.getElementById('submitBtn');
+        const form = document.getElementById('mainForm');
+        const formTypeInput = document.getElementById('formType');
+        const hiddenDateInput = document.getElementById('hiddenDate');
+        const hiddenTimeSlotInput = document.getElementById('hiddenTimeSlot');
 
-<script>
-  // -----------------------------
-  // Mode toggle: Contact vs Schedule
-  // -----------------------------
-  const contactModeBtn = document.getElementById('contactModeBtn');
-  const scheduleModeBtn = document.getElementById('scheduleModeBtn');
-  const messageArea = document.getElementById('messageArea');
-  const scheduleArea = document.getElementById('scheduleArea');
-  const submitBtn = document.getElementById('submitBtn');
-  const form = document.getElementById('mainForm');
-  const formTypeInput = document.getElementById('formType');
-  const hiddenDateInput = document.getElementById('hiddenDate');
-  const hiddenTimeSlotInput = document.getElementById('hiddenTimeSlot');
+        let currentMode = 'contact'; // 'contact' or 'schedule'
 
-  let currentMode = 'contact'; // 'contact' or 'schedule'
+        function setMode(mode) {
+            currentMode = mode;
+            formTypeInput.value = (mode === 'contact') ? 'message' : 'schedule';
+            if (mode === 'contact') {
+                contactModeBtn.classList.add('active');
+                scheduleModeBtn.classList.remove('active');
+                messageArea.classList.remove('hidden');
+                scheduleArea.classList.add('hidden');
+                submitBtn.textContent = 'Send Message';
+            } else {
+                contactModeBtn.classList.remove('active');
+                scheduleModeBtn.classList.add('active');
+                messageArea.classList.add('hidden');
+                scheduleArea.classList.remove('hidden');
+                submitBtn.textContent = 'Schedule a Call';
+            }
+        }
 
-  function setMode(mode) {
-    currentMode = mode;
-    formTypeInput.value = (mode === 'contact') ? 'message' : 'schedule';
-    if (mode === 'contact') {
-      contactModeBtn.classList.add('active');
-      scheduleModeBtn.classList.remove('active');
-      messageArea.classList.remove('hidden');
-      scheduleArea.classList.add('hidden');
-      submitBtn.textContent = 'Send Message';
-    } else {
-      contactModeBtn.classList.remove('active');
-      scheduleModeBtn.classList.add('active');
-      messageArea.classList.add('hidden');
-      scheduleArea.classList.remove('hidden');
-      submitBtn.textContent = 'Book a Call';
-    }
-  }
+        contactModeBtn.addEventListener('click', () => setMode('contact'));
+        scheduleModeBtn.addEventListener('click', () => setMode('schedule'));
 
-  contactModeBtn.addEventListener('click', () => setMode('contact'));
-  scheduleModeBtn.addEventListener('click', () => setMode('schedule'));
+        // Default
+        setMode('contact');
 
-  // default
-  setMode('contact');
+        // -----------------------------
+        // Searchable country selector (compact)
+        // -----------------------------
+        const countrySearch = document.getElementById('countrySearch');
+        const countryList = document.getElementById('countryList');
+        const countryCode = document.getElementById('countryCode');
+        const hiddenCountryCode = document.getElementById('hiddenCountryCode');
+        let allCountries = Array.from(countryList.children);
+        let selectedCountry = { name: 'Kenya', code: '+254' };
+        let focusedIndex = -1;
+        let isDropdownOpen = false;
+        let searchQuery = '';
 
-  // -----------------------------
-  // Searchable country selector (compact)
-  // -----------------------------
-  const countrySearch = document.getElementById('countrySearch');
-  const countryList = document.getElementById('countryList');
-  const countryCode = document.getElementById('countryCode');
-  const hiddenCountryCode = document.getElementById('hiddenCountryCode');
+        // Initialize default selection (Kenya)
+        function initCountryLabel() {
+            countrySearch.value = selectedCountry.name;
+            countryCode.value = selectedCountry.code;
+            hiddenCountryCode.value = selectedCountry.code;
+            updateDropdown();
+        }
+        initCountryLabel();
 
-  countrySearch.addEventListener('click', (e) => {
-    e.stopPropagation();
-    countryList.classList.toggle('hidden');
-    countrySearch.setAttribute('aria-expanded', countryList.classList.contains('hidden') ? 'false' : 'true');
-  });
-
-  countryList.querySelectorAll('li').forEach(li => {
-    li.addEventListener('click', () => {
-      const code = li.dataset.code || li.getAttribute('data-code');
-      const label = li.textContent.trim().split('(')[0].trim(); // "KE +254"
-      countrySearch.value = label;
-      countryCode.value = code;
-      hiddenCountryCode.value = code;
-      countryList.classList.add('hidden');
-      countrySearch.setAttribute('aria-expanded', 'false');
-    });
-  });
-
-  // close dropdown on outside click
-  document.addEventListener('click', (e) => {
-    if (!countrySearch.parentElement.contains(e.target)) {
-      countryList.classList.add('hidden');
-      countrySearch.setAttribute('aria-expanded', 'false');
-    }
-  });
-
-  // -----------------------------
-  // Calendar & Time Slots
-  // -----------------------------
-  const calendarDaysEl = document.getElementById('calendarDays');
-  const calendarTitleEl = document.getElementById('calendarTitle');
-  const prevMonthBtn = document.getElementById('prevMonthBtn');
-  const nextMonthBtn = document.getElementById('nextMonthBtn');
-
-  const selectedDateDisplay = document.getElementById('selectedDateDisplay');
-  const timeSlotsContainer = document.getElementById('timeSlots');
-
-  // calendar state
-  let today = new Date();
-  let displayMonth = today.getMonth();
-  let displayYear = today.getFullYear();
-  let selectedDate = null;
-  let selectedTime = null;
-
-  function startOfDay(d) {
-    return new Date(d.getFullYear(), d.getMonth(), d.getDate());
-  }
-
-  function renderCalendar(month, year) {
-    calendarDaysEl.innerHTML = '';
-
-    const monthNames = ['January','February','March','April','May','June','July','August','September','October','November','December'];
-    calendarTitleEl.textContent = `${monthNames[month]} ${year}`;
-
-    const firstDayOfMonth = new Date(year, month, 1);
-    let firstWeekday = firstDayOfMonth.getDay(); // 0..6 (Sun..Sat)
-    let blanks = (firstWeekday === 0) ? 6 : (firstWeekday - 1);
-
-    for (let i = 0; i < blanks; i++) {
-      const emptyCell = document.createElement('div');
-      emptyCell.className = 'calendar-day disabled';
-      calendarDaysEl.appendChild(emptyCell);
-    }
-
-    const daysInMonth = new Date(year, month + 1, 0).getDate();
-
-    for (let d = 1; d <= daysInMonth; d++) {
-      const dt = new Date(year, month, d);
-      const cell = document.createElement('div');
-      cell.className = 'calendar-day';
-      cell.tabIndex = 0;
-      cell.textContent = d;
-
-      const isSunday = dt.getDay() === 0;
-      const isPast = startOfDay(dt) < startOfDay(today);
-
-      if (isPast || isSunday) {
-        cell.classList.add('disabled');
-      } else {
-        cell.addEventListener('click', () => {
-          selectedDate = dt;
-          calendarDaysEl.querySelectorAll('.calendar-day').forEach(c => c.classList.remove('selected'));
-          cell.classList.add('selected');
-
-          const displayText = `${dt.toLocaleDateString(undefined, { weekday: 'long', month: 'long', day: 'numeric' })}`;
-          selectedDateDisplay.textContent = displayText;
-          hiddenDateInput.value = dt.toISOString().slice(0, 10); // yyyy-mm-dd
-          populateTimeSlotsForDate(dt);
+        // Toggle dropdown on click
+        countrySearch.addEventListener('click', (e) => {
+            e.stopPropagation();
+            toggleDropdown(!isDropdownOpen);
+            if (isDropdownOpen) {
+                countrySearch.focus();
+            }
         });
-      }
 
-      calendarDaysEl.appendChild(cell);
-    }
+        function toggleDropdown(show) {
+            isDropdownOpen = show;
+            countryList.classList.toggle('hidden', !show);
+            countrySearch.setAttribute('aria-expanded', show);
+            if (show) {
+                updateDropdown();
+                focusedIndex = allCountries.findIndex(li => li.dataset.code === selectedCountry.code);
+                updateFocus();
+            } else {
+                searchQuery = '';
+            }
+        }
 
-    const totalCells = calendarDaysEl.children.length;
-    const required = 42;
-    for (let i = totalCells; i < required; i++) {
-      const emptyCell = document.createElement('div');
-      emptyCell.className = 'calendar-day disabled';
-      calendarDaysEl.appendChild(emptyCell);
-    }
-  }
+        function updateDropdown() {
+            countryList.innerHTML = '';
+            let filteredCountries = allCountries;
 
-  prevMonthBtn.addEventListener('click', () => {
-    displayMonth--;
-    if (displayMonth < 0) { displayMonth = 11; displayYear--; }
-    renderCalendar(displayMonth, displayYear);
-  });
-  nextMonthBtn.addEventListener('click', () => {
-    displayMonth++;
-    if (displayMonth > 11) { displayMonth = 0; displayYear++; }
-    renderCalendar(displayMonth, displayYear);
-  });
+            if (searchQuery) {
+                filteredCountries = allCountries.filter(li => 
+                    li.dataset.name.toLowerCase().startsWith(searchQuery.toLowerCase())
+                );
+            }
 
-  function populateTimeSlotsForDate(date) {
-    timeSlotsContainer.innerHTML = '';
-    selectedTime = null;
-    hiddenTimeSlotInput.value = '';
+            // Ensure Kenya is first if it matches
+            const kenya = filteredCountries.find(li => li.dataset.code === '+254');
+            const others = filteredCountries.filter(li => li.dataset.code !== '+254');
+            filteredCountries = kenya ? [kenya, ...others] : others;
 
-    const dow = date.getDay();
-    let slots = [];
+            if (filteredCountries.length === 0) {
+                const noResult = document.createElement('li');
+                noResult.className = 'py-2 px-3 text-gray-500';
+                noResult.textContent = 'No countries found';
+                countryList.appendChild(noResult);
+            } else {
+                filteredCountries.forEach((li, index) => {
+                    const clone = li.cloneNode(true);
+                    clone.tabIndex = 0;
+                    clone.setAttribute('aria-selected', li.dataset.code === selectedCountry.code);
+                    clone.addEventListener('click', () => {
+                        selectCountry(li.dataset.name, li.dataset.code);
+                    });
+                    clone.addEventListener('keydown', (e) => {
+                        if (e.key === 'Enter') {
+                            selectCountry(li.dataset.name, li.dataset.code);
+                        }
+                    });
+                    countryList.appendChild(clone);
+                });
+            }
 
-    if (dow >= 1 && dow <= 5) {
-      let start = new Date(date);
-      start.setHours(9, 0, 0, 0);
-      let endOfDay = new Date(date);
-      endOfDay.setHours(17, 0, 0, 0);
-      while (start < endOfDay) {
-        let end = new Date(start.getTime() + 45 * 60000);
-        if (end > endOfDay) break;
-        slots.push({ start: new Date(start), end: new Date(end) });
-        start = end;
-      }
-    } else if (dow === 6) {
-      let start = new Date(date);
-      start.setHours(9, 0, 0, 0);
-      let endOfDay = new Date(date);
-      endOfDay.setHours(12, 0, 0, 0);
-      while (start < endOfDay) {
-        let end = new Date(start.getTime() + 45 * 60000);
-        if (end > endOfDay) break;
-        slots.push({ start: new Date(start), end: new Date(end) });
-        start = end;
-      }
-    } else {
-      selectedDateDisplay.textContent = 'Closed on Sundays';
-      return;
-    }
+            countryList.setAttribute('aria-label', `Country codes, ${filteredCountries.length} results`);
+        }
 
-    if (slots.length === 0) {
-      selectedDateDisplay.textContent = 'No available times for this date.';
-      return;
-    }
+        function selectCountry(name, code) {
+            selectedCountry = { name, code };
+            countrySearch.value = name;
+            countryCode.value = code;
+            hiddenCountryCode.value = code;
+            toggleDropdown(false);
+            focusedIndex = -1;
+            searchQuery = '';
+        }
 
-    slots.forEach(slot => {
-      const label = `${formatTime(slot.start)} - ${formatTime(slot.end)}`;
-      const startTime = slot.start.toTimeString().slice(0, 8);
-      const btn = document.createElement('button');
-      btn.type = 'button';
-      btn.className = 'time-slot';
-      btn.textContent = label;
-      btn.addEventListener('click', () => {
-        timeSlotsContainer.querySelectorAll('.time-slot').forEach(s => s.classList.remove('selected'));
-        btn.classList.add('selected');
-        selectedTime = startTime;
-        hiddenTimeSlotInput.value = startTime;
-      });
-      timeSlotsContainer.appendChild(btn);
-    });
-  }
+        function updateFocus() {
+            const items = Array.from(countryList.children).filter(li => !li.textContent.includes('No countries found'));
+            if (items.length === 0) return;
 
-  function formatTime(d) {
-    return d.toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' });
-  }
+            focusedIndex = Math.max(0, Math.min(focusedIndex, items.length - 1));
+            items.forEach((item, index) => {
+                item.classList.toggle('focused', index === focusedIndex);
+                if (index === focusedIndex) {
+                    item.scrollIntoView({ block: 'nearest' });
+                }
+            });
+        }
 
-  renderCalendar(displayMonth, displayYear);
+        // Close dropdown on outside click
+        document.addEventListener('click', (e) => {
+            if (!countrySearch.parentElement.contains(e.target)) {
+                toggleDropdown(false);
+            }
+        });
 
-  // -----------------------------
-  // CSRF Token helper for Django
-  // -----------------------------
-  function getCSRFToken() {
-    const name = 'csrftoken';
-    const cookies = document.cookie.split(';');
-    for (let cookie of cookies) {
-      const c = cookie.trim();
-      if (c.startsWith(name + '=')) return decodeURIComponent(c.slice(name.length + 1));
-    }
-    return '';
-  }
+        // Handle keypresses for filtering when dropdown is open
+        document.addEventListener('keydown', (e) => {
+            if (!isDropdownOpen) return;
 
-  // -----------------------------
-  // Form submit handling (AJAX)
-  // -----------------------------
-  const confirmationModal = document.getElementById('confirmationModal');
-  const confirmationMessageEl = document.getElementById('confirmationMessage');
-  const closeModalBtn = document.getElementById('closeModal');
+            if (e.key === 'Escape') {
+                toggleDropdown(false);
+                searchQuery = '';
+                return;
+            }
 
-  form.addEventListener('submit', async (ev) => {
-    ev.preventDefault();
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                const items = Array.from(countryList.children).filter(li => !li.textContent.includes('No countries found'));
+                if (focusedIndex >= 0 && items[focusedIndex]) {
+                    selectCountry(items[focusedIndex].dataset.name, items[focusedIndex].dataset.code);
+                }
+                return;
+            }
 
-    if (formTypeInput.value === 'message') {
-      const first = document.getElementById('firstName').value.trim();
-      const email = document.getElementById('email').value.trim();
-      const message = document.getElementById('message').value.trim();
-      if (!first || !email || !message) {
-        alert('Please fill name, email and message.');
-        return;
-      }
-    } else {
-      if (!hiddenDateInput.value || !hiddenTimeSlotInput.value) {
-        alert('Please select a date and time for your call.');
-        return;
-      }
-    }
+            if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+                e.preventDefault();
+                const items = Array.from(countryList.children).filter(li => !li.textContent.includes('No countries found'));
+                if (items.length === 0) return;
 
-    const formData = new FormData(form);
-    try {
-      const response = await fetch(form.action, {
-        method: 'POST',
-        body: formData,
-        headers: {
-          'X-Requested-With': 'XMLHttpRequest',
-          'X-CSRFToken': getCSRFToken()
-        },
-        credentials: 'same-origin'
-      });
+                focusedIndex = e.key === 'ArrowDown'
+                    ? Math.min(focusedIndex + 1, items.length - 1)
+                    : Math.max(focusedIndex - 1, 0);
+                updateFocus();
+                return;
+            }
 
-      if (response.ok) {
-        openModal('✅ Thank you — your submission was received. We will get back to you shortly.');
-        form.reset();
-      } else {
-        openModal('⚠️ Something went wrong. Please try again later.');
-      }
-    } catch (err) {
-      console.error(err);
-      openModal('⚠️ Error sending request. Please check your connection.');
-    }
-  });
+            if (/^[a-zA-Z]$/.test(e.key)) {
+                e.preventDefault();
+                searchQuery += e.key;
+                updateDropdown();
+                focusedIndex = 0;
+                updateFocus();
+            } else if (e.key === 'Backspace') {
+                e.preventDefault();
+                searchQuery = searchQuery.slice(0, -1);
+                updateDropdown();
+                focusedIndex = 0;
+                updateFocus();
+            }
+        });
 
-  function openModal(message) {
-    confirmationMessageEl.textContent = message;
-    confirmationModal.classList.remove('hidden');
-    confirmationModal.classList.add('flex');
-    setTimeout(closeModal, 6000);
-  }
+        // -----------------------------
+        // Calendar & Time Slots
+        // -----------------------------
+        const calendarDaysEl = document.getElementById('calendarDays');
+        const calendarTitleEl = document.getElementById('calendarTitle');
+        const prevMonthBtn = document.getElementById('prevMonthBtn');
+        const nextMonthBtn = document.getElementById('nextMonthBtn');
+        const selectedDateDisplay = document.getElementById('selectedDateDisplay');
+        const timeSlotsContainer = document.getElementById('timeSlots');
 
-  function closeModal() {
-    confirmationModal.classList.add('hidden');
-    confirmationModal.classList.remove('flex');
-  }
-  closeModalBtn.addEventListener('click', closeModal);
+        // Calendar state
+        let today = new Date();
+        let displayMonth = today.getMonth();
+        let displayYear = today.getFullYear();
+        let selectedDate = null;
+        let selectedTime = null;
 
-  // -----------------------------
-  // Accessibility nicety: ESC closes country list
-  // -----------------------------
-  document.addEventListener('keydown', (ev) => {
-    if (ev.key === 'Escape') {
-      countryList.classList.add('hidden');
-    }
-  });
+        function startOfDay(d) {
+            return new Date(d.getFullYear(), d.getMonth(), d.getDate());
+        }
 
-  // -----------------------------
-  // Initialize country label
-  // -----------------------------
-  (function initCountryLabel() {
-    const code = document.getElementById('countryCode').value || '+254';
-    const li = Array.from(countryList.children).find(x => x.dataset.code === code);
-    if (li) countrySearch.value = li.textContent.split('(')[0].trim();
-    hiddenCountryCode.value = code;
-  })();
+        function renderCalendar(month, year) {
+            calendarDaysEl.innerHTML = '';
 
-  form.addEventListener('submit', async function(e) {
-  e.preventDefault();
+            const monthNames = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+            calendarTitleEl.textContent = `${monthNames[month]} ${year}`;
 
-  const formData = new FormData(form);
-  const csrfToken = getCSRFToken();
+            const firstDayOfMonth = new Date(year, month, 1);
+            let firstWeekday = firstDayOfMonth.getDay(); // 0..6 (Sun..Sat)
+            let blanks = (firstWeekday === 0) ? 6 : (firstWeekday - 1);
 
-  const response = await fetch(form.action, {
-    method: 'POST',
-    body: formData,
-    headers: {
-      'X-CSRFToken': csrfToken
-    },
-  });
+            for (let i = 0; i < blanks; i++) {
+                const emptyCell = document.createElement('div');
+                emptyCell.className = 'calendar-day disabled';
+                calendarDaysEl.appendChild(emptyCell);
+            }
 
-  if (response.ok) {
-    document.getElementById('confirmationTitle').textContent = 'Success';
-    document.getElementById('confirmationMessage').textContent = 'Your message has been sent successfully.';
-    document.getElementById('confirmationModal').classList.remove('hidden');
-  } else {
-    document.getElementById('confirmationTitle').textContent = 'Error';
-    document.getElementById('confirmationMessage').textContent = 'Something went wrong. Please try again.';
-    document.getElementById('confirmationModal').classList.remove('hidden');
-  }
-});
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
 
-</script>
+            for (let d = 1; d <= daysInMonth; d++) {
+                const dt = new Date(year, month, d);
+                const cell = document.createElement('div');
+                cell.className = 'calendar-day';
+                cell.tabIndex = 0;
+                cell.textContent = d;
 
+                const isSunday = dt.getDay() === 0;
+                const isPast = startOfDay(dt) < startOfDay(today);
 
-</body>
-</html>
+                if (isPast || isSunday) {
+                    cell.classList.add('disabled');
+                } else {
+                    cell.addEventListener('click', () => {
+                        selectedDate = dt;
+                        calendarDaysEl.querySelectorAll('.calendar-day').forEach(c => c.classList.remove('selected'));
+                        cell.classList.add('selected');
+
+                        const displayText = `${dt.toLocaleDateString(undefined, { weekday: 'long', month: 'long', day: 'numeric' })}`;
+                        selectedDateDisplay.textContent = displayText;
+                        hiddenDateInput.value = dt.toISOString().slice(0, 10); // yyyy-mm-dd
+                        populateTimeSlotsForDate(dt);
+                    });
+                }
+
+                calendarDaysEl.appendChild(cell);
+            }
+
+            const totalCells = calendarDaysEl.children.length;
+            const required = 42;
+            for (let i = totalCells; i < required; i++) {
+                const emptyCell = document.createElement('div');
+                emptyCell.className = 'calendar-day disabled';
+                calendarDaysEl.appendChild(emptyCell);
+            }
+        }
+
+        prevMonthBtn.addEventListener('click', () => {
+            displayMonth--;
+            if (displayMonth < 0) { displayMonth = 11; displayYear--; }
+            renderCalendar(displayMonth, displayYear);
+        });
+        nextMonthBtn.addEventListener('click', () => {
+            displayMonth++;
+            if (displayMonth > 11) { displayMonth = 0; displayYear++; }
+            renderCalendar(displayMonth, displayYear);
+        });
+
+        function populateTimeSlotsForDate(date) {
+            timeSlotsContainer.innerHTML = '';
+            selectedTime = null;
+            hiddenTimeSlotInput.value = '';
+
+            const dow = date.getDay();
+            let slots = [];
+
+            if (dow >= 1 && dow <= 5) {
+                let start = new Date(date);
+                start.setHours(9, 0, 0, 0);
+                let endOfDay = new Date(date);
+                endOfDay.setHours(17, 0, 0, 0);
+                while (start < endOfDay) {
+                    let end = new Date(start.getTime() + 45 * 60000);
+                    if (end > endOfDay) break;
+                    slots.push({ start: new Date(start), end: new Date(end) });
+                    start = end;
+                }
+            } else if (dow === 6) {
+                let start = new Date(date);
+                start.setHours(9, 0, 0, 0);
+                let endOfDay = new Date(date);
+                endOfDay.setHours(12, 0, 0, 0);
+                while (start < endOfDay) {
+                    let end = new Date(start.getTime() + 45 * 60000);
+                    if (end > endOfDay) break;
+                    slots.push({ start: new Date(start), end: new Date(end) });
+                    start = end;
+                }
+            } else {
+                selectedDateDisplay.textContent = 'Closed on Sundays';
+                return;
+            }
+
+            if (slots.length === 0) {
+                selectedDateDisplay.textContent = 'No available times for this date.';
+                return;
+            }
+
+            slots.forEach(slot => {
+                const label = `${formatTime(slot.start)} - ${formatTime(slot.end)}`;
+                const startTime = slot.start.toTimeString().slice(0, 8);
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.className = 'time-slot';
+                btn.textContent = label;
+                btn.addEventListener('click', () => {
+                    timeSlotsContainer.querySelectorAll('.time-slot').forEach(s => s.classList.remove('selected'));
+                    btn.classList.add('selected');
+                    selectedTime = startTime;
+                    hiddenTimeSlotInput.value = startTime;
+                });
+                timeSlotsContainer.appendChild(btn);
+            });
+        }
+
+        function formatTime(d) {
+            return d.toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' });
+        }
+
+        renderCalendar(displayMonth, displayYear);
+
+        // -----------------------------
+        // CSRF Token helper for Django
+        // -----------------------------
+        function getCSRFToken() {
+            const name = 'csrftoken';
+            const cookies = document.cookie.split(';');
+            for (let cookie of cookies) {
+                const c = cookie.trim();
+                if (c.startsWith(name + '=')) return decodeURIComponent(c.slice(name.length + 1));
+            }
+            return '';
+        }
+
+        // -----------------------------
+        // Form submit handling (AJAX)
+        // -----------------------------
+        const confirmationModal = document.getElementById('confirmationModal');
+        const confirmationMessageEl = document.getElementById('confirmationMessage');
+        const closeModalBtn = document.getElementById('closeModal');
+
+        form.addEventListener('submit', async (ev) => {
+            ev.preventDefault();
+
+            if (formTypeInput.value === 'message') {
+                const first = document.getElementById('firstName').value.trim();
+                const email = document.getElementById('email').value.trim();
+                const message = document.getElementById('message').value.trim();
+                if (!first || !email || !message) {
+                    alert('Please fill name, email, and message.');
+                    return;
+                }
+            } else {
+                if (!hiddenDateInput.value || !hiddenTimeSlotInput.value) {
+                    alert('Please select a date and time for your call.');
+                    return;
+                }
+            }
+
+            const formData = new FormData(form);
+            try {
+                const response = await fetch(form.action, {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'X-CSRFToken': getCSRFToken()
+                    },
+                    credentials: 'same-origin'
+                });
+
+                if (response.ok) {
+                    openModal('✅ Thank you — your submission was received. We will get back to you shortly.');
+                    form.reset();
+                    initCountryLabel(); // Reset country selector to Kenya
+                } else {
+                    openModal('⚠️ Something went wrong. Please try again later.');
+                }
+            } catch (err) {
+                console.error(err);
+                openModal('⚠️ Error sending request. Please check your connection.');
+            }
+        });
+
+        function openModal(message) {
+            confirmationMessageEl.textContent = message;
+            confirmationModal.classList.remove('hidden');
+            confirmationModal.classList.add('flex');
+            setTimeout(closeModal, 6000);
+        }
+
+        function closeModal() {
+            confirmationModal.classList.add('hidden');
+            confirmationModal.classList.remove('flex');
+        }
+        closeModalBtn.addEventListener('click', closeModal);
+    </script>
+{% endblock %}

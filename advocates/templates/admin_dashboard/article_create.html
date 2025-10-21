@@ -6,7 +6,7 @@
 {% block dashboard_content %}
 <div class="p-6 max-w-5xl mx-auto">
     <!-- Page Title -->
-    <h1 class="text-3xl font-extrabold text-blue-900 mb-8 border-b-4 border-amber-500 inline-block pb-2">
+    <h1 class="text-3xl font-extrabold text-blue-900 mb-8 border-b-4 border-amber-500 inline-block pb-2 font-serif">
         ✍️ Write a New Blog
     </h1>
 
@@ -18,74 +18,93 @@
         <form id="article-form" method="POST" enctype="multipart/form-data" class="space-y-8">
             {% csrf_token %}
 
-            <!-- Title -->
+            <!-- Content Type -->
             <div>
-                {{ form.title.label_tag }}
-                {{ form.title }}
-                {% if form.title.errors %}
-                    <p class="text-sm text-red-600 mt-1">{{ form.title.errors }}</p>
-                {% endif %}
+                <label for="type" class="block text-sm font-medium text-gray-700 font-sans">Content Type</label>
+                <select name="type" id="type" required class="mt-1 block w-full border border-gray-300 rounded-lg p-2 font-sans">
+                    <option value="publication">Publication</option>
+                    <option value="article">Article</option>
+                    <option value="news">News</option>
+                    <option value="quote">Quote</option>
+                </select>
+            </div>
+
+            <!-- Title -->
+            <div id="title-field" class="article-field">
+                <label for="title" class="block text-sm font-medium text-gray-700 font-sans">Title</label>
+                <input type="text" name="title" id="title" class="mt-1 block w-full border border-gray-300 rounded-lg p-2 font-sans">
             </div>
 
             <!-- Content -->
             <div>
-                {{ form.content.label_tag }}
-                {{ form.content }}
-                {% if form.content.errors %}
-                    <p class="text-sm text-red-600 mt-1">{{ form.content.errors }}</p>
-                {% endif %}
+                <label for="content" class="block text-sm font-medium text-gray-700 font-sans">Content</label>
+                <textarea name="content" id="content" rows="10" class="mt-1 block w-full border border-gray-300 rounded-lg p-2 font-sans"></textarea>
             </div>
 
             <!-- Category -->
-            <div>
-                {{ form.category.label_tag }}
-                {{ form.category }}
-                {% if form.category.errors %}
-                    <p class="text-sm text-red-600 mt-1">{{ form.category.errors }}</p>
-                {% endif %}
+            <div id="category-field" class="article-field">
+                <label for="category" class="block text-sm font-medium text-gray-700 font-sans">Category</label>
+                <select name="category" id="category" class="mt-1 block w-full border border-gray-300 rounded-lg p-2 font-sans">
+                    {% for id, name in categories %}
+                        <option value="{{ id }}">{{ name }}</option>
+                    {% endfor %}
+                </select>
             </div>
 
             <!-- Image -->
-            <div>
-                {{ form.image.label_tag }}
-                {{ form.image }}
+            <div id="image-field" class="article-field">
+                <label for="image" class="block text-sm font-medium text-gray-700 font-sans">Image</label>
+                <input type="file" name="image" id="image" accept="image/*" class="mt-1 block w-full border border-gray-300 rounded-lg p-2 font-sans">
                 <p class="mt-2 text-xs text-gray-400">Upload a high-quality image for the blog header.</p>
-                {% if form.image.errors %}
-                    <p class="text-sm text-red-600 mt-1">{{ form.image.errors }}</p>
-                {% endif %}
             </div>
 
             <!-- Author -->
             <div>
-                {{ form.author.label_tag }}
-                {{ form.author }}
-                {% if form.author.errors %}
-                    <p class="text-sm text-red-600 mt-1">{{ form.author.errors }}</p>
-                {% endif %}
+                <label for="author" class="block text-sm font-medium text-gray-700 font-sans">Author</label>
+                <input type="text" name="author" id="author" required class="mt-1 block w-full border border-gray-300 rounded-lg p-2 font-sans">
             </div>
 
             <!-- Submit -->
             <div class="pt-6 flex justify-end">
                 <button type="submit"
-                        class="px-8 py-3 bg-blue-900 text-white font-semibold rounded-xl shadow-md hover:bg-amber-500 hover:shadow-lg transition-all duration-300">
-                    ✅ Publish Article
+                        class="px-8 py-3 bg-blue-900 text-white font-semibold rounded-xl shadow-md hover:bg-amber-500 hover:shadow-lg transition-all duration-300 font-serif">
+                    ✅ Publish Content
                 </button>
             </div>
         </form>
     </div>
 </div>
 
-<!-- AJAX Script -->
+<!-- JavaScript for Dynamic Form and AJAX -->
 <script>
 document.addEventListener("DOMContentLoaded", function() {
     const form = document.getElementById("article-form");
     const msgDiv = document.getElementById("form-message");
+    const contentTypeSelect = document.getElementById("type");
+    const titleField = document.getElementById("title-field");
+    const categoryField = document.getElementById("category-field");
+    const imageField = document.getElementById("image-field");
 
-    form.addEventListener("submit", function(e){
+    // Show/hide fields based on content type
+    function toggleFields() {
+        const isQuote = contentTypeSelect.value === "quote";
+        titleField.style.display = isQuote ? "none" : "block";
+        categoryField.style.display = isQuote ? "none" : "block";
+        imageField.style.display = isQuote ? "none" : "block";
+        // Set required attributes
+        document.getElementById("title").required = !isQuote;
+        document.getElementById("category").required = !isQuote;
+        document.getElementById("content").required = true;
+    }
+
+    contentTypeSelect.addEventListener("change", toggleFields);
+    toggleFields(); // Initial check
+
+    form.addEventListener("submit", function(e) {
         e.preventDefault();
         let formData = new FormData(form);
 
-        fetch("{% url 'article_create' %}", {
+        fetch("{% url 'articles:write_blog' %}", {
             method: "POST",
             headers: {
                 "X-Requested-With": "XMLHttpRequest",
@@ -98,17 +117,17 @@ document.addEventListener("DOMContentLoaded", function() {
             msgDiv.className = "";
             msgDiv.textContent = "";
 
-            if(data.success){
+            if (data.success) {
                 msgDiv.textContent = data.message;
                 msgDiv.className = "p-4 mb-6 rounded-lg bg-green-100 text-green-800";
                 msgDiv.classList.remove("hidden");
                 form.reset();
-                setTimeout(() => msgDiv.classList.add("hidden"), 3000);
+                setTimeout(() => {
+                    msgDiv.classList.add("hidden");
+                    window.location.href = data.redirect_url;
+                }, 2000);
             } else {
-                let errorsText = "";
-                for(let field in data.errors){
-                    data.errors[field].forEach(err => errorsText += err.message + " ");
-                }
+                let errorsText = data.message || "Please fill in all required fields.";
                 msgDiv.textContent = errorsText;
                 msgDiv.className = "p-4 mb-6 rounded-lg bg-red-100 text-red-800";
                 msgDiv.classList.remove("hidden");

@@ -1,30 +1,76 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>Unread Contact Message Reminder</title>
-<style>
-  body { font-family: Arial, sans-serif; color: #333; }
-  .container { max-width: 600px; margin: auto; padding: 20px; border: 1px solid #eee; border-radius: 10px; }
-  .header { font-size: 18px; font-weight: bold; color: #EF4444; margin-bottom: 10px; }
-  .content { margin-top: 10px; line-height: 1.5; }
-  .footer { margin-top: 20px; font-size: 12px; color: #999; }
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>{{ firm_name }} - Unread Contact Message Notification</title>
 </head>
-<body>
-<div class="container">
-    <div class="header">⚠️ Unread Contact Message</div>
-    <div class="content">
-        <p><strong>From:</strong> {{ contact.first_name }} {{ contact.last_name }}</p>
-        <p><strong>Email:</strong> {{ contact.email }}</p>
-        <p><strong>Phone:</strong> {{ contact.phone_number }}</p>
-        <p><strong>Subject:</strong> {{ contact.subject }}</p>
-        <p><strong>Message:</strong><br>{{ contact.message|linebreaks }}</p>
-        <p>This message has not been read for over 48 hours.</p>
-    </div>
-    <div class="footer">
-        Sent by {{ firm_name }} Admin System
-    </div>
-</div>
+<body style="margin: 0; padding: 0; font-family: 'Montserrat', sans-serif; color: #333; background-color: #f4f4f4; line-height: 1.5;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="max-width: 600px; margin: 20px auto; background-color: #ffffff; border: 1px solid #dddddd; border-radius: 8px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);">
+    <!-- Header -->
+    <tr>
+      <td style="background-color: #182942; padding: 25px 30px; text-align: center; border-bottom: 3px solid #ebd19e;">
+        <img src="{{ site_url }}/static/images/muguna-oyile-logo.png" alt="Muguna Oyile Law Firm Logo" style="max-width: 180px; height: auto; display: block; margin: 0 auto 10px;">
+        <h2 style="font-family: 'Hoefler Text', serif; color: #ffffff; font-size: 24px; margin: 0; font-weight: 600; letter-spacing: 0.5px;">Unread Contact Message Notification</h2>
+      </td>
+    </tr>
+    <!-- Content -->
+    <tr>
+      <td style="padding: 35px 40px; background-color: #ffffff; color: #333; font-size: 15px;">
+        <p style="margin: 0 0 20px; font-size: 15px; font-weight: 600; color: #0f1b2e;">A contact message has been pending review for over 48 hours:</p>
+
+        <!-- Details -->
+        <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #f4f4f4; padding: 20px; border-radius: 6px; border-left: 4px solid #ebd19e; margin: 25px 0;">
+          <tr>
+            <td style="margin-bottom: 12px; font-size: 14px; color: #333;">
+              <span style="font-weight: 600; color: #314769; display: inline-block; width: 120px;">From:</span> {{ contact.first_name }} {{ contact.last_name }}
+            </td>
+          </tr>
+          <tr>
+            <td style="margin-bottom: 12px; font-size: 14px; color: #333;">
+              <span style="font-weight: 600; color: #314769; display: inline-block; width: 120px;">Email:</span> {{ contact.email }}
+            </td>
+          </tr>
+          <tr>
+            <td style="margin-bottom: 12px; font-size: 14px; color: #333;">
+              <span style="font-weight: 600; color: #314769; display: inline-block; width: 120px;">Phone:</span> {{ contact.phone_number }}
+            </td>
+          </tr>
+          <tr>
+            <td style="margin-bottom: 12px; font-size: 14px; color: #333;">
+              <span style="font-weight: 600; color: #314769; display: inline-block; width: 120px;">Subject:</span> {{ contact.subject }}
+            </td>
+          </tr>
+          <tr>
+            <td style="margin-bottom: 12px; font-size: 14px; color: #333; line-height: 1.6;">
+              <span style="font-weight: 600; color: #314769; display: inline-block; width: 120px;">Message:</span><br>{{ contact.message|linebreaks }}
+            </td>
+          </tr>
+        </table>
+
+        <p style="font-weight: 600; color: #a62828; margin: 20px 0; font-size: 15px;">Action Required: This message has not been reviewed for over 48 hours.</p>
+        <p style="margin: 0 0 20px; font-size: 15px;">Please access the admin dashboard to review and respond to this message promptly:</p>
+        <table width="100%" cellpadding="0" cellspacing="0">
+          <tr>
+            <td style="text-align: center;">
+              <a href="{{ admin_dashboard_url }}" style="display: inline-block; padding: 12px 24px; background-color: #223558; color: #ffffff; text-decoration: none; font-weight: 600; font-size: 14px; border-radius: 4px; margin: 20px 0;">Go to Admin Dashboard</a>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+    <!-- Footer -->
+    <tr>
+      <td style="background-color: #0f1b2e; color: #e9e9e9; text-align: center; padding: 20px 30px; font-size: 13px; border-top: 1px solid #4e5968;">
+        <p style="margin: 5px 0;">Sent by {{ firm_name }} Admin System</p>
+        <p style="margin: 5px 0;">
+          <a href="{{ site_url }}" style="color: #ebd19e; text-decoration: none;">www.mugunaoyilelaw.com</a> |
+          <a href="mailto:info@mugunaoyilelaw.com" style="color: #ebd19e; text-decoration: none;">info@mugunaoyilelaw.com</a> |
+          <a href="tel:+11234567890" style="color: #ebd19e; text-decoration: none;">+1 (123) 456-7890</a>
+        </p>
+      </td>
+    </tr>
+  </table>
 </body>
 </html>

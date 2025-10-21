@@ -1,31 +1,36 @@
-{% extends 'tnc-base.html' %}
+{% extends 'base.html' %}
 
 {% load static %}
 
 {% block content %}
-<div class="tm-header-container">
-  <header class="tm-section-header tm-centered-header">
-    <h1>Privacy Policy</h1>
-    <span class="tm-header-subtitle">Effective Date: July 18, 2025</span>
-  </header>
-</div>
+
+<div class="px-8 lg:px-12 py-8 text-center">
+                <h1 class="text-3xl lg:text-4xl font-bold text-gray-800">Privacy Policy</h1>
+                <div class="heading-deco" aria-hidden="true"></div>
+                <p class="text-gray-600 max-w-3xl mx-auto">
+                    Effective Date: October 2025
+                </p>
+            </div>
 
 <section class="section-padding bg-light">
   <div class="container">
     <div class="policy-section">
       <h2>1. Introduction</h2>
       <p>
-        At Muguna & Oyile Advocates, we are committed to safeguarding your privacy. This Privacy Policy outlines how we collect, use, disclose, and protect your personal information when you interact with our website, services, or products. By using our services, you consent to the practices described herein.
+        This Privacy Policy explains how <strong>Muguna & Oyile Advocates</strong> (“we”, “our”, “us”) collects, uses, and protects
+        your personal information when you visit our website or engage our legal services.
+        We are committed to safeguarding your privacy and ensuring compliance with the
+        <strong>Kenya Data Protection Act (2019)</strong> and international best practices.
       </p>
     </div>
 
     <div class="policy-section">
       <h2>2. Information We Collect</h2>
-      <p>We collect information to provide and improve our services. This includes:</p>
+      <p>We may collect and process the following information:</p>
       <ul>
-        <li><strong>Personal Information:</strong> Information you voluntarily provide, such as your name, email address, phone number, or billing details.</li>
-        <li><strong>Usage Data:</strong> Automatically collected data, including IP address, browser type, operating system, and pages visited.</li>
-        <li><strong>Cookies and Tracking Technologies:</strong> We use cookies to enhance user experience, analyze site performance, and deliver personalized content. You can manage cookie preferences through your browser settings.</li>
+        <li>Personal details you provide via our contact, feedback, or call scheduling forms (e.g., name, email, phone number, message content).</li>
+        <li>Information automatically collected when you browse our website (e.g., your browser type, IP address, and device type).</li>
+        <li>Any additional information you voluntarily provide when communicating with us.</li>
       </ul>
     </div>
 
@@ -33,72 +38,77 @@
       <h2>3. How We Use Your Information</h2>
       <p>Your information enables us to:</p>
       <ul>
-        <li>Deliver and maintain our services, including processing transactions and customer support.</li>
-        <li>Personalize your experience and improve our website functionality.</li>
-        <li>Send communications, such as service updates, newsletters, or promotional offers (with your consent).</li>
-        <li>Analyze usage trends to enhance our offerings.</li>
+        <li>Respond to your enquiries and schedule consultations.</li>
+        <li>Provide legal services or information you have requested.</li>
+        <li>Maintain website security and functionality.</li>
+        <li>Comply with legal and regulatory obligations.</li>
       </ul>
     </div>
 
     <div class="policy-section">
-      <h2>4. Sharing Your Information</h2>
-      <p>We do not sell your personal information. We may share it with:</p>
+      <h2>4. Legal Basis for Processing</h2>
+      <p>
+        We process your data based on your consent, the performance of a contract, or where processing is necessary
+        for compliance with a legal obligation or to protect our legitimate interests as a law firm.
+      </p>
+    </div>
+
+    <div class="policy-section">
+      <h2>5. Data Retention</h2>
+      <p>
+        We retain personal information only for as long as necessary to fulfil the purposes for which it was collected
+        or as required by law and professional standards. Once no longer needed, data is securely deleted or anonymised.
+      </p>
+    </div>
+
+    <div class="policy-section">
+      <h2>6. Data Sharing and Security</h2>
+      <p>
+        We do not sell or share personal data with third parties for marketing purposes. Your information may only be shared
+        with trusted service providers who assist in maintaining our website or IT systems, all of whom are bound by confidentiality obligations.
+      </p>
+      <p>
+        We implement appropriate technical and organisational measures to protect your information from unauthorised access, loss, or misuse.
+      </p>
+    </div>
+
+    <div class="policy-section">
+      <h2>7. Your Rights</h2>
+      <p>
+        Under the Kenya Data Protection Act, you have the right to:
+      </p>
       <ul>
-        <li><strong>Service Providers:</strong> Trusted third parties who assist with website operations, payment processing, or analytics, under strict confidentiality agreements.</li>
-        <li><strong>Legal Obligations:</strong> Authorities when required by law or to protect our rights.</li>
-        <li><strong>Business Transfers:</strong> In connection with a merger, acquisition, or sale of assets, with notice to you.</li>
+        <li>Access and request a copy of your personal data held by us.</li>
+        <li>Request correction or deletion of inaccurate or outdated information.</li>
+        <li>Withdraw consent for data processing (where applicable).</li>
+        <li>Lodge a complaint with the Office of the Data Protection Commissioner.</li>
       </ul>
     </div>
 
     <div class="policy-section">
-      <h2>5. Data Security</h2>
+      <h2>8. Cookies</h2>
       <p>
-        We implement industry-standard security measures, including encryption and access controls, to protect your information. However, no online system is entirely secure, and we cannot guarantee absolute security.
+        Our website uses only essential cookies required for security and functionality. We do not use analytics, advertising,
+        or tracking cookies. For more information, please see our
+        <a href="{% url 'cookie_policy' %}" class="text-primary">Cookie Policy</a>.
       </p>
     </div>
 
-    <div class="policy-section">
-      <h2>6. Your Rights and Choices</h2>
-      <p>
-        Depending on your jurisdiction, you may have rights to:
-      </p>
-      <ul>
-        <li>Access, correct, or delete your personal information.</li>
-        <li>Opt out of marketing communications.</li>
-        <li>Request data portability or restrict certain processing activities.</li>
-      </ul>
-      <p>
-        To exercise these rights, contact us at <a href="mailto:info@mugunaoyile.co.ke">info@mugunaoyile.co.ke</a>.
-      </p>
-    </div>
-
-    <div class="policy-section">
-      <h2>7. Third-Party Links</h2>
-      <p>
-        Our website may contain links to third-party sites. We are not responsible for their privacy practices or content. Please review their policies before engaging with them.
-      </p>
-    </div>
-
-    <div class="policy-section">
-      <h2>8. Changes to This Policy</h2>
-      <p>
-        We may update this Privacy Policy to reflect changes in our practices or legal requirements. Updates will be posted on this page with a revised "Effective Date." We encourage you to review this policy periodically.
-      </p>
-    </div>
-    
     <div class="text-center">
-      <h2>Contact Us</h2>
+      <h2 class="text-2xl font-semibold">Contact Us</h2>
+      <div class="w-16 h-1 bg-[#ebd19e] mx-auto mt-2 rounded-full"></div> <br>
       <p>
-        For questions or concerns about this Privacy Policy, please reach out to us:
+        If you have any questions or concerns regarding this Privacy Policy or how your information is handled,
+        please contact us at:
       </p>
       <p>
         <strong>Muguna & Oyile Advocates</strong><br>
         Email: <a href="mailto:info@mugunaoyile.co.ke">info@mugunaoyile.co.ke</a><br>
-        Phone: +254-746-152650<br>
-        Address: 24th Floor, Britam Towers, Upper Hill, Nairobi
+        Address: 24th Floor, Britam Towers, Upper Hill, Hospital Road
       </p>
+      <br>
       <p>
-        <a href="{% url 'contact' %}" class="btn btn-primary">Contact</a>
+        <a href="{% url 'contact' %}" class="btn btn-primary">CONTACT US</a>
       </p>
     </div>
   </div>

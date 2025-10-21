@@ -4,7 +4,10 @@
 {% block title %}Dispute Resolution | Muguna & Oyile{% endblock %}
 
 {% block content %}
-    <div class="hero-section w-full relative">
+    <div class="hero-section w-full relative"
+         style="background-image: url('https://i.postimg.cc/d0S3bphB/Create-a-realistic-background-image-for-a-law-firm-s-Dispute-Resolution-webpage-Depict-a-modern-cou.jpg');
+                background-size: cover;
+                background-position: center;">
         <div class="overlay"></div>
 
         <!-- Adaptive Content Box -->
@@ -22,9 +25,10 @@
                 Over the years, we have built and maintained an impressive track record of success, positioning us as the firm of choice for clients seeking representation in complex and high-stakes litigation and whether dealing with cross-border disputes, employment and labor disputes, commercial conflicts, or intricate arbitration proceedings, we are committed to providing solutions that are not only legally sound but also practical and result-oriented, serving the interests of our clients both regionally and globally.
             </p>
 
-            <button class="bg-slate-800 text-white font-semibold py-3 px-8 rounded-full hover:bg-slate-700 transition-colors duration-300 shadow-md">
-                CONTACT US
-            </button>
+            <a href="{% url 'contact' %}" 
+                class="inline-block bg-slate-800 text-white font-semibold py-3 px-8 rounded-full hover:bg-slate-700 transition-colors duration-300 shadow-md">
+                    CONTACT US
+            </a>
         </div>
     </div>
 {% endblock %}

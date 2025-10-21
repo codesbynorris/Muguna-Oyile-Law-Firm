@@ -9,11 +9,12 @@ from django.conf import settings
 from django.contrib.auth import update_session_auth_hash, logout
 from django.contrib.auth.forms import PasswordChangeForm
 from datetime import timedelta, datetime
+from django.contrib.admin.views.decorators import staff_member_required
 import json
 from django.views.decorators.csrf import csrf_exempt
 from django.core.mail import send_mail
 from django.conf import settings
-from .models import Notification
+from .models import Feedback, Notification
 
 from advocates.forms import ArticleForm, ContactMessageForm, ScheduledCallForm
 from .models import (
@@ -108,97 +109,12 @@ def dashboard_home(request):
 @login_required
 @user_passes_test(admin_required)
 def contacts_list(request):
-    contact_form = ContactMessageForm()
-    call_form = ScheduledCallForm()
-
-    if request.method == "POST":
-        form_type = request.POST.get("form_type")
-
-        # ---------------------------
-        # Contact Message Form
-        # ---------------------------
-        if form_type == "message":
-            contact_form = ContactMessageForm(request.POST)
-            if contact_form.is_valid():
-                contact = contact_form.save(commit=False)
-                contact.is_read = False
-                contact.is_red_flag = False
-                contact.save()
-
-                # Auto red flag if older than 48h
-                if contact.created_at <= timezone.now() - timedelta(hours=48):
-                    contact.is_red_flag = True
-                    contact.save()
-
-                # Email to admin
-                send_html_email(
-                    subject=f"📩 New Contact Message - {contact.subject}",
-                    template="emails/contact_admin.html",
-                    context={"contact": contact, "firm_name": "Law Firm"},
-                    to_email=settings.CONTACT_RECEIVER_EMAIL,
-                )
-
-                # Email to client
-                send_html_email(
-                    subject="✅ We received your message",
-                    template="emails/contact_user.html",
-                    context={"contact": contact, "firm_name": "Law Firm"},
-                    to_email=contact.email,
-                )
-
-                messages.success(request, "Your message has been sent successfully!")
-                return redirect("contact")
-
-        # ---------------------------
-        # Schedule Call Form
-        # ---------------------------
-        elif form_type == "schedule":
-            call_form = ScheduledCallForm(request.POST)
-            if call_form.is_valid():
-                date = call_form.cleaned_data["date"]
-                time_slot = call_form.cleaned_data["time_slot"]
-
-                # Prevent double booking
-                if ScheduledCall.objects.filter(date=date, time_slot=time_slot).exists():
-                    messages.error(request, "This slot is already booked. Please choose another.")
-                    return redirect("contact")
-
-                call = call_form.save(commit=False)
-                call.is_read = False
-                call.is_red_flag = False
-                call.is_confirmed = False
-                call.save()
-
-                # Auto red flag if older than 48h
-                if call.created_at <= timezone.now() - timedelta(hours=48):
-                    call.is_red_flag = True
-                    call.save()
-
-                # Email to admin
-                send_html_email(
-                    subject=f"📅 New Call Request - {call.first_name} {call.last_name}",
-                    template="emails/call_admin.html",
-                    context={"call": call, "firm_name": "Law Firm"},
-                    to_email=settings.CONTACT_RECEIVER_EMAIL,
-                )
-
-                # Email to client
-                send_html_email(
-                    subject="⏳ Call request received",
-                    template="emails/call_user.html",
-                    context={"call": call, "firm_name": "Law Firm"},
-                    to_email=call.email,
-                )
-
-                messages.success(request, "Your call request has been submitted!")
-                return redirect("contact")
-
-    return render(
-        request,
-        "contact.html",
-        {"contact_form": contact_form, "call_form": call_form, "legal_services": LEGAL_SERVICES},
-    )
-
+    contacts = ContactMessage.objects.all().order_by('-created_at')
+    calls = ScheduledCall.objects.all().order_by('-created_at')
+    return render(request, "admin_dashboard/contacts_list.html", {
+        "contacts": contacts,
+        "calls": calls,
+    })
 # ---------------------------
 # Confirm & Decline Calls
 # ---------------------------
@@ -683,3 +599,19 @@ def test_email(request):
         return HttpResponse('Email sent successfully!')
     except Exception as e:
         return HttpResponse(f'Error sending email: {str(e)}')
+
+@login_required
+@staff_member_required
+def feedback_dashboard(request):
+    selected_type = request.GET.get('type', 'all')
+
+    if selected_type == 'all':
+        feedbacks = Feedback.objects.all().order_by('-submitted_at')
+    else:
+        feedbacks = Feedback.objects.filter(feedback_type__iexact=selected_type).order_by('-submitted_at')
+
+    print(f"Retrieved feedbacks: {feedbacks.count()} for type={selected_type}")
+    return render(request, 'admin_dashboard/feedback_admin.html', {
+        'feedbacks': feedbacks,
+        'selected_type': selected_type,
+    })

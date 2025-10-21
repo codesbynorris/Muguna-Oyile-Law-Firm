@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Font Showcase</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    /* Web-safe font families */
+    .font-serif { font-family: Georgia, 'Times New Roman', Times, serif; }
+    .font-sans { font-family: Arial, Helvetica, sans-serif; }
+    .font-cursive { font-family: 'Brush Script MT', cursive; }
+    
+    /* Self-hosted / offline example */
+    @font-face {
+      font-family: 'MySignature';
+      src: url('./fonts/MySignature.woff2') format('woff2'),
+           url('./fonts/MySignature.woff') format('woff');
+      font-weight: normal;
+      font-style: normal;
+    }
+    .font-signature { font-family: 'MySignature', cursive; }
+  </style>
+</head>
+<body class="bg-gray-100 p-10">
+
+  <h1 class="text-3xl font-bold mb-6">Font Showcase</h1>
+
+  <!-- Serif Fonts -->
+  <section class="mb-8">
+    <h2 class="text-2xl font-semibold mb-4">Serif Fonts</h2>
+    <p class="font-serif text-lg italic mb-2">Georgia, Times New Roman, Times - Italic Example</p>
+    <p class="font-serif text-lg mb-2">Georgia, Times New Roman, Times - Regular Example</p>
+  </section>
+
+  <!-- Sans-Serif Fonts -->
+  <section class="mb-8">
+    <h2 class="text-2xl font-semibold mb-4">Sans-Serif Fonts</h2>
+    <p class="font-sans text-lg italic mb-2">Arial, Helvetica, sans-serif - Italic Example</p>
+    <p class="font-sans text-lg mb-2">Arial, Helvetica, sans-serif - Regular Example</p>
+  </section>
+
+  <!-- Cursive / Script Fonts -->
+  <section class="mb-8">
+    <h2 class="text-2xl font-semibold mb-4">Cursive / Script Fonts</h2>
+    <p class="font-cursive text-lg italic mb-2">Brush Script MT, cursive - Italic Example</p>
+    <p class="font-cursive text-lg mb-2">Brush Script MT, cursive - Regular Example</p>
+  </section>
+
+  <!-- Signature / Self-Hosted Fonts -->
+  <section class="mb-8">
+    <h2 class="text-2xl font-semibold mb-4">Self-Hosted / Signature Fonts</h2>
+    <p class="font-signature text-4xl italic text-blue-700 mb-2">Oliver Wendell Holmes Jr.</p>
+    <p class="font-signature text-2xl text-green-700">Custom Self-Hosted Font Example</p>
+  </section>
+
+</body>
+</html>
