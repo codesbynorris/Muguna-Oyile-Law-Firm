@@ -1,0 +1,329 @@
+{% extends "admin_dashboard/base_admin.html" %}
+{% load static %}
+
+{% block extrastyle %}
+{{ block.super }}
+<!-- Tailwind CSS CDN with custom config -->
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    darkMode: 'class',
+    theme: {
+      extend: {
+        borderRadius: {
+          '2xl': '1rem',
+        },
+        boxShadow: {
+          'xl': '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)',
+        }
+      }
+    }
+  }
+</script>
+
+<style>
+  .card {
+    /* Instead of @apply */
+    background-color: white;
+    color: inherit;
+    border-radius: 1rem; /* 2xl */
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+                0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    border: 1px solid #f3f4f6; /* border-gray-100 */
+    padding: 1.5rem; /* p-6 */
+  }
+
+  .dark .card {
+    background-color: #111827; /* gray-900 */
+    border-color: #1f2937; /* border-gray-800 */
+  }
+
+  .muted {
+    font-size: 0.875rem; /* text-sm */
+    color: #6b7280; /* text-gray-500 */
+  }
+
+  .dark .muted {
+    color: #9ca3af; /* dark:text-gray-400 */
+  }
+
+  .kpi {
+    font-size: 1.875rem; /* text-3xl */
+    font-weight: 700;
+    color: #111827; /* text-gray-900 */
+  }
+
+  .dark .kpi {
+    color: white;
+  }
+
+  .font-mono {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+      "Liberation Mono", "Courier New", monospace;
+    font-size: 0.75rem; /* text-xs */
+  }
+
+  @media (min-width: 640px) {
+    .font-mono {
+      font-size: 0.875rem; /* sm:text-sm */
+    }
+  }
+</style>
+
+{% endblock %}
+
+{% block extrahead %}
+{{ block.super }}
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+{% endblock %}
+
+{% block content %}
+<div class="px-6 py-8 max-w-7xl mx-auto">
+  <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-8">Site Analytics</h1>
+
+  <!-- KPI Cards -->
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+    <div class="card">
+      <p class="muted">Last 24h</p>
+      <p class="kpi">{{ total_24h|default:"0" }}</p>
+      <p class="muted">Visits</p>
+      <p class="text-sm text-gray-600 dark:text-gray-300 mt-1">
+        Uniques: <span class="font-semibold">{{ unique_24h|default:"0" }}</span>
+      </p>
+    </div>
+
+    <div class="card">
+      <p class="muted">Last 7 days</p>
+      <p class="kpi">{{ total_7d|default:"0" }}</p>
+      <p class="muted">Visits</p>
+      <p class="text-sm text-gray-600 dark:text-gray-300 mt-1">
+        Uniques: <span class="font-semibold">{{ unique_7d|default:"0" }}</span>
+      </p>
+    </div>
+
+    <div class="card">
+      <p class="muted">Last 30 days</p>
+      <p class="kpi">{{ total_30d|default:"0" }}</p>
+      <p class="muted">Visits</p>
+      <p class="text-sm text-gray-600 dark:text-gray-300 mt-1">
+        Uniques: <span class="font-semibold">{{ unique_30d|default:"0" }}</span>
+      </p>
+    </div>
+  </div>
+
+  <!-- Charts Section -->
+  <div class="grid grid-cols-1 xl:grid-cols-3 gap-6 mb-8">
+    <!-- 30-Day Traffic Trend -->
+    <div class="card xl:col-span-2">
+      <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">30-Day Traffic</h2>
+      <canvas id="trendChart" class="w-full" height="300"></canvas>
+    </div>
+
+    <!-- Devices & Browsers -->
+    <div class="card space-y-8">
+      <div>
+        <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Devices (30d)</h2>
+        <canvas id="deviceChart" height="200"></canvas>
+      </div>
+      <div>
+        <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Browsers (30d)</h2>
+        <canvas id="browserChart" height="200"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- Data Tables -->
+  <div class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+    <!-- Top Pages -->
+    <div class="card xl:col-span-1">
+      <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Top Pages (30d)</h2>
+      <div class="overflow-x-auto">
+        <table class="min-w-full text-sm">
+          <thead class="border-b border-gray-200 dark:border-gray-700">
+            <tr>
+              <th class="text-left py-2 pr-4 text-gray-600 dark:text-gray-400 font-medium">Path</th>
+              <th class="text-left py-2 text-gray-600 dark:text-gray-400 font-medium">Views</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-gray-100 dark:divide-gray-800">
+            {% for row in top_pages %}
+              <tr>
+                <td class="py-2 pr-4 font-mono text-gray-800 dark:text-gray-200">{{ row.path }}</td>
+                <td class="py-2 text-gray-700 dark:text-gray-300">{{ row.count }}</td>
+              </tr>
+            {% empty %}
+              <tr>
+                <td colspan="2" class="py-3 text-center text-gray-500 dark:text-gray-400">No data yet.</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Top Referrers -->
+    <div class="card xl:col-span-1">
+      <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Top Referrers (30d)</h2>
+      <div class="overflow-x-auto">
+        <table class="min-w-full text-sm">
+          <thead class="border-b border-gray-200 dark:border-gray-700">
+            <tr>
+              <th class="text-left py-2 pr-4 text-gray-600 dark:text-gray-400 font-medium">Refer/RS</th>
+              <th class="text-left py-2 text-gray-600 dark:text-gray-400 font-medium">Visits</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-gray-100 dark:divide-gray-800">
+            {% for row in top_referrers %}
+              <tr>
+                <td class="py-2 pr-4 font-mono break-all text-gray-800 dark:text-gray-200">{{ row.referrer }}</td>
+                <td class="py-2 text-gray-700 dark:text-gray-300">{{ row.count }}</td>
+              </tr>
+            {% empty %}
+              <tr>
+                <td colspan="2" class="py-3 text-center text-gray-500 dark:text-gray-400">No data yet.</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Top Countries -->
+    <div class="card lg:col-span-2 xl:col-span-1">
+      <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Top Countries (30d)</h2>
+      <div class="overflow-x-auto">
+        <table class="min-w-full text-sm">
+          <thead class="border-b border-gray-200 dark:border-gray-700">
+            <tr>
+              <th class="text-left py-2 pr-4 text-gray-600 dark:text-gray-400 font-medium">Country</th>
+              <th class="text-left py-2 text-gray-600 dark:text-gray-400 font-medium">Visits</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-gray-100 dark:divide-gray-800">
+            {% for row in top_countries %}
+              <tr>
+                <td class="py-2 pr-4 text-gray-800 dark:text-gray-200">{{ row.country|default:"Unknown" }}</td>
+                <td class="py-2 text-gray-700 dark:text-gray-300">{{ row.count }}</td>
+              </tr>
+            {% empty %}
+              <tr>
+                <td colspan="2" class="py-3 text-center text-gray-500 dark:text-gray-400">No data yet.</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Chart.js Scripts -->
+<script>
+  // Parse Django JSON safely
+  const trendLabels = JSON.parse('{{ trend_labels|escapejs }}');
+  const trendVisits = JSON.parse('{{ trend_visits|escapejs }}');
+  const trendUniques = JSON.parse('{{ trend_uniques|escapejs }}');
+
+  const deviceData = JSON.parse('{{ device_breakdown|escapejs }}');
+  const deviceLabels = deviceData.map(d => d.device_type || 'Unknown');
+  const deviceCounts = deviceData.map(d => d.count);
+
+  const browserData = JSON.parse('{{ browser_breakdown|escapejs }}');
+  const browserLabels = browserData.map(d => d.browser || 'Unknown');
+  const browserCounts = browserData.map(d => d.count);
+
+  // Default Chart.js colors
+  const defaultColors = [
+    '#3B82F6', '#10B981', '#F59E0B', '#EF4444', '#8B5CF6',
+    '#EC4899', '#14B8A6', '#F97316', '#6366F1', '#84CC16'
+  ];
+
+  // 30-Day Trend Line Chart
+  const trendCtx = document.getElementById('trendChart').getContext('2d');
+  new Chart(trendCtx, {
+    type: 'line',
+    data: {
+      labels: trendLabels,
+      datasets: [
+        {
+          label: 'Visits',
+          data: trendVisits,
+          borderColor: '#3B82F6',
+          backgroundColor: 'rgba(59, 130, 246, 0.1)',
+          fill: true,
+          tension: 0.35,
+          pointRadius: 3
+        },
+        {
+          label: 'Uniques',
+          data: trendUniques,
+          borderColor: '#10B981',
+          backgroundColor: 'rgba(16, 185, 129, 0.1)',
+          fill: true,
+          tension: 0.35,
+          pointRadius: 3
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { position: 'top' }
+      },
+      scales: {
+        y: { beginAtZero: true }
+      }
+    }
+  });
+
+  // Device Doughnut Chart
+  const deviceCtx = document.getElementById('deviceChart').getContext('2d');
+  new Chart(deviceCtx, {
+    type: 'doughnut',
+    data: {
+      labels: deviceLabels,
+      datasets: [{
+        data: deviceCounts,
+        backgroundColor: defaultColors.slice(0, deviceLabels.length),
+        borderWidth: 2,
+        borderColor: '#fff'
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { position: 'bottom' }
+      }
+    }
+  });
+
+  // Browser Bar Chart
+  const browserCtx = document.getElementById('browserChart').getContext('2d');
+  new Chart(browserCtx, {
+    type: 'bar',
+    data: {
+      labels: browserLabels,
+      datasets: [{
+        label: 'Visits',
+        data: browserCounts,
+        backgroundColor: defaultColors.slice(0, browserLabels.length),
+        borderRadius: 4
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false }
+      },
+      scales: {
+        y: { beginAtZero: true }
+      }
+    }
+  });
+</script>
+
+{% endblock %}

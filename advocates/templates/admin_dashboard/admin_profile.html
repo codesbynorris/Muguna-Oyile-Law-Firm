@@ -1,41 +1,335 @@
 {% extends "admin_dashboard/base_admin.html" %}
 {% block title %}Profile Settings{% endblock %}
 
+{% block extra_head %}
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Configure Tailwind -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        'primary-indigo': '#4f46e5',
+                        'secondary-gray': '#f4f6f8',
+                        'text-dark': '#1f2937',
+                    },
+                    boxShadow: {
+                        '3xl': '0 35px 60px -15px rgba(0, 0, 0, 0.3)',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            transition: background-color 0.3s ease;
+        }
+        .tab-button {
+            transition: all 0.2s ease-in-out;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            padding: 0.75rem 1rem;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+        .tab-button.active {
+            font-weight: 700;
+            color: #4f46e5;
+            background-color: #eef2ff;
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+            transform: translateX(4px);
+        }
+        .tab-button:not(.active):hover {
+            background-color: #f3f4f6;
+            transform: translateX(2px);
+        }
+        input:focus:not([disabled]), textarea:focus:not([disabled]), select:focus:not([disabled]), button:focus:not(.tab-button) {
+            outline: none !important;
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.3);
+            border-color: #4f46e5 !important;
+        }
+        .tab-button:focus {
+            outline: none !important;
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.2);
+        }
+    </style>
+{% endblock %}
+
 {% block dashboard_content %}
-<div class="p-6 max-w-2xl mx-auto">
-    <h1 class="text-2xl font-bold mb-4">Profile Settings</h1>
-    {% for message in messages %}
-        <div class="mb-2 p-2 rounded {{ message.tags }}">{{ message }}</div>
-    {% endfor %}
-    <form method="POST">
-        {% csrf_token %}
-        <div class="mb-4">
-            <label class="block mb-1 font-semibold">First Name</label>
-            <input type="text" name="first_name" value="{{ request.user.first_name }}" class="w-full p-2 border rounded">
+<body class="bg-secondary-gray min-h-screen font-sans antialiased text-text-dark">
+    <div class="max-w-6xl mx-auto">
+        <!-- Main Content Grid -->
+        <div class="bg-gradient-to-br from-white to-gray-50 rounded-2xl shadow-xl overflow-hidden p-8 md:p-12 border border-gray-100">
+            <!-- Profile Overview -->
+            <div class="flex flex-col md:flex-row items-start md:items-center space-y-5 md:space-y-0 md:space-x-8 pb-8 border-b border-gray-100 mb-8">
+                <!-- Profile Avatar -->
+                <div class="relative w-24 h-24 flex-shrink-0">
+                    <img class="w-full h-full object-cover rounded-full border-4 border-white ring-2 ring-primary-indigo/50 shadow-md"
+                         src="{% if request.user.profile.image.url %}{{ request.user.profile.image.url }}{% else %}https://placehold.co/100x100/4f46e5/ffffff?text={{ request.user.username|slice:":2"|upper|default:'JD' }}{% endif %}"
+                         alt="Profile Avatar">
+                    <form id="avatar-form" method="POST" enctype="multipart/form-data" class="absolute bottom-0 right-0">
+                        {% csrf_token %}
+                        <label for="avatar-upload" class="bg-white p-2 rounded-full shadow-md border border-gray-100 hover:bg-gray-50 transition-colors focus:outline-none focus:ring-2 focus:ring-primary-indigo cursor-pointer">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/>
+                            </svg>
+                            <input type="file" id="avatar-upload" name="avatar" accept="image/*" class="hidden" onchange="this.form.submit()">
+                        </label>
+                    </form>
+                </div>
+                <!-- Profile Info -->
+                <div>
+                    <h2 class="text-2xl font-bold text-gray-900">{{ request.user.get_full_name|default:request.user.username }}</h2>
+                    <p class="text-md text-gray-600 mt-1">{{ request.user.email }}</p>
+                    <p class="text-sm text-gray-500 mt-1">Username: {{ request.user.username }}</p>
+                    <a href="#" class="text-sm font-medium text-primary-indigo hover:text-indigo-600 mt-3 inline-block transition-colors">View Public Profile</a>
+                </div>
+            </div>
+
+            <!-- Horizontal Tab Navigation (Moved Above Content) -->
+            <div class="mb-8 border-b border-gray-200">
+                <nav class="flex space-x-1" id="settings-nav">
+                    <button data-tab="general" class="tab-button active px-5 py-3 text-sm font-medium">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-gray-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
+                        </svg>
+                        General Information
+                    </button>
+                    <button data-tab="security" class="tab-button px-5 py-3 text-sm font-medium text-gray-600 hover:text-gray-900">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-gray-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                        </svg>
+                        Security & Access
+                    </button>
+                </nav>
+            </div>
+
+            <!-- Content Area -->
+            <main class="flex-1 min-w-0">
+                <!-- General Information Tab -->
+                <div id="tab-general" class="tab-content block">
+                    <h3 class="text-2xl font-bold text-gray-900 mb-6 border-b pb-4">General Information</h3>
+                    <form method="POST" action="#">
+                        {% csrf_token %}
+                        <div class="space-y-6">
+                            <div>
+                                <label for="first_name" class="block text-sm font-medium text-gray-700 mb-1">First Name</label>
+                                <input type="text" id="first_name" name="first_name" value="{{ request.user.first_name }}"
+                                       class="mt-1 block w-full border border-gray-300 rounded-lg shadow-sm p-3 focus:border-primary-indigo focus:ring-primary-indigo transition duration-150 ease-in-out">
+                            </div>
+                            <div>
+                                <label for="last_name" class="block text-sm font-medium text-gray-700 mb-1">Last Name</label>
+                                <input type="text" id="last_name" name="last_name" value="{{ request.user.last_name }}"
+                                       class="mt-1 block w-full border border-gray-300 rounded-lg shadow-sm p-3 focus:border-primary-indigo focus:ring-primary-indigo transition duration-150 ease-in-out">
+                            </div>
+                            <div>
+                                <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
+                                <input type="email" id="email" name="email" value="{{ request.user.email }}" disabled
+                                       class="mt-1 block w-full border border-gray-200 bg-gray-50 rounded-lg shadow-inner p-3 cursor-not-allowed">
+                                <p class="mt-2 text-xs text-gray-500">Email address cannot be changed here. Contact support for updates.</p>
+                            </div>
+                        </div>
+                        <div class="mt-10 pt-6 border-t border-gray-100 flex justify-end">
+                            <button type="submit"
+                                    class="px-7 py-3 bg-primary-indigo text-white font-semibold rounded-xl shadow-lg hover:bg-indigo-600 focus:outline-none focus:ring-4 focus:ring-primary-indigo/50 transition duration-200 ease-in-out transform hover:scale-[1.01] active:scale-[0.99] text-md">
+                                Save Changes
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Security & Access Tab -->
+                <div id="tab-security" class="tab-content hidden">
+                    <h3 class="text-2xl font-bold text-gray-900 mb-6 border-b pb-4">Security & Access</h3>
+                    <div class="space-y-8">
+                        <!-- Password Change Card -->
+                        <div class="bg-white p-6 rounded-xl border border-indigo-200 shadow-sm">
+                            <h4 class="text-lg font-semibold text-gray-800 mb-4">Change Password</h4>
+                            <form id="password-form" method="POST" action="#">
+                                {% csrf_token %}
+                                <div class="space-y-4">
+                                    <div>
+                                        <label for="old_password" class="block text-sm font-medium text-gray-700 mb-1">Current Password</label>
+                                        <input type="password" id="old_password" name="old_password" required
+                                               class="mt-1 block w-full border border-indigo-300 rounded-lg shadow-sm p-3 focus:border-primary-indigo focus:ring-primary-indigo transition duration-150 ease-in-out">
+                                    </div>
+                                    <div>
+                                        <label for="new_password1" class="block text-sm font-medium text-gray-700 mb-1">New Password</label>
+                                        <input type="password" id="new_password1" name="new_password1" required
+                                               class="mt-1 block w-full border border-indigo-300 rounded-lg shadow-sm p-3 focus:border-primary-indigo focus:ring-primary-indigo transition duration-150 ease-in-out">
+                                        <p id="password-error" class="mt-2 text-xs text-red-500 hidden"></p>
+                                    </div>
+                                    <div>
+                                        <label for="new_password2" class="block text-sm font-medium text-gray-700 mb-1">Confirm New Password</label>
+                                        <input type="password" id="new_password2" name="new_password2" required
+                                               class="mt-1 block w-full border border-indigo-300 rounded-lg shadow-sm p-3 focus:border-primary-indigo focus:ring-primary-indigo transition duration-150 ease-in-out">
+                                    </div>
+                                    <div class="pt-2">
+                                        <button type="submit"
+                                                class="px-6 py-2 bg-primary-indigo text-white font-semibold rounded-lg hover:bg-indigo-600 focus:outline-none focus:ring-4 focus:ring-primary-indigo/50 transition duration-150 ease-in-out">
+                                            Update Password
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </main>
         </div>
-        <div class="mb-4">
-            <label class="block mb-1 font-semibold">Last Name</label>
-            <input type="text" name="last_name" value="{{ request.user.last_name }}" class="w-full p-2 border rounded">
+    </div>
+
+    <!-- Custom Modal/Message Box -->
+    <div id="message-box" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-gray-900 bg-opacity-50 backdrop-blur-sm" onclick="this.classList.add('hidden');">
+        <div class="bg-white rounded-2xl shadow-2xl p-7 max-w-sm w-full transform transition-all scale-100 duration-300 ease-out" onclick="event.stopPropagation()">
+            <div class="text-center">
+                <div id="message-icon" class="mx-auto h-12 w-12 flex items-center justify-center rounded-full bg-primary-indigo/10 mb-4">
+                    <svg class="h-6 w-6 text-primary-indigo" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15L15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                </div>
+                <h3 class="mt-2 text-xl font-bold text-gray-900" id="message-text"></h3>
+            </div>
+            <div class="mt-6 flex justify-center">
+                <button type="button" onclick="document.getElementById('message-box').classList.add('hidden'); document.getElementById('message-box').classList.remove('flex');"
+                        class="px-6 py-2 text-md font-semibold text-white bg-primary-indigo rounded-xl hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-indigo transition duration-150 ease-in-out transform hover:scale-[1.01] active:scale-[0.99]">
+                    Got it
+                </button>
+            </div>
         </div>
-        <div class="mb-4">
-            <label class="block mb-1 font-semibold">Email</label>
-            <input type="email" name="email" value="{{ request.user.email }}" class="w-full p-2 border rounded">
-        </div>
-        <hr class="my-4">
-        <h2 class="text-xl font-semibold mb-2">Change Password</h2>
-        <div class="mb-4">
-            <label class="block mb-1 font-semibold">Old Password</label>
-            <input type="password" name="old_password" class="w-full p-2 border rounded">
-        </div>
-        <div class="mb-4">
-            <label class="block mb-1 font-semibold">New Password</label>
-            <input type="password" name="new_password1" class="w-full p-2 border rounded">
-        </div>
-        <div class="mb-4">
-            <label class="block mb-1 font-semibold">Confirm New Password</label>
-            <input type="password" name="new_password2" class="w-full p-2 border rounded">
-        </div>
-        <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">Save Changes</button>
-    </form>
-</div>
+    </div>
+
+    <!-- JavaScript for Tab Switching and UI Logic -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const nav = document.getElementById('settings-nav');
+            const tabButtons = nav.querySelectorAll('.tab-button');
+            const tabContents = document.querySelectorAll('.tab-content');
+
+            tabButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const targetTabId = `tab-${button.dataset.tab}`;
+
+                    tabButtons.forEach(btn => btn.classList.remove('active'));
+                    tabContents.forEach(content => content.classList.add('hidden'));
+                    tabContents.forEach(content => content.classList.remove('block'));
+
+                    button.classList.add('active');
+
+                    const targetContent = document.getElementById(targetTabId);
+                    if (targetContent) {
+                        targetContent.classList.remove('hidden');
+                        targetContent.classList.add('block');
+                        targetContent.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }
+                });
+            });
+
+            // Password validation
+            const passwordForm = document.getElementById('password-form');
+            const newPassword1 = document.getElementById('new_password1');
+            const newPassword2 = document.getElementById('new_password2');
+            const passwordError = document.getElementById('password-error');
+
+            passwordForm.addEventListener('submit', (e) => {
+                const password1 = newPassword1.value;
+                const password2 = newPassword2.value;
+
+                // Password validation rules
+                const minLength = 8;
+                const hasUpperCase = /[A-Z]/.test(password1);
+                const hasLowerCase = /[a-z]/.test(password1);
+                const hasNumber = /\d/.test(password1);
+                const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(password1);
+
+                if (password1 !== password2) {
+                    e.preventDefault();
+                    passwordError.textContent = 'Passwords do not match.';
+                    passwordError.classList.remove('hidden');
+                    return;
+                }
+
+                if (password1.length < minLength) {
+                    e.preventDefault();
+                    passwordError.textContent = `Password must be at least ${minLength} characters long.`;
+                    passwordError.classList.remove('hidden');
+                    return;
+                }
+
+                if (!hasUpperCase || !hasLowerCase || !hasNumber || !hasSpecialChar) {
+                    e.preventDefault();
+                    passwordError.textContent = 'Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character.';
+                    passwordError.classList.remove('hidden');
+                    return;
+                }
+
+                passwordError.classList.add('hidden');
+                // If validation passes, allow form submission
+                showMessage('Password Updated!', 'success');
+            });
+
+            window.showMessage = function(message, type = 'success') {
+                const messageBox = document.getElementById('message-box');
+                const messageText = document.getElementById('message-text');
+                const messageIconDiv = document.getElementById('message-icon');
+
+                messageText.textContent = message;
+                messageIconDiv.innerHTML = '';
+
+                let iconSvg = '';
+                let iconClasses = '';
+                let buttonClasses = '';
+
+                switch (type) {
+                    case 'success':
+                        iconSvg = `<svg class="h-6 w-6 text-primary-indigo" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15L15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>`;
+                        iconClasses = 'bg-primary-indigo/10';
+                        buttonClasses = 'bg-primary-indigo hover:bg-indigo-700 focus:ring-primary-indigo';
+                        break;
+                    case 'info':
+                        iconSvg = `<svg class="h-6 w-6 text-blue-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063 0m-1.063 0l-.041.02a.75.75 0 001.063 0m0 0l.041-.02a.75.75 0 01-1.063 0m0 0l-.041.02a.75.75 0 00-1.063 0M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12v-.008z" /></svg>`;
+                        iconClasses = 'bg-blue-500/10';
+                        buttonClasses = 'bg-blue-600 hover:bg-blue-700 focus:ring-blue-500';
+                        break;
+                    case 'warning':
+                        iconSvg = `<svg class="h-6 w-6 text-red-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.305 3.24 1.933 3.24h14.734c1.628 0 2.793-1.74 1.933-3.24L12.733 2.733c-.793-1.369-2.87-1.369-3.664 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" /></svg>`;
+                        iconClasses = 'bg-red-500/10';
+                        buttonClasses = 'bg-red-600 hover:bg-red-700 focus:ring-red-500';
+                        break;
+                }
+
+                messageIconDiv.classList.add(...iconClasses.split(' '));
+                messageIconDiv.innerHTML = iconSvg;
+
+                const gotItButton = messageBox.querySelector('button');
+                gotItButton.className = `px-6 py-2 text-md font-semibold text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-offset-2 transition duration-150 ease-in-out transform hover:scale-[1.01] active:scale-[0.99] ${buttonClasses}`;
+
+                messageBox.classList.remove('hidden');
+                messageBox.classList.add('flex');
+
+                setTimeout(() => {
+                    messageBox.classList.add('hidden');
+                    messageBox.classList.remove('flex');
+                }, 3000);
+            };
+
+            // Display Django messages using custom modal
+            {% for message in messages %}
+                showMessage("{{ message }}", "{{ message.tags }}");
+            {% endfor %}
+
+            // Initial focus
+            document.querySelector('[data-tab="general"]').click();
+        });
+    </script>
+</body>
 {% endblock %}

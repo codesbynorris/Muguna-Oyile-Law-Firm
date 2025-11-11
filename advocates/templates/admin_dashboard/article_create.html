@@ -1,147 +1,257 @@
 {% extends "admin_dashboard/base_admin.html" %}
 {% load static %}
 
-{% block title %}Write Blog - Admin Dashboard{% endblock %}
+{% block title %}Write Blog - Professional Editor{% endblock %}
 
 {% block dashboard_content %}
-<div class="p-6 max-w-5xl mx-auto">
-    <!-- Page Title -->
-    <h1 class="text-3xl font-extrabold text-blue-900 mb-8 border-b-4 border-amber-500 inline-block pb-2 font-serif">
-        ✍️ Write a New Blog
-    </h1>
+<div class="p-4 sm:p-6 max-w-7xl mx-auto bg-white min-h-screen">
+    
+    <header class="mb-10 flex flex-col sm:flex-row justify-between items-start sm:items-center border-b pb-4 border-gray-100">
+        <h1 class="text-2xl sm:text-3xl font-bold text-gray-800 font-header" style="font-family: 'Poppins', serif;">
+            <span class="text-indigo-600 mr-2">✏️</span> Create New Article
+        </h1>
+    </header>
 
-    <!-- Message Box -->
-    <div id="form-message" class="hidden p-4 mb-6 rounded-lg"></div>
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <section class="lg:col-span-2 space-y-8">
+            <div id="title-field" class="article-field">
+                <label for="title" class="block text-xs uppercase font-semibold text-gray-500 mb-2 tracking-widest font-content" style="font-family: 'Open Sans', sans-serif;">Article Headline</label>
+                <input type="text" name="title" id="title" placeholder="Article headline"
+                       class="w-full text-3xl font-bold text-gray-900 border-0 p-0 focus:ring-0 focus:border-indigo-500 pb-2 transition placeholder-gray-300 font-content invalid:border-red-500 invalid:ring-red-500"
+                       title="Title is required for publications, articles, and news" style="font-family: 'Open Sans', sans-serif;" required>
+                <p id="title-error" class="hidden text-xs text-red-600 mt-1 font-content" style="font-family: 'Open Sans', sans-serif;"></p>
+            </div>
 
-    <!-- Blog Form -->
-    <div class="bg-white rounded-2xl shadow-xl p-10 border border-gray-100">
-        <form id="article-form" method="POST" enctype="multipart/form-data" class="space-y-8">
-            {% csrf_token %}
-
-            <!-- Content Type -->
             <div>
-                <label for="type" class="block text-sm font-medium text-gray-700 font-sans">Content Type</label>
-                <select name="type" id="type" required class="mt-1 block w-full border border-gray-300 rounded-lg p-2 font-sans">
+                <label for="content" class="block text-xs uppercase font-semibold text-gray-500 mb-4 tracking-widest font-content" style="font-family: 'Open Sans', sans-serif;">Content Editor</label>
+                <textarea name="content" id="content" rows="22" placeholder="Write here..."
+                          class="w-full border border-gray-200 rounded-xl p-6 text-base leading-relaxed text-gray-700 shadow-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition duration-150 font-content invalid:border-red-500 invalid:ring-red-500"
+                          title="Content is required" style="font-family: 'Open Sans', sans-serif;" required></textarea>
+                <p id="content-error" class="hidden text-xs text-red-600 mt-1 font-content" style="font-family: 'Open Sans', sans-serif;"></p>
+            </div>
+            
+            <div id="form-message" class="hidden p-4 rounded-lg border text-sm transition-all duration-300 font-content" style="font-family: 'Open Sans', sans-serif;"></div>
+        </section>
+
+        <aside class="lg:col-span-1 space-y-6 bg-gray-50 p-6 rounded-xl border border-gray-200 shadow-2xl">
+            <h2 class="text-lg font-bold text-gray-800 border-b pb-2 mb-4 font-header" style="font-family: 'EB Garamond', serif;">Post Configuration</h2>
+
+            <div>
+                <label for="type" class="block text-sm font-medium text-gray-700 font-content" style="font-family: 'Open Sans', sans-serif;">Content Type</label>
+                <select name="type" id="type" required
+                        class="mt-1 block w-full border border-gray-300 rounded-lg p-2 focus:border-indigo-500 focus:ring-indigo-500 text-gray-700 font-content invalid:border-red-500 invalid:ring-red-500"
+                        title="Content type is required" style="font-family: 'Open Sans', sans-serif;">
                     <option value="publication">Publication</option>
                     <option value="article">Article</option>
                     <option value="news">News</option>
-                    <option value="quote">Quote</option>
                 </select>
+                <p id="type-error" class="hidden text-xs text-red-600 mt-1 font-content" style="font-family: 'Open Sans', sans-serif;"></p>
             </div>
 
-            <!-- Title -->
-            <div id="title-field" class="article-field">
-                <label for="title" class="block text-sm font-medium text-gray-700 font-sans">Title</label>
-                <input type="text" name="title" id="title" class="mt-1 block w-full border border-gray-300 rounded-lg p-2 font-sans">
-            </div>
-
-            <!-- Content -->
             <div>
-                <label for="content" class="block text-sm font-medium text-gray-700 font-sans">Content</label>
-                <textarea name="content" id="content" rows="10" class="mt-1 block w-full border border-gray-300 rounded-lg p-2 font-sans"></textarea>
+                <label for="author" class="block text-sm font-medium text-gray-700 font-content" style="font-family: 'Open Sans', sans-serif;">Author</label>
+                <input type="text" name="author" id="author" required placeholder="Select or enter author name"
+                       class="mt-1 block w-full border border-gray-300 rounded-lg p-2 focus:border-indigo-500 focus:ring-indigo-500 text-gray-700 font-content invalid:border-red-500 invalid:ring-red-500"
+                       title="Author is required" style="font-family: 'Open Sans', sans-serif;">
+                <p id="author-error" class="hidden text-xs text-red-600 mt-1 font-content" style="font-family: 'Open Sans', sans-serif;"></p>
             </div>
-
-            <!-- Category -->
+            
             <div id="category-field" class="article-field">
-                <label for="category" class="block text-sm font-medium text-gray-700 font-sans">Category</label>
-                <select name="category" id="category" class="mt-1 block w-full border border-gray-300 rounded-lg p-2 font-sans">
-                    {% for id, name in categories %}
-                        <option value="{{ id }}">{{ name }}</option>
-                    {% endfor %}
+                <label for="category" class="block text-sm font-medium text-gray-700 font-content" style="font-family: 'Open Sans', sans-serif;">Category</label>
+                <select name="category" id="category" class="mt-1 block w-full border border-gray-300 rounded-lg p-2 focus:border-indigo-500 focus:ring-indigo-500 text-gray-700 font-content invalid:border-red-500 invalid:ring-red-500"
+                        title="Category is required for publications" style="font-family: 'Open Sans', sans-serif;">
+                    <option value="" selected>Select a category</option>
+                    {% if categories %}
+                        {% for id, name in categories %}
+                            <option value="{{ id }}">{{ name }}</option>
+                        {% endfor %}
+                    {% else %}
+                        <option value="" disabled>No categories available</option>
+                    {% endif %}
                 </select>
+                <p id="category-error" class="hidden text-xs text-red-600 mt-1 font-content" style="font-family: 'Open Sans', sans-serif;"></p>
+                {% if not categories %}
+                    <p class="mt-2 text-xs text-red-600 font-content static" style="font-family: 'Open Sans', sans-serif;">Please add categories in the admin panel.</p>
+                {% endif %}
             </div>
 
-            <!-- Image -->
-            <div id="image-field" class="article-field">
-                <label for="image" class="block text-sm font-medium text-gray-700 font-sans">Image</label>
-                <input type="file" name="image" id="image" accept="image/*" class="mt-1 block w-full border border-gray-300 rounded-lg p-2 font-sans">
-                <p class="mt-2 text-xs text-gray-400">Upload a high-quality image for the blog header.</p>
+            <div id="image-field" class="article-field pt-2">
+                <label for="image" class="block text-sm font-medium text-gray-700 mb-2 font-content" style="font-family: 'Open Sans', sans-serif;">Featured Image</label>
+                <input type="file" name="image" id="image" accept="image/*" 
+                       class="block w-full text-sm text-gray-500 file:mr-3 file:py-1 file:px-3 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100 transition duration-150"/>
+                <p class="mt-2 text-xs text-gray-400 font-content" style="font-family: 'Open Sans', sans-serif;">Recommended size: 1200x675 pixels (16:9)</p>
+                <p id="image-error" class="hidden text-xs text-red-600 mt-1 font-content" style="font-family: 'Open Sans', sans-serif;"></p>
             </div>
 
-            <!-- Author -->
-            <div>
-                <label for="author" class="block text-sm font-medium text-gray-700 font-sans">Author</label>
-                <input type="text" name="author" id="author" required class="mt-1 block w-full border border-gray-300 rounded-lg p-2 font-sans">
-            </div>
-
-            <!-- Submit -->
-            <div class="pt-6 flex justify-end">
-                <button type="submit"
-                        class="px-8 py-3 bg-blue-900 text-white font-semibold rounded-xl shadow-md hover:bg-amber-500 hover:shadow-lg transition-all duration-300 font-serif">
-                    ✅ Publish Content
+            <div class="pt-6">
+                <button type="submit" form="article-form"
+                        class="w-full px-4 py-3 bg-indigo-600 text-white font-semibold rounded-lg text-base shadow-md shadow-indigo-500/30 hover:bg-indigo-700 transition duration-200 uppercase tracking-wider transform hover:scale-[1.005] font-content" style="font-family: 'Open Sans', sans-serif;">
+                    Publish Article
                 </button>
             </div>
-        </form>
+        </aside>
     </div>
+    
+    <form id="article-form" method="POST" enctype="multipart/form-data" class="hidden">{% csrf_token %}</form>
 </div>
 
-<!-- JavaScript for Dynamic Form and AJAX -->
+<style>
+:root {
+    --font-header: 'EB Garamond', serif;
+    --font-content: 'Open Sans', sans-serif;
+}
+.font-header {
+    font-family: var(--font-header);
+}
+.font-content {
+    font-family: var(--font-content);
+}
+.rounded-xl {
+    border-radius: 1rem;
+}
+.shadow-2xl {
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+}
+input:invalid:focus::after, select:invalid:focus::after, textarea:invalid:focus::after {
+    content: attr(title);
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background: #1F2937;
+    color: white;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    z-index: 10;
+    margin-top: 4px;
+    white-space: nowrap;
+}
+@media(max-width:768px){
+    .grid-cols-1 {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
+
 <script>
 document.addEventListener("DOMContentLoaded", function() {
     const form = document.getElementById("article-form");
     const msgDiv = document.getElementById("form-message");
     const contentTypeSelect = document.getElementById("type");
-    const titleField = document.getElementById("title-field");
-    const categoryField = document.getElementById("category-field");
-    const imageField = document.getElementById("image-field");
+    const titleInput = document.getElementById("title");
+    const contentInput = document.getElementById("content");
+    const typeInput = document.getElementById("type");
+    const authorInput = document.getElementById("author");
+    const categoryInput = document.getElementById("category");
+    const imageInput = document.getElementById("image");
 
-    // Show/hide fields based on content type
-    function toggleFields() {
-        const isQuote = contentTypeSelect.value === "quote";
-        titleField.style.display = isQuote ? "none" : "block";
-        categoryField.style.display = isQuote ? "none" : "block";
-        imageField.style.display = isQuote ? "none" : "block";
-        // Set required attributes
-        document.getElementById("title").required = !isQuote;
-        document.getElementById("category").required = !isQuote;
-        document.getElementById("content").required = true;
+    function clearErrors() {
+        document.querySelectorAll('.text-red-600:not(.static)').forEach(el => {
+            el.classList.add('hidden');
+            el.textContent = '';
+        });
+        [titleInput, contentInput, typeInput, authorInput, categoryInput, imageInput].forEach(input => {
+            input.classList.remove('invalid:border-red-500', 'invalid:ring-red-500');
+        });
     }
 
-    contentTypeSelect.addEventListener("change", toggleFields);
-    toggleFields(); // Initial check
+    function updateCategoryRequirement() {
+        categoryInput.required = contentTypeSelect.value === "publication";
+        // Reset category to empty for article and news
+        if (contentTypeSelect.value === "article" || contentTypeSelect.value === "news") {
+            categoryInput.value = "";
+        }
+    }
+
+    contentTypeSelect.addEventListener("change", () => {
+        clearErrors();
+        updateCategoryRequirement();
+    });
+    updateCategoryRequirement();
 
     form.addEventListener("submit", function(e) {
         e.preventDefault();
-        let formData = new FormData(form);
+        clearErrors();
+        const formData = new FormData(form);
+        formData.append('title', titleInput.value);
+        formData.append('content', contentInput.value);
+        formData.append('type', typeInput.value);
+        formData.append('author', authorInput.value);
+        formData.append('category', categoryInput.value || '');
+        if (imageInput.files.length > 0) {
+            formData.append('image', imageInput.files[0]);
+        }
 
-        fetch("{% url 'articles:write_blog' %}", {
+        fetch("{% url 'article_create' %}", {
             method: "POST",
             headers: {
                 "X-Requested-With": "XMLHttpRequest",
-                "X-CSRFToken": document.querySelector('[name=csrfmiddlewaretoken]').value
+                "X-CSRFToken": getCsrfToken()
             },
             body: formData
         })
         .then(res => res.json())
         .then(data => {
-            msgDiv.className = "";
+            msgDiv.className = "hidden";
             msgDiv.textContent = "";
 
             if (data.success) {
-                msgDiv.textContent = data.message;
-                msgDiv.className = "p-4 mb-6 rounded-lg bg-green-100 text-green-800";
+                msgDiv.textContent = data.message || "Article published successfully!";
+                msgDiv.className = "p-4 mb-6 rounded-lg border border-green-300 bg-green-50 text-green-700 font-content";
                 msgDiv.classList.remove("hidden");
                 form.reset();
+                titleInput.value = "";
+                contentInput.value = "";
+                authorInput.value = "";
+                updateCategoryRequirement();
                 setTimeout(() => {
                     msgDiv.classList.add("hidden");
-                    window.location.href = data.redirect_url;
+                    if (data.redirect_url) {
+                        window.location.href = data.redirect_url;
+                    }
                 }, 2000);
             } else {
-                let errorsText = data.message || "Please fill in all required fields.";
-                msgDiv.textContent = errorsText;
-                msgDiv.className = "p-4 mb-6 rounded-lg bg-red-100 text-red-800";
+                if (data.errors) {
+                    Object.keys(data.errors).forEach(field => {
+                        const errorEl = document.getElementById(`${field}-error`);
+                        if (errorEl) {
+                            errorEl.textContent = data.errors[field].join(', ');
+                            errorEl.classList.remove('hidden');
+                            const inputEl = document.getElementById(field);
+                            if (inputEl) {
+                                inputEl.classList.add('invalid:border-red-500', 'invalid:ring-red-500');
+                            }
+                        }
+                    });
+                    msgDiv.textContent = "Please correct the errors below.";
+                } else {
+                    msgDiv.textContent = data.message || "Please check the form for errors.";
+                }
+                msgDiv.className = "p-4 mb-6 rounded-lg border border-red-300 bg-red-50 text-red-700 font-content";
                 msgDiv.classList.remove("hidden");
                 setTimeout(() => msgDiv.classList.add("hidden"), 5000);
             }
         })
         .catch(err => {
             console.error("AJAX error:", err);
-            msgDiv.textContent = "⚠️ Something went wrong. Please try again.";
-            msgDiv.className = "p-4 mb-6 rounded-lg bg-red-100 text-red-800";
+            msgDiv.textContent = "⚠️ An unexpected error occurred. Please try again.";
+            msgDiv.className = "p-4 mb-6 rounded-lg border border-red-300 bg-red-50 text-red-700 font-content";
             msgDiv.classList.remove("hidden");
             setTimeout(() => msgDiv.classList.add("hidden"), 5000);
         });
     });
+
+    function getCsrfToken() {
+        const name = 'csrftoken';
+        const cookies = document.cookie.split(';');
+        for (let cookie of cookies) {
+            const [key, value] = cookie.trim().split('=');
+            if (key === name) {
+                return decodeURIComponent(value);
+            }
+        }
+        return null;
+    }
 });
 </script>
 {% endblock %}

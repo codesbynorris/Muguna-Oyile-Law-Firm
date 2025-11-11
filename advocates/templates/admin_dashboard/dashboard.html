@@ -22,7 +22,8 @@
 
         <div class="card p-4 bg-white rounded shadow">
             <h3 class="font-semibold">Red Flag Alerts 🚩</h3>
-            <p class="text-red-600 font-bold text-xl">{{ red_flag_count|default:"0" }}</p>
+            <p class="text-red-600 font-bold text-xl">    {{ overdue_scheduled_calls_count|default:"0" }}
+</p>
         </div>
 
         <div class="card p-4 bg-white rounded shadow">
@@ -36,11 +37,11 @@
 
     <!-- Upcoming Appointments Table -->
     <div class="table-container mt-8">
-        <h3 class="sticky top-0 bg-white z-10 p-2 font-semibold">Upcoming Appointments</h3>
+        <h3 class=" top-0 bg-white z-10 p-2 font-semibold">Upcoming Appointments</h3>
         <div style="max-height:250px; overflow-y:auto;">
             
             <table id="appointmentsTable" class="w-full table-auto border-collapse">
-                <thead class="sticky top-0 bg-white z-10">
+                <thead class=" top-0 bg-white z-10">
                     <tr>
                         <th class="text-left p-2 border-b">Date & Time</th>
                         <th class="text-left p-2 border-b">Client</th>
@@ -69,25 +70,35 @@
     </div>
 
     <!-- Recent Activities -->
-    <div class="recent-activities mt-8" id="recentActivities">
-        <h3 class="sticky top-0 bg-white z-10 p-2 font-semibold">Recent Activities</h3>
-        <div style="max-height:250px; overflow-y:auto;">
-            {% for log in recent_activity %}
-            <div class="activity-item p-2 border-b">
-                <span class="font-semibold">{{ log.admin_user.username }}:</span> {{ log.action }}
-                <span class="float-right text-xs text-gray-500">
-                    {% if log.created_at %}
-                        {{ log.created_at|date:"H:i" }}
-                    {% else %}
-                        --
-                    {% endif %}
-                </span>
-            </div>
-            {% empty %}
-            <div class="activity-item p-2 text-gray-500">No recent activity</div>
-            {% endfor %}
+<!-- Recent Activities -->
+<div class="recent-activities mt-8 bg-white dark:bg-gray-900 rounded-2xl shadow-xl border border-gray-100 dark:border-gray-800 overflow-hidden">
+  <!-- Sticky Header (always on top of the scrollable area) -->
+  <h3 class="sticky top- bg-white dark:bg-gray-900 z-50 p-3 font-semibold border-b border-gray-200 dark:border-gray-700">
+    Recent Activities
+  </h3>
+
+  <!-- Scrollable body – background matches the card so nothing bleeds through -->
+  <div class="max-h-[250px] overflow-y-auto bg-white dark:bg-gray-900">
+    <div class="divide-y divide-gray-100 dark:divide-gray-800">
+      {% for log in recent_activity %}
+        <div class="activity-item px-3 py-2 flex justify-between items-center text-sm">
+          <div>
+            <span class="font-medium text-gray-900 dark:text-gray-100">{{ log.admin_user.username }}:</span>
+            <span class="text-gray-700 dark:text-gray-300">{{ log.action }}</span>
+          </div>
+          <span class="text-xs text-gray-500 dark:text-gray-600 ml-2">
+            {{ log.created_at|date:"H:i"|default:"--" }}
+          </span>
         </div>
+      {% empty %}
+        <div class="px-3 py-2 text-sm text-gray-500 dark:text-gray-600 text-center">
+          No recent activity
+        </div>
+      {% endfor %}
     </div>
+  </div>
+</div>
+
 
 </div>
 
@@ -126,63 +137,144 @@ document.addEventListener('DOMContentLoaded', function() {
     const recentActivities = document.querySelector('#recentActivities > div');
 
     closeModal.onclick = () => modal.classList.add('hidden');
-    window.onclick = e => { if(e.target === modal) modal.classList.add('hidden'); }
+    window.onclick = e => { if (e.target === modal) modal.classList.add('hidden'); }
 
-    const todayStr = new Date().toISOString().slice(0,10);
+    const todayStr = new Date().toISOString().slice(0, 10);
     const calendarEl = document.getElementById('calendar');
 
     const calendar = new FullCalendar.Calendar(calendarEl, {
-        initialView: 'dayGridMonth',
-        contentHeight: window.innerWidth < 768 ? 400 : 650,
-        selectable: true,
-        headerToolbar: window.innerWidth < 768 ?
-            { left:'', center:'', right:'' } :
-            { left:'prev,next today', center:'title', right:'dayGridMonth,timeGridWeek,timeGridDay' },
-
-        events: function(fetchInfo, successCallback, failureCallback) {
-            fetch('/events/').then(res => res.json()).then(data => {
-                data.forEach(event => {
-                    if(event.time_slot){
-                        event.start = event.start + "T" + event.time_slot + ":00";
-                        event.extendedProps = { time_slot: event.time_slot };
-                    }
-                    if(event.client) event.title = `${event.title} - ${event.client}`;
-                });
-                successCallback(data);
-
-                data.forEach(event => {
-                    const eventDateStr = event.start.slice(0,10);
-                    if(eventDateStr === todayStr && event.extendedProps?.time_slot){
-                        alert(`Today's call: ${event.title} at ${event.extendedProps.time_slot}`);
-                    }
-                });
-            }).catch(err => failureCallback(err));
+        initialView: window.innerWidth < 768 ? 'listWeek' : 'listMonth',
+        initialDate: todayStr,
+        validRange: {
+            start: todayStr
         },
+        contentHeight: window.innerWidth < 768 ? 400 : 650,
+        headerToolbar: {
+            left: 'prev,next today',
+            center: 'title',
+            right: window.innerWidth < 768 ? 'listWeek' : 'listMonth,dayGridMonth,timeGridWeek'
+        },
+        events: function(fetchInfo, successCallback, failureCallback) {
+            fetch('/events/', {
+                headers: { 'Accept': 'application/json' }
+            }).then(res => {
+                if (!res.ok) {
+                    console.error(`Failed to fetch events: ${res.status} ${res.statusText}`);
+                    failureCallback(new Error(`HTTP error: ${res.status}`));
+                    return;
+                }
+                return res.json();
+            }).then(data => {
+                console.log('Fetched events:', data);
+                if (!Array.isArray(data)) {
+                    console.error('Events data is not an array:', data);
+                    failureCallback(new Error('Invalid events data format'));
+                    return;
+                }
+                const formattedEvents = data.map(event => {
+                    const formattedEvent = { ...event };
+                    if (event.time_slot) {
+                        formattedEvent.start = `${event.start}T${event.time_slot}:00`;
+                        formattedEvent.extendedProps = {
+                            time_slot: event.time_slot,
+                            client: event.client,
+                            case_name: event.case_name,
+                            event_type: event.event_type
+                        };
+                    }
+                    formattedEvent.title = `${event.title}${event.client ? ' - ' + event.client : ''}${event.case_name ? ' (' + event.case_name + ')' : ''}`;
+                    return formattedEvent;
+                });
+                successCallback(formattedEvents);
 
+                formattedEvents.forEach(event => {
+                    const eventDateStr = event.start.slice(0, 10);
+                    if (eventDateStr === todayStr && event.extendedProps?.time_slot) {
+                        alert(`Today's event: ${event.title} at ${event.extendedProps.time_slot}`);
+                    }
+                });
+            }).catch(err => {
+                console.error('Error fetching events:', err);
+                failureCallback(err);
+            });
+        },
+        eventContent: function(arg) {
+            const view = arg.view.type; // Get the current view (dayGridMonth, timeGridWeek, listWeek, listMonth)
+            let timeText = arg.event.extendedProps.time_slot ? arg.event.extendedProps.time_slot : 'All Day';
+            let titleText = arg.event.title;
+            let typeText = arg.event.extendedProps.event_type ? 
+                arg.event.extendedProps.event_type.charAt(0).toUpperCase() + arg.event.extendedProps.event_type.slice(1) : '';
+            let color = arg.event.color || '#000';
+
+            // Customize rendering based on view
+            if (view === 'dayGridMonth') {
+                // Compact format for month view
+                return {
+                    html: `
+                        <div class="fc-event-custom" style="padding: 2px 4px; font-size: 0.85rem;">
+                            <span class="fc-event-dot" style="background-color: ${color};"></span>
+                            ${timeText !== 'All Day' ? `<span>${timeText} </span>` : ''}
+                            <span>${titleText}</span>
+                        </div>
+                    `
+                };
+            } else if (view === 'timeGridWeek') {
+                // Detailed format for week view
+                return {
+                    html: `
+                        <div class="fc-event-custom" style="padding: 4px; font-size: 0.9rem;">
+                            <span class="fc-event-dot" style="background-color: ${color};"></span>
+                            <span class="fc-event-title">${titleText}</span>
+                            <div class="fc-event-type" style="color: ${color}; font-size: 0.8rem; font-style: italic;">${typeText}</div>
+                        </div>
+                    `
+                };
+            } else {
+                // List view (listWeek, listMonth) - same as before
+                return {
+                    html: `
+                        <div class="fc-list-event">
+                            <div class="fc-list-event-time">${timeText}</div>
+                            <div class="fc-list-event-title">${titleText}</div>
+                            <div class="fc-list-event-type" style="color: ${color}">${typeText}</div>
+                        </div>
+                    `
+                };
+            }
+        },
         select: function(info) {
             const selectedDate = new Date(info.startStr + 'T00:00:00');
-            if(selectedDate < new Date()){ alert('Cannot add events on past dates.'); return; }
+            if (selectedDate < new Date()) { alert('Cannot add events on past dates.'); return; }
             eventDate.value = info.startStr;
             modal.classList.remove('hidden');
         },
-
-        eventClick: function(info){
+        eventClick: function(info) {
             const eventObj = info.event;
             const action = prompt(`Edit or Delete this event?\nType "edit" or "delete":`);
-            if(action === 'delete'){
-                fetch(`/events/delete/${eventObj.id}/`, { 
-                    method:'POST', 
-                    headers:{ 'X-CSRFToken': csrfToken, 'Content-Type':'application/json' },
+            if (action === 'delete') {
+                fetch(`/events/delete/${eventObj.id}/`, {
+                    method: 'POST',
+                    headers: { 'X-CSRFToken': csrfToken, 'Content-Type': 'application/json' },
                     body: JSON.stringify({})
-                }).then(res => { if(res.ok) eventObj.remove(); });
-            } else if(action === 'edit'){
+                }).then(res => {
+                    if (res.ok) {
+                        eventObj.remove();
+                        console.log(`Event ${eventObj.id} deleted`);
+                    } else {
+                        console.error('Failed to delete event:', res.statusText);
+                    }
+                }).catch(err => console.error('Error deleting event:', err));
+            } else if (action === 'edit') {
                 const newTitle = prompt('Enter new title:', eventObj.title);
-                if(newTitle){
+                if (newTitle) {
                     fetch(`/events/edit/${eventObj.id}/`, {
                         method: 'POST',
-                        headers:{'Content-Type':'application/json','X-CSRFToken':csrfToken},
-                        body: JSON.stringify({title: newTitle})
-                    }).then(res => res.json()).then(data => { eventObj.setProp('title', data.title); });
+                        headers: { 'Content-Type': 'application/json', 'X-CSRFToken': csrfToken },
+                        body: JSON.stringify({ title: newTitle })
+                    }).then(res => res.json()).then(data => {
+                        eventObj.setProp('title', data.title);
+                        console.log(`Event ${eventObj.id} updated with title: ${data.title}`);
+                    }).catch(err => console.error('Error updating event:', err));
                 }
             }
         }
@@ -197,23 +289,30 @@ document.addEventListener('DOMContentLoaded', function() {
         const type = eventType.value;
         const date = eventDate.value;
 
-        if(!title || !client || !caseN){ alert('Fill all fields'); return; }
+        if (!title || !client || !caseN) { alert('Fill all fields'); return; }
 
         fetch('/events/add/', {
-            method:'POST',
-            headers:{'Content-Type':'application/json','X-CSRFToken':csrfToken},
-            body: JSON.stringify({title, client, case_name: caseN, date, event_type: type})
-        }).then(res => res.json()).then(data => {
-            if(data.time_slot){
-                data.start = data.start + "T" + data.time_slot + ":00";
-                data.extendedProps = { time_slot: data.time_slot };
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'X-CSRFToken': csrfToken },
+            body: JSON.stringify({ title, client, case_name: caseN, date, event_type: type })
+        }).then(res => {
+            if (!res.ok) {
+                console.error('Failed to add event:', res.statusText);
+                throw new Error('Failed to add event');
             }
-            if(client) data.title = `${data.title} - ${client}`;
+            return res.json();
+        }).then(data => {
+            const formattedEvent = { ...data };
+            if (data.time_slot) {
+                formattedEvent.start = `${data.start}T${data.time_slot}:00`;
+                formattedEvent.extendedProps = { time_slot: data.time_slot, client: data.client, case_name: data.case_name, event_type: data.event_type };
+            }
+            formattedEvent.title = `${data.title}${data.client ? ' - ' + data.client : ''}${data.case_name ? ' (' + data.case_name + ')' : ''}`;
 
-            calendar.addEvent(data);
+            calendar.addEvent(formattedEvent);
 
             const row = appointmentsTable.insertRow(0);
-            row.insertCell(0).innerText = date;
+            row.insertCell(0).innerText = data.time_slot ? `${data.date} at ${data.time_slot}` : data.date;
             row.insertCell(1).innerText = client;
             row.insertCell(2).innerText = caseN;
             const statusCell = row.insertCell(3);
@@ -226,9 +325,15 @@ document.addEventListener('DOMContentLoaded', function() {
             recentActivities.insertBefore(actDiv, recentActivities.children[0]);
 
             modal.classList.add('hidden');
-            eventTitle.value=''; clientName.value=''; caseName.value=''; eventType.value='meeting';
-        }).catch(err => console.error(err));
-    }
+            eventTitle.value = '';
+            clientName.value = '';
+            caseName.value = '';
+            eventType.value = 'meeting';
+        }).catch(err => {
+            console.error('Error adding event:', err);
+            alert('Failed to add event. Please try again.');
+        });
+    };
 });
 </script>
 {% endblock dashboard_content %}

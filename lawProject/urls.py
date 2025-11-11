@@ -18,9 +18,10 @@ urlpatterns = [
     # General Pages
     # ---------------------------
     path('', main_views.home, name='home'),
+    path('users/', include('users.urls')),
     path('about/', main_views.about, name='about'),
     path('test/', main_views.test, name='test'),
-
+    path('search/', main_views.search_articles, name='search_articles'),
     path('teams/', main_views.team, name='team'),
     path('contact/', main_views.contact_us, name='contact'),
     path('privacy-policy/', main_views.privacy_policy, name='privacy_policy'),
@@ -35,6 +36,17 @@ urlpatterns = [
     path('articles/category/<slug:category_slug>/', main_views.article_list, name='article_by_category'),
     path('articles/<slug:slug>/', main_views.article_detail, name='article_detail'),
     path("blogs/new/", admin_views.article_create, name="article_create"),
+
+    path('manage-quotes/', admin_views.manage_quotes, name='manage_quotes'),
+    path('quote/create/', admin_views.quote_create, name='quote_create'),
+    path('quote/edit/<int:pk>/', admin_views.edit_quote, name='edit_quote'),
+    path('quote/delete/<int:pk>/', admin_views.delete_quote, name='delete_quote'),
+
+    # Calendar
+    path('events/', admin_views.get_events, name='get_events'),
+    path('events/add/', admin_views.add_event, name='add_event'),
+    path('events/edit/<int:event_id>/', admin_views.edit_event, name='edit_event'),
+    path('events/delete/<int:event_id>/', admin_views.delete_event, name='delete_event'),
 
 
     # ---------------------------
@@ -51,10 +63,13 @@ urlpatterns = [
     # Admin Dashboard
     # ---------------------------
     path('admin-dashboard/', admin_views.dashboard_home, name='admin_dashboard_home'),
+    path('admin-dashboard/analytics/', admin_views.analytics_dashboard, name='analytics_dashboard'),
     path('admin-dashboard/contacts/', admin_views.contacts_list, name='admin_dashboard_contacts'),
     path('admin-dashboard/calls/', admin_views.scheduled_calls_admin, name='admin_dashboard_calls'),
     path('admin-dashboard/activity/', admin_views.activity_log_list, name='admin_dashboard_activity'),
     path("admin-dashboard/feedback/", admin_views.feedback_dashboard, name="feedback_page"),
+    path('admin/scheduled-calls/<int:call_id>/mark-read/', admin_views.mark_call_read, name='mark_call_read'),
+
 
     # Call actions
     path('admin-dashboard/call/confirm/<int:call_id>/', admin_views.confirm_call, name='admin_confirm_call'),
@@ -97,6 +112,8 @@ urlpatterns = [
 
     path('messages/add/', admin_views.add_message, name='add_message'),
     path('calls/add/', admin_views.add_call, name='add_call'),
+
+    path('profile/', admin_views.admin_profile, name='profile_settings'),
 ]
 
 # Serve robots.txt

@@ -33,28 +33,12 @@
             <div class="mt-10">
                 <a href="{% url 'article_list' %}" 
                    class="text-blue-900 hover:text-amber-500 font-medium">
-                   ← Back to Articles
+                   ← Back 
                 </a>
             </div>
         </div>
     </article>
 
     <!-- Sidebar with Categories -->
-    <aside class="max-w-4xl mx-auto mt-12">
-        <div class="bg-white p-6 rounded-xl shadow-lg">
-            <h3 class="text-lg font-semibold text-blue-900 border-b-2 border-amber-500 pb-2 mb-4">Categories</h3>
-            <ul class="space-y-2 text-sm">
-                {% for category in categories %}
-                    <li>
-                        <a href="{% url 'article_by_category' category.slug %}" 
-                           class="block text-gray-600 hover:text-amber-500">
-                            {{ category.name }} ({{ category.article_count }})
-                        </a>
-                    </li>
-                {% empty %}
-                    <li class="text-gray-400">No categories available.</li>
-                {% endfor %}
-            </ul>
-        </div>
-    </aside>
+    
 {% endblock %}

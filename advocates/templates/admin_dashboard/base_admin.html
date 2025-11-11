@@ -56,6 +56,10 @@ tr td{background:#fff;padding:0.75rem;border-radius:10px;}
     #calendar{width:calc(100% - 2rem);margin:1rem;height:450px;min-height:450px;max-height:450px;}
     .cards{grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:1rem;padding:1rem;}
 }
+#notificationDropdown {
+    max-height: 500px;
+    overflow-y: auto;
+}
 </style>
 </head>
 <body>
@@ -64,7 +68,7 @@ tr td{background:#fff;padding:0.75rem;border-radius:10px;}
 <div class="sidebar" id="sidebar">
     <div class="logo-container">
         <a href="{% url 'home' %}" aria-label="Muguna & Oyile Home">
-            <img src="{% static 'images/logo.png' %}" 
+            <img src="{% static 'images/admin_logo.png' %}" 
                  alt="Muguna & Oyile Law Firm Logo" 
                  width="180" 
                  height="60"
@@ -72,6 +76,7 @@ tr td{background:#fff;padding:0.75rem;border-radius:10px;}
         </a>
     </div>
     <nav>
+        <a href="{% url 'analytics_dashboard' %}" class="{% if request.resolver_match.url_name == 'analytics_dashboard' %}active{% endif %} px-4 py-2 text-gray-300 hover:bg-gray-800 rounded">Analytics</a>
         <!-- Dashboard -->
         <a href="{% url 'admin_dashboard_home' %}" class="{% if request.resolver_match.url_name == 'admin_dashboard_home' %}active{% endif %}">🏠 Dashboard</a>
 
@@ -119,17 +124,18 @@ tr td{background:#fff;padding:0.75rem;border-radius:10px;}
 
         <!-- Blogs -->
         <li x-data="{ open: false }" class="relative">
-            <button @click="open = !open" class="w-full flex items-center justify-between px-4 py-2 hover:bg-gray-800 rounded text-gray-300 font-medium focus:outline-none">
-                <span class="flex items-center gap-2">✍️ Blogs</span>
-                <svg :class="{ 'rotate-180': open }" class="w-4 h-4 text-gray-300 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
-                </svg>
-            </button>
-            <ul x-show="open" x-transition x-cloak class="ml-4 mt-1 space-y-1">
-                <li><a href="{% url 'article_create' %}" class="{% if request.resolver_match.url_name == 'article_create' %}active{% endif %} block px-4 py-2 text-gray-300 hover:bg-gray-700 rounded">➕ New Blog</a></li>
-                <li><a href="{% url 'manage_blogs' %}" class="{% if request.resolver_match.url_name == 'manage_blogs' %}active{% endif %} block px-4 py-2 text-gray-300 hover:bg-gray-700 rounded">📝 Manage Blogs</a></li>
-            </ul>
-        </li>
+    <button @click="open = !open" class="w-full flex items-center justify-between px-4 py-2 hover:bg-gray-800 rounded text-gray-300 font-medium focus:outline-none">
+        <span class="flex items-center gap-2">✍️ Blogs</span>
+        <svg :class="{ 'rotate-180': open }" class="w-4 h-4 text-gray-300 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+        </svg>
+    </button>
+    <ul x-show="open" x-transition x-cloak class="ml-4 mt-1 space-y-1">
+        <li><a href="{% url 'article_create' %}" class="{% if request.resolver_match.url_name == 'article_create' %}active{% endif %} block px-4 py-2 text-gray-300 hover:bg-gray-700 rounded">➕ New Blog</a></li>
+        <li><a href="{% url 'manage_blogs' %}" class="{% if request.resolver_match.url_name == 'manage_blogs' %}active{% endif %} block px-4 py-2 text-gray-300 hover:bg-gray-700 rounded">📝 Manage Blogs</a></li>
+        <li><a href="{% url 'manage_quotes' %}" class="{% if request.resolver_match.url_name == 'manage_quotes' %}active{% endif %} block px-4 py-2 text-gray-300 hover:bg-gray-700 rounded">📜 Manage Quotes</a></li>
+    </ul>
+</li>
 
         <!--Feedback-->
         <a href="{% url 'feedback_page' %}" class="{% if request.resolver_match.url_name == 'feedback_page' %}active{% endif %} px-4 py-2 text-gray-300 hover:bg-gray-800 rounded">💬 Feedback</a>

@@ -7,10 +7,10 @@
 <!-- Page Heading -->
 <section class="text-center mb-6 lg:mb-8">
   <div class="relative inline-block">
-  <h1 class="text-3xl lg:text-4xl font-bold text-grey-800 tracking-tight mb-4">
-    Articles & Insights
-  </h1>
-<span class="absolute bottom-1 left-1/2 -translate-x-1/2 w-16 h-1 bg-[#ebd19e] rounded-full"></span>
+    <h1 class="text-3xl lg:text-4xl font-bold text-grey-800 tracking-tight mb-4">
+      Publications
+    </h1>
+    <span class="absolute bottom-1 left-1/2 -translate-x-1/2 w-16 h-1 bg-[#ebd19e] rounded-full"></span>
   </div>
   <p class="text-lg text-gray-600 max-w-3xl mx-auto leading-relaxed">
     Stay informed with our expert legal analysis, insights, and commentary on the latest developments in law and business.
@@ -18,195 +18,444 @@
 </section>
 
 <!-- Slideshow of Quotes -->
-<section class="mb-12 max-w-7xl mx-auto">
-  <div class="relative max-w-3xl w-full mx-auto rounded-2xl overflow-hidden shadow-lg">
-    <div class="flex transition-transform duration-700 ease-in-out" id="quoteSlideshow">
-      {% for quote in quotes %}
-      <div class="min-w-full flex-shrink-0 bg-[var(--primary-dark)] text-white p-10 text-center rounded-2xl">
-        <p class="text-xl italic font-serif leading-relaxed">"{{ quote.text }}"</p>
-        <p class="mt-4 text-sm font-medium">— {{ quote.author }}</p>
-      </div>
-      {% empty %}
-      <div class="min-w-full flex-shrink-0 bg-indigo-900 text-white p-10 text-center rounded-2xl">
-        <p class="text-xl italic font-serif leading-relaxed">"No quotes available at the moment."</p>
-      </div>
-      {% endfor %}
+<section class="mb-8 max-w-12xl mx-auto flex justify-center">
+  <div class="w-full glass-container shadow-2xl px-4 py-8 md:px-8 lg:px-16 relative overflow-hidden" style="background-color: #182942;">
+    <div id="quote-slideshow" class="relative min-h-[100px] flex items-center justify-center text-center mx-auto">
+      <!-- JS renders quotes -->
     </div>
-    <!-- Navigation Arrows -->
-    <button
-      class="absolute top-1/2 left-4 transform -translate-y-1/2 bg-white text-gray-800 p-3 rounded-full shadow hover:bg-gray-200 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-indigo-200"
-      onclick="moveSlide(-1)">
-      <i class="fas fa-chevron-left"></i>
-    </button>
-    <button
-      class="absolute top-1/2 right-4 transform -translate-y-1/2 bg-white text-gray-800 p-3 rounded-full shadow hover:bg-gray-200 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-indigo-200"
-      onclick="moveSlide(1)">
-      <i class="fas fa-chevron-right"></i>
-    </button>
+
+    <footer class="flex justify-between items-center mt-4 pt-3 border-t border-gray-600/50 relative z-20">
+      <div class="flex items-center space-x-2">
+        <button id="prev-btn" class="p-1.5 rounded-full bg-gray-700/50 text-gray-300 hover:bg-sky-500 hover:text-white transition duration-300 focus:outline-none focus:ring-4 focus:ring-sky-500/50">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+          </svg>
+        </button>
+        <button id="next-btn" class="p-1.5 rounded-full bg-gray-700/50 text-gray-300 hover:bg-sky-500 hover:text-white transition duration-300 focus:outline-none focus:ring-4 focus:ring-sky-500/50">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+          </svg>
+        </button>
+      </div>
+
+      <div class="flex items-center space-x-4">
+        <span id="slide-indicator" class="text-xs md:text-sm font-bold text-gray-300">01 / 01</span>
+        <div id="progress-dots" class="flex space-x-2"></div>
+      </div>
+    </footer>
+
+    <!-- PROGRESS BAR -->
+    <div class="absolute bottom-0 left-0 right-0 h-0.5 bg-gray-700/30 overflow-hidden">
+      <div id="auto-progress-bar" class="h-full bg-sky-400"></div>
+    </div>
   </div>
 </section>
 
-<!-- Filter Tabs -->
-<section class="mb-12 max-w-7xl mx-auto">
-  <div class="flex justify-center space-x-6 bg-gray-50 p-2 rounded-lg shadow-sm">
-    <button
-      class="filter-tab group relative px-6 py-3 text-gray-800 font-semibold text-sm uppercase tracking-wide border-b-2 border-transparent hover:border-indigo-600 hover:text-indigo-600 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-indigo-200 {% if filter_type == 'publication' or not filter_type %}border-indigo-600 text-indigo-600 bg-indigo-50 shadow-md{% endif %}"
-      onclick="filterContent('publication')">
-      Publications
+<!-- Search Bar -->
+<section class="mb-8 max-w-7xl mx-auto px-4 sm:px-6">
+  <form id="search-form" class="relative max-w-2xl mx-auto">
+    <div class="flex items-center bg-white rounded-full shadow-md overflow-hidden border border-gray-200 focus-within:border-[#ebd19e] focus-within:ring-4 focus-within:ring-[#ebd19e]/20 transition-all duration-300">
+      <input
+        type="text"
+        id="search-input"
+        name="q"
+        value="{{ request.GET.q|default:'' }}"
+        placeholder="Search publications, articles, or news..."
+        class="w-full px-6 py-4 text-gray-700 placeholder-gray-400 bg-transparent outline-none text-base"
+        autocomplete="off"
+      >
+      <button
+        type="submit"
+        class="px-6 py-4 bg-[#182942] text-[#ebd19e] border-2 border-[#ebd19e] font-semibold rounded-r-full 
+               flex items-center justify-center gap-3 min-w-[130px]
+               hover:bg-[#ebd19e] hover:text-[#182942] hover:shadow-lg 
+               active:scale-95 transform transition-all duration-300
+               focus:outline-none focus:ring-4 focus:ring-[#ebd19e]/30"
+      >
+        <!-- Larger Magnifying Glass -->
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
+                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+        </svg>
+        <span class="hidden sm:inline text-sm font-medium">Search</span>
+      </button>
+    </div>
+    <input type="hidden" id="current-filter" value="{{ filter_type|default:'publication' }}">
+  </form>
+
+  <div id="search-loading" class="hidden text-center mt-4">
+    <span class="inline-block animate-spin rounded-full h-6 w-6 border-3 border-[#182942] border-t-transparent"></span>
+  </div>
+
+  <p id="no-results" class="hidden text-center text-gray-500 mt-6">No results found.</p>
+</section>
+
+<!-- MOBILE CATEGORIES ACCORDION -->
+<div class="lg:hidden w-full px-4 sm:px-6 mb-6" id="mobile-categories-container">
+  <div class="bg-white rounded-xl shadow-lg overflow-hidden border border-gray-100">
+    <button id="mobile-categories-toggle" class="w-full px-6 py-4 text-left font-semibold text-blue-900 flex items-center justify-between focus:outline-none hover:bg-gray-50 transition">
+      <span class="flex items-center">
+        <svg class="w-5 h-5 mr-2 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+        </svg>
+        Categories
+      </span>
+      <svg id="categories-chevron" class="w-5 h-5 text-amber-500 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+      </svg>
+    </button>
+    <div id="mobile-categories-menu" class="border-t border-gray-200 hidden bg-gray-50">
+      <ul class="px-6 py-4 space-y-3 text-sm">
+        {% for category in categories %}
+        <li>
+          <a href="{% url 'article_by_category' category.slug %}" class="block text-gray-700 hover:text-amber-600 font-medium transition">
+            {{ category.name }} <span class="text-gray-500 font-normal">({{ category.article_count }})</span>
+          </a>
+        </li>
+        {% empty %}
+        <li class="text-gray-400 italic">No categories available.</li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- Filter Tabs (Desktop) + Dropdown (Mobile) -->
+<section class="mb-12 max-w-7xl mx-auto px-4 sm:px-6">
+  <!-- Desktop Tabs -->
+  <div class="hidden md:flex justify-center space-x-6 bg-gray-50 p-2 rounded-lg shadow-sm">
+    <button class="filter-tab group relative px-6 py-3 text-gray-800 font-semibold text-sm uppercase tracking-wide border-b-2 border-transparent hover:border-indigo-600 hover:text-indigo-600 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-indigo-200 {% if filter_type == 'publication' or not filter_type %}border-indigo-600 text-indigo-600 bg-indigo-50 shadow-md{% endif %}" data-filter="publication">
+      Blogs
       <span class="absolute bottom-0 left-0 w-full h-0.5 bg-indigo-600 transform {% if filter_type == 'publication' or not filter_type %}scale-x-100{% else %}scale-x-0 group-hover:scale-x-100{% endif %} transition-transform duration-300"></span>
     </button>
-    <button
-      class="filter-tab group relative px-6 py-3 text-gray-800 font-semibold text-sm uppercase tracking-wide border-b-2 border-transparent hover:border-indigo-600 hover:text-indigo-600 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-indigo-200 {% if filter_type == 'article' %}border-indigo-600 text-indigo-600 bg-indigo-50 shadow-md{% endif %}"
-      onclick="filterContent('article')">
+    <button class="filter-tab group relative px-6 py-3 text-gray-800 font-semibold text-sm uppercase tracking-wide border-b-2 border-transparent hover:border-indigo-600 hover:text-indigo-600 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-indigo-200 {% if filter_type == 'article' %}border-indigo-600 text-indigo-600 bg-indigo-50 shadow-md{% endif %}" data-filter="article">
       Articles
       <span class="absolute bottom-0 left-0 w-full h-0.5 bg-indigo-600 transform {% if filter_type == 'article' %}scale-x-100{% else %}scale-x-0 group-hover:scale-x-100{% endif %} transition-transform duration-300"></span>
     </button>
-    <button
-      class="filter-tab group relative px-6 py-3 text-gray-800 font-semibold text-sm uppercase tracking-wide border-b-2 border-transparent hover:border-indigo-600 hover:text-indigo-600 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-indigo-200 {% if filter_type == 'news' %}border-indigo-600 text-indigo-600 bg-indigo-50 shadow-md{% endif %}"
-      onclick="filterContent('news')">
+    <button class="filter-tab group relative px-6 py-3 text-gray-800 font-semibold text-sm uppercase tracking-wide border-b-2 border-transparent hover:border-indigo-600 hover:text-indigo-600 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-indigo-200 {% if filter_type == 'news' %}border-indigo-600 text-indigo-600 bg-indigo-50 shadow-md{% endif %}" data-filter="news">
       News
       <span class="absolute bottom-0 left-0 w-full h-0.5 bg-indigo-600 transform {% if filter_type == 'news' %}scale-x-100{% else %}scale-x-0 group-hover:scale-x-100{% endif %} transition-transform duration-300"></span>
     </button>
   </div>
+
+  <!-- Mobile Filter Dropdown -->
+  <div class="md:hidden mb-6">
+    <div class="relative">
+      <button id="mobile-filter-btn" class="w-full px-6 py-4 bg-white border border-gray-300 rounded-lg shadow-sm text-left text-gray-800 font-medium flex items-center justify-between focus:outline-none focus:ring-2 focus:ring-indigo-200 transition">
+        <span id="mobile-filter-label">
+          {% if filter_type == 'article' %}Articles{% elif filter_type == 'news' %}News{% else %}Blog Publications{% endif %}
+        </span>
+        <svg id="filter-chevron" class="w-5 h-5 text-gray-500 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+        </svg>
+      </button>
+      <div id="mobile-filter-menu" class="absolute top-full left-0 right-0 mt-2 bg-white border border-gray-200 rounded-lg shadow-lg overflow-hidden z-50 hidden">
+        <button class="filter-tab block w-full text-left px-6 py-3 text-gray-700 hover:bg-indigo-50 hover:text-indigo-600 transition" data-filter="publication">Blog Publications</button>
+        <button class="filter-tab block w-full text-left px-6 py-3 text-gray-700 hover:bg-indigo-50 hover:text-indigo-600 transition" data-filter="article">Articles</button>
+        <button class="filter-tab block w-full text-left px-6 py-3 text-gray-700 hover:bg-indigo-50 hover:text-indigo-600 transition" data-filter="news">News</button>
+      </div>
+    </div>
+  </div>
 </section>
 
+<!-- Content + Sidebar -->
 <div class="flex flex-col lg:flex-row gap-8 lg:gap-12">
   <!-- Articles Grid -->
   <section class="lg:w-3/4 px-4 sm:px-6">
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 lg:pl-6" id="contentGrid">
-      {% if filter_type == 'publication' or not filter_type %}
-      {% for article in articles %}
-      {% if article.type == 'publication' or not filter_type %}
-      <article class="bg-white rounded-xl shadow-lg hover:shadow-2xl transition-all overflow-hidden">
-        <!-- Title Block -->
-        <div class="h-48 flex items-center justify-center px-4 text-center {{ article.theme_color }}">
-          <h3 class="font-serif text-xl sm:text-2xl font-bold text-white leading-snug">
-            <a href="{% url 'article_detail' article.slug %}" class="hover:opacity-80 transition">
-              {{ article.title }}
-            </a>
-          </h3>
-        </div>
-        <!-- Body -->
-        <div class="p-6">
-          <p class="text-sm text-gray-600 mb-4">
-            {{ article.content|truncatewords:20 }}
-          </p>
-          <div class="text-xs text-gray-500 flex justify-between items-center">
-            <span>By {{ article.author }}</span>
-            <span>{{ article.created_at|date:"F d, Y" }}</span>
-          </div>
-          <a href="{% url 'article_detail' article.slug %}"
-            class="mt-4 inline-block text-blue-900 hover:text-amber-500 font-medium">
-            Read More →
-          </a>
-        </div>
-      </article>
-      {% endif %}
-      {% empty %}
-      <p class="text-gray-600">No publications available.</p>
-      {% endfor %}
-
-      {% elif filter_type == 'article' %}
-      {% for article in articles %}
-      {% if article.type == 'article' %}
-      <article class="bg-white rounded-xl shadow-lg hover:shadow-2xl transition-all overflow-hidden">
-        <div class="h-48 flex items-center justify-center px-4 text-center {{ article.theme_color }}">
-          <h3 class="font-serif text-xl sm:text-2xl font-bold text-white leading-snug">
-            <a href="{% url 'article_detail' article.slug %}" class="hover:opacity-80 transition">
-              {{ article.title }}
-            </a>
-          </h3>
-        </div>
-        <div class="p-6">
-          <p class="text-sm text-gray-600 mb-4">
-            {{ article.content|truncatewords:20 }}
-          </p>
-          <div class="text-xs text-gray-500 flex justify-between items-center">
-            <span>By {{ article.author }}</span>
-            <span>{{ article.created_at|date:"F d, Y" }}</span>
-          </div>
-          <a href="{% url 'article_detail' article.slug %}"
-            class="mt-4 inline-block text-blue-900 hover:text-amber-500 font-medium">
-            Read More →
-          </a>
-        </div>
-      </article>
-      {% endif %}
-      {% empty %}
-      <p class="text-gray-600">No articles available.</p>
-      {% endfor %}
-
-      {% elif filter_type == 'news' %}
-      {% for article in articles %}
-      {% if article.type == 'news' %}
-      <article class="bg-white rounded-xl shadow-lg hover:shadow-2xl transition-all overflow-hidden">
-        <div class="h-48 flex items-center justify-center px-4 text-center {{ article.theme_color }}">
-          <h3 class="font-serif text-xl sm:text-2xl font-bold text-white leading-snug">
-            <a href="{% url 'article_detail' article.slug %}" class="hover:opacity-80 transition">
-              {{ article.title }}
-            </a>
-          </h3>
-        </div>
-        <div class="p-6">
-          <p class="text-sm text-gray-600 mb-4">
-            {{ article.content|truncatewords:20 }}
-          </p>
-          <div class="text-xs text-gray-500 flex justify-between items-center">
-            <span>By {{ article.author }}</span>
-            <span>{{ article.created_at|date:"F d, Y" }}</span>
-          </div>
-          <a href="{% url 'article_detail' article.slug %}"
-            class="mt-4 inline-block text-blue-900 hover:text-amber-500 font-medium">
-            Read More →
-          </a>
-        </div>
-      </article>
-      {% endif %}
-      {% empty %}
-      <p class="text-gray-600">No news available.</p>
-      {% endfor %}
+      <!-- INITIAL RENDER: Articles from Django -->
+      {% if articles %}
+        {% for article in articles %}
+          <article class="bg-white rounded-xl shadow-lg hover:shadow-2xl transition-all overflow-hidden">
+            <div class="h-48 flex items-center justify-center px-4 text-center {{ article.theme_color|default:'bg-indigo-600' }}">
+              <h3 class="font-serif text-xl sm:text-2xl font-bold leading-snug">
+                <a href="{{ article.detail_url }}" class="hover:opacity-80 transition">
+                  {{ article.title }}
+                </a>
+              </h3>
+            </div>
+            <div class="p-6">
+              <p class="text-sm text-gray-600 mb-4">
+                {{ article.content|striptags|truncatewords:30 }}
+              </p>
+              <div class="text-xs text-gray-500 flex justify-between items-center">
+                <span>By {{ article.author }}</span>
+                <span>{{ article.created_at|date:"M d, Y" }}</span>
+              </div>
+              <a href="{{ article.detail_url }}" class="mt-4 inline-block text-blue-900 hover:text-amber-500 font-medium">
+                Read More
+              </a>
+            </div>
+          </article>
+        {% endfor %}
+      {% else %}
+        <p class="col-span-full text-center text-gray-500 py-8">No articles found.</p>
       {% endif %}
     </div>
   </section>
 
-  <!-- Sidebar -->
-  <aside class="lg:w-1/4 hidden lg:block space-y-8">
-    <div class="bg-white p-6 rounded-xl shadow-lg">
-      <h3 class="text-lg font-semibold text-blue-900 border-b-2 border-amber-500 pb-2 mb-4">Categories</h3>
-      <ul class="space-y-2 text-sm">
-        {% for category in categories %}
-        <li>
-          <a href="{% url 'article_by_category' category.slug %}"
-            class="block text-gray-600 hover:text-amber-500">
-            {{ category.name }} ({{ category.article_count }})
-          </a>
-        </li>
-        {% empty %}
-        <li class="text-gray-400">No categories available.</li>
-        {% endfor %}
-      </ul>
-    </div>
-  </aside>
+  <!-- Desktop Sidebar (Categories) -->
+  
 </div>
 
-<!-- JavaScript for Slideshow -->
+<!-- Styles -->
+<style>
+  @keyframes progressMove {
+    0% { width: 0%; }
+    100% { width: 100%; }
+  }
+  #auto-progress-bar {
+    animation: progressMove 12s linear forwards;
+  }
+
+  .glass-container {
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border: 1px solid rgba(148, 163, 184, 0.2);
+  }
+
+  .quote-slide { opacity: 0; transition: opacity 1.5s cubic-bezier(0.25, 0.46, 0.45, 0.94); pointer-events: none; }
+  .quote-slide.active { opacity: 1; pointer-events: auto; }
+
+  .quote-text {
+    color: white !important;
+    font-family: 'Georgia', serif;
+  }
+
+  .author-text {
+    color: #6ca0dc;
+    font-style: italic;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-family: 'Georgia', serif;
+    text-align: left;
+  }
+
+  mark {
+    background-color: #fef3c7;
+    color: #92400e;
+    padding: 0.1em 0.3em;
+    border-radius: 0.25rem;
+    font-weight: 500;
+  }
+
+  #mobile-filter-menu, #mobile-categories-menu {
+    transform: translateY(-8px);
+    opacity: 0;
+    transition: all 0.25s ease;
+  }
+  #mobile-filter-menu.show, #mobile-categories-menu.show {
+    transform: translateY(0);
+    opacity: 1;
+  }
+</style>
+
+<!-- Scripts -->
+{{ quotes|json_script:"quotes-data" }}
+
 <script>
-  let currentSlide = 0;
-  const slides = document.querySelectorAll('#quoteSlideshow > div');
-  const totalSlides = slides.length;
+  // === SLIDESHOW ===
+  const quotes = JSON.parse(document.getElementById('quotes-data').textContent);
+  const SLIDE_DURATION = 12000;
+  let currentIndex = 0;
+  let autoSlideTimeout;
+  let progressBarAnimation;
 
-  function moveSlide(direction) {
-    currentSlide = (currentSlide + direction + totalSlides) % totalSlides;
-    const slideshow = document.getElementById('quoteSlideshow');
-    slideshow.style.transform = `translateX(-${currentSlide * 100}%)`;
+  const slideshowContainer = document.getElementById('quote-slideshow');
+  const prevBtn = document.getElementById('prev-btn');
+  const nextBtn = document.getElementById('next-btn');
+  const slideIndicator = document.getElementById('slide-indicator');
+  const progressDotsContainer = document.getElementById('progress-dots');
+  const autoProgressBar = document.getElementById('auto-progress-bar');
+
+  const renderQuote = (i) => {
+    clearTimeout(autoSlideTimeout);
+    if (progressBarAnimation) progressBarAnimation.cancel();
+
+    const current = slideshowContainer.querySelector('.quote-slide.active');
+    if (current) { current.classList.remove('active'); current.classList.add('hidden'); }
+
+    const slide = document.createElement('div');
+    slide.className = 'quote-slide hidden w-full relative';
+    slide.innerHTML = `
+      <blockquote class="quote-text text-[22px] leading-tight text-center font-serif px-4 mb-4">
+        "${quotes[i].text}"
+      </blockquote>
+      ${quotes[i].author ? `<p class="author-text absolute bottom-4 right-4 text-[16px] sm:text-[16.2px] lg:text-[18px] font-light text-sky-400 uppercase tracking-widest font-serif italic">— ${quotes[i].author}</p>` : ''}
+    `;
+    slideshowContainer.appendChild(slide);
+
+    setTimeout(() => {
+      slide.classList.remove('hidden'); slide.classList.add('active');
+      if (current) current.addEventListener('transitionend', () => current.remove(), { once: true });
+    }, 50);
+
+    currentIndex = i;
+    slideIndicator.textContent = `${String(i+1).padStart(2,'0')} / ${String(quotes.length).padStart(2,'0')}`;
+    updateDots(i);
+    startAutoAdvance();
+  };
+
+  const updateDots = (i) => {
+    progressDotsContainer.innerHTML = '';
+    quotes.forEach((_, idx) => {
+      const dot = document.createElement('span');
+      dot.className = `dot w-3 h-3 rounded-full cursor-pointer transition-all duration-300 ${idx === i ? 'bg-sky-400' : 'bg-gray-600'}`;
+      dot.addEventListener('click', () => renderQuote(idx));
+      progressDotsContainer.appendChild(dot);
+    });
+  };
+
+  const startAutoAdvance = () => {
+    if (quotes.length <= 1) return;
+    autoProgressBar.style.animation = 'none';
+    void autoProgressBar.offsetWidth;
+    autoProgressBar.style.animation = `progressMove ${SLIDE_DURATION}ms linear forwards`;
+    progressBarAnimation = autoProgressBar.getAnimations()[0];
+    autoSlideTimeout = setTimeout(() => renderQuote((currentIndex + 1) % quotes.length), SLIDE_DURATION);
+  };
+
+  prevBtn.addEventListener('click', () => renderQuote((currentIndex - 1 + quotes.length) % quotes.length));
+  nextBtn.addEventListener('click', () => renderQuote((currentIndex + 1) % quotes.length));
+
+  if (quotes.length > 0) {
+    updateDots(0);
+    renderQuote(0);
   }
 
-  // Auto-slide every 5 seconds
-  setInterval(() => moveSlide(1), 5000);
+  // === SEARCH & FILTER ===
+  const searchForm = document.getElementById('search-form');
+  const searchInput = document.getElementById('search-input');
+  const contentGrid = document.getElementById('contentGrid');
+  const loadingEl = document.getElementById('search-loading');
+  const noResultsEl = document.getElementById('no-results');
+  const filterInput = document.getElementById('current-filter');
+  const desktopSidebar = document.getElementById('desktop-sidebar');
+  const mobileCategoriesContainer = document.getElementById('mobile-categories-container');
+  const mobileBtn = document.getElementById('mobile-filter-btn');
+  const mobileMenu = document.getElementById('mobile-filter-menu');
+  const mobileLabel = document.getElementById('mobile-filter-label');
+  const mobileCategoriesToggle = document.getElementById('mobile-categories-toggle');
+  const mobileCategoriesMenu = document.getElementById('mobile-categories-menu');
+  const categoriesChevron = document.getElementById('categories-chevron');
 
-  // Filter Content
-  function filterContent(type) {
-    window.location.href = `?filter=${type}`;
-  }
+  let debounceTimer;
+
+  const performSearch = () => {
+    const q = searchInput.value.trim();
+    const filter = filterInput.value;
+
+    loadingEl.classList.remove('hidden');
+    noResultsEl.classList.add('hidden');
+    contentGrid.innerHTML = '<div class="col-span-full text-center py-8"><p class="text-gray-500">Searching...</p></div>';
+
+    const params = new URLSearchParams();
+    if (q) params.set('q', q);
+    if (filter && filter !== 'publication') params.set('filter', filter);
+    history.replaceState(null, '', `${window.location.pathname}?${params}`);
+
+    fetch(`/search/?${params}`, { headers: { 'X-Requested-With': 'XMLHttpRequest' } })
+      .then(r => r.json())
+      .then(data => {
+        loadingEl.classList.add('hidden');
+        renderResults(data.articles || [], q);
+        updateSidebar(filter);
+        updateMobileLabel(filter);
+      })
+      .catch(() => {
+        loadingEl.classList.add('hidden');
+        contentGrid.innerHTML = '<p class="col-span-full text-center text-red-500">Error loading results.</p>';
+      });
+  };
+
+  const renderResults = (articles, q) => {
+    if (!articles.length) {
+      noResultsEl.classList.remove('hidden');
+      contentGrid.innerHTML = '';
+      return;
+    }
+    noResultsEl.classList.add('hidden');
+    contentGrid.innerHTML = articles.map(a => {
+      const safeUrl = a.detail_url && !a.detail_url.includes('undefined') ? a.detail_url : '#';
+      return `
+        <article class="bg-white rounded-xl shadow-lg hover:shadow-2xl transition-all overflow-hidden">
+          <div class="h-48 flex items-center justify-center px-4 text-center ${a.theme_color || 'bg-indigo-600'}">
+            <h3 class="font-serif text-xl sm:text-2xl font-bold text-white leading-snug">
+              <a href="${safeUrl}" class="hover:opacity-80 transition">${highlight(a.title, q)}</a>
+            </h3>
+          </div>
+          <div class="p-6">
+            <p class="text-sm text-gray-600 mb-4">${highlight(a.content || '', q)}</p>
+            <div class="text-xs text-gray-500 flex justify-between items-center">
+              <span>By ${a.author || 'Unknown'}</span>
+              <span>${a.created_at || ''}</span>
+            </div>
+            <a href="${safeUrl}" class="mt-4 inline-block text-blue-900 hover:text-amber-500 font-medium">Read More</a>
+          </div>
+        </article>
+      `;
+    }).join('');
+  };
+
+  const highlight = (text, q) => q ? text.replace(new RegExp(`(${q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi'), '<mark>$1</mark>') : text;
+
+  const updateSidebar = (f) => {
+    const show = (f === 'publication' || !f);
+    if (desktopSidebar) desktopSidebar.style.display = show ? 'block' : 'none';
+    if (mobileCategoriesContainer) mobileCategoriesContainer.style.display = show ? 'block' : 'none';
+  };
+
+  const updateMobileLabel = (f) => {
+    mobileLabel.textContent = f === 'article' ? 'Articles' : f === 'news' ? 'News' : 'Blog Publications';
+  };
+
+  // Filter Tabs
+  document.querySelectorAll('.filter-tab').forEach(tab => {
+    tab.addEventListener('click', (e) => {
+      e.preventDefault();
+      const type = tab.dataset.filter;
+      filterInput.value = type;
+      document.querySelectorAll('.filter-tab').forEach(t => {
+        t.classList.remove('border-indigo-600', 'text-indigo-600', 'bg-indigo-50', 'shadow-md');
+        t.querySelector('span')?.classList.remove('scale-x-100');
+      });
+      tab.classList.add('border-indigo-600', 'text-indigo-600', 'bg-indigo-50', 'shadow-md');
+      tab.querySelector('span')?.classList.add('scale-x-100');
+      mobileMenu.classList.add('hidden');
+      performSearch();
+    });
+  });
+
+  // Mobile Filter Dropdown
+  mobileBtn.addEventListener('click', () => {
+    mobileMenu.classList.toggle('hidden');
+    mobileMenu.classList.toggle('show');
+  });
+
+  // Mobile Categories Accordion
+  mobileCategoriesToggle.addEventListener('click', () => {
+    mobileCategoriesMenu.classList.toggle('hidden');
+    mobileCategoriesMenu.classList.toggle('show');
+    categoriesChevron.classList.toggle('rotate-180');
+  });
+
+  // Close dropdowns on outside click
+  document.addEventListener('click', (e) => {
+    if (!mobileBtn.contains(e.target) && !mobileMenu.contains(e.target)) {
+      mobileMenu.classList.add('hidden');
+    }
+  });
+
+  // Search
+  searchForm.addEventListener('submit', e => { e.preventDefault(); performSearch(); });
+  searchInput.addEventListener('input', () => {
+    clearTimeout(debounceTimer);
+    debounceTimer = setTimeout(performSearch, 400);
+  });
+
+  // Initialize on load
+  document.addEventListener('DOMContentLoaded', () => {
+    performSearch();
+  });
 </script>
 {% endblock %}

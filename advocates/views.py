@@ -10,11 +10,14 @@ from django.http import JsonResponse
 from datetime import timedelta, datetime
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.timezone import localdate
-from .forms import ArticleForm
+from .forms import ArticleForm, QuoteForm
 from .models import Category, Feedback, Quote, TeamMember
 from django.contrib.sites.shortcuts import get_current_site
 from django.core.mail import EmailMessage
+from django.views.decorators.http import require_POST
 import json
+from django.db.models import Q
+from django.urls import reverse
 
 
 from .forms import ContactMessageForm, ScheduledCallForm
@@ -170,7 +173,7 @@ def article_list(request, category_slug=None):
         filter_type = 'publication'
     
     categories = Category.objects.all()
-    articles = Article.objects.all()
+    articles = Article.objects.all().order_by('-created_at')
     category = None
     active_category = None
 
@@ -181,10 +184,16 @@ def article_list(request, category_slug=None):
     else:
         articles = articles.filter(type=filter_type) if filter_type else articles
 
-    quotes = Quote.objects.all()
+    # Add detail_url to each article
+    articles_with_url = []
+    for a in articles:
+        a.detail_url = reverse('article_detail', kwargs={'slug': a.slug})
+        articles_with_url.append(a)
+
+    quotes = list(Quote.objects.values("text", "author"))
 
     context = {
-        "articles": articles,
+        "articles": articles_with_url,
         "categories": categories,
         "active_category": active_category,
         "quotes": quotes,
@@ -834,3 +843,36 @@ def feedback_page(request):
             return JsonResponse({"success": False, "error": "An error occurred while saving feedback."}, status=500)
 
     return render(request, "feedback/FAQs.html")
+
+def search_articles(request):
+    filter_type = request.GET.get('filter', 'publication')
+    q = request.GET.get('q', '').strip()
+
+    articles = Article.objects.all().order_by('-created_at')
+
+    # Apply filter
+    if filter_type in ['publication', 'article', 'news']:
+        articles = articles.filter(type=filter_type)
+
+    # Apply search
+    if q:
+        articles = articles.filter(
+            Q(title__icontains=q) | Q(content__icontains=q)
+        )
+
+    # Serialize with detail_url
+    data = []
+    for a in articles[:12]:  # limit for performance
+        detail_url = reverse('article_detail', kwargs={'slug': a.slug})
+        data.append({
+            'slug': a.slug,
+            'title': a.title,
+            'content': a.content[:150] + ('...' if len(a.content) > 150 else ''),
+            'author': a.author,
+            'created_at': a.created_at.strftime('%B %d, %Y'),
+            'theme_color': a.theme_color or 'bg-indigo-600',
+            'type': a.type,
+            'detail_url': detail_url,  # ← THIS IS CRITICAL
+        })
+
+    return JsonResponse({'articles': data})

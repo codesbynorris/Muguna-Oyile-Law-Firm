@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Astro - Create Account</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Define Custom Colors from User Request */
+        :root {
+            --primary-color: #182942; /* Dark Blue */
+            --primary-accent: #ebd19e; /* Golden Accent */
+            --secondary-color: #5c1845; /* Dark purple */
+        }
+        
+        /* Custom Gradient for Left Panel Background */
+        .new-astro-gradient {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+        }
+
+        /* Styling for Form Inputs */
+        .custom-input {
+            border: 1px solid #d1d5db; 
+            padding: 1rem;
+            border-radius: 0.5rem;
+            width: 100%;
+            outline: none;
+            transition: all 0.2s;
+        }
+        .custom-input:focus {
+            border-color: var(--primary-accent);
+            box-shadow: 0 0 0 2px rgba(235, 209, 158, 0.5); 
+        }
+    </style>
+</head>
+<body class="bg-gray-100 min-h-screen">
+
+    <div class="flex flex-col lg:flex-row min-h-screen">
+        
+        <div class="w-full h-36 lg:w-1/2 p-4 lg:p-12 relative flex items-center justify-center new-astro-gradient lg:min-h-screen">
+            
+            <div class="w-full text-white flex flex-row lg:flex-col items-center justify-center lg:justify-center lg:text-center">
+                
+                <div class="flex-shrink-0 mr-4 lg:mr-0 lg:mb-6">
+                    <div class="w-20 h-20 lg:w-40 lg:h-40 bg-purple-700/50 rounded-full flex items-center justify-center">
+                        <span class="text-xs text-white/80">Logo</span>
+                    </div>
+                </div>
+
+                <div class="max-w-lg flex flex-col items-center text-left lg:text-center">
+                    <p class="text-md font-extrabold tracking-widest uppercase" style="color: var(--primary-accent);">Muguna & Oyile Advocates</p>
+
+                    <h1 class="hidden lg:block text-2xl sm:text-3xl font-bold mt-2 mb-6 sm:mb-10 leading-snug">
+                        Providing exceptional legal services with value, commitment and impact.
+                    </h1>
+                </div>
+
+                <p class="text-xs mt-8 sm:mt-12 text-gray-300 hidden lg:block">Beyond Earth Inc.</p>
+            </div>
+            
+        </div>
+        <div class="w-full lg:w-1/2 flex items-center justify-center bg-white p-8 lg:p-16">
+            <div class="max-w-md w-full">
+                            <h2 class="text-3xl font-bold text-gray-800 mb-8">Create Account</h2>
+
+                <div class="flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-4 mb-8">
+                    <button class="flex-1 py-3 px-4 bg-red-500 text-white rounded-lg font-semibold hover:bg-red-600 transition duration-150 shadow-md flex items-center justify-center space-x-2">
+                        <span class="text-lg">G</span>
+                        <span>Sign up with Google</span>
+                    </button>
+                    
+                </div>
+                
+                <div class="flex items-center my-6">
+                    <div class="flex-grow border-t border-gray-300"></div>
+                    <span class="flex-shrink mx-4 text-gray-500 text-sm whitespace-nowrap">Or sign-up using your email address</span>
+                    <div class="flex-grow border-t border-gray-300"></div>
+                </div>
+
+                <form class="space-y-6">
+                    <input type="text" placeholder="Name" class="custom-input">
+                    <input type="email" placeholder="Email or Phone no" class="custom-input">
+                    <input type="text" placeholder="Username" class="custom-input">
+                    <input type="password" placeholder="Password" class="custom-input">
+                    
+                    <div class="flex items-start">
+                        <input id="terms" type="checkbox" class="h-4 w-4 rounded mt-1" style="color: var(--primary-color); accent-color: var(--primary-color);">
+                        <label for="terms" class="ml-2 block text-sm text-gray-900">
+                            I agree to all <a href="#" class="font-medium hover:underline" style="color: var(--primary-color);">terms Privacy Policy</a>.
+                        </label>
+                    </div>
+
+                    <button type="submit" class="w-full py-4 text-white font-bold rounded-lg transition duration-150 shadow-md shadow-amber-500/50" style="background-color: var(--primary-color); hover:background-color: #314666;">
+                        Create Account
+                    </button>
+                </form>
+
+                <p class="text-center text-sm text-gray-500 mt-6">
+                    Already have an account? <a href="#" class="font-semibold hover:text-gray-900" style="color: var(--primary-color);">Log In</a>
+                </p>
+
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

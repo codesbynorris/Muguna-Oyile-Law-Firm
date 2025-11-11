@@ -3,71 +3,377 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>New Device Sign-in (Tailwind)</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        /* Customizing Tailwind colors to match Jumia's orange */
-        /* This is optional but helps with accuracy */
-        .jumia-orange {
-            color: #ff9900;
+    <title>Professional Profile Settings</title>
+    <!-- Load Tailwind CSS --><script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Inter for sleek typography --><link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Configure Tailwind to use Inter font and custom colors --><script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        'primary-indigo': '#4f46e5',
+                        'secondary-gray': '#f4f6f8', /* Lighter, softer background */
+                        'text-dark': '#1f2937', /* Darker text for readability */
+                    },
+                    boxShadow: {
+                        '3xl': '0 35px 60px -15px rgba(0, 0, 0, 0.3)',
+                    }
+                }
+            }
         }
-        .bg-jumia-orange {
-            background-color: #ff9900;
+    </script>
+    <style>
+        /* Base styles for smooth transitions */
+        body {
+            transition: background-color 0.3s ease;
+        }
+        .tab-button {
+            transition: all 0.2s ease-in-out;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            padding: 0.75rem 1rem; /* Adjust padding */
+            font-size: 0.95rem; /* Slightly larger text */
+            line-height: 1.5;
+        }
+        .tab-button.active {
+            font-weight: 700; /* Bolder active tab */
+            color: #4f46e5;
+            background-color: #eef2ff; /* indigo-50 */
+            border-radius: 0.75rem; /* Rounded pill effect */
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03); /* Subtle shadow for active tab */
+            transform: translateX(4px); /* Slight shift right for "active" feel */
+        }
+        .tab-button:not(.active):hover {
+            background-color: #f3f4f6; /* Soft hover for inactive tabs */
+            transform: translateX(2px); /* Slight shift on hover */
+        }
+        /* Custom ring for focus states to avoid default blue outline */
+        input:focus:not([disabled]), textarea:focus:not([disabled]), select:focus:not([disabled]), button:focus:not(.tab-button) {
+            outline: none !important;
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.3); /* Softer indigo ring */
+            border-color: #4f46e5 !important;
+        }
+        .tab-button:focus {
+             outline: none !important; /* Remove default focus for tab buttons */
+             box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.2);
         }
     </style>
 </head>
-<body class="bg-gray-100 flex justify-center py-5">
+<body class="bg-secondary-gray min-h-screen font-sans antialiased p-4 sm:p-8 text-text-dark">
 
-    <div class="email-container max-w-xl w-full bg-white border border-gray-200 shadow-sm">
+    <div class="max-w-6xl mx-auto">
+        <!-- Header Section --><header class="mb-10 md:mb-14">
+            <h1 class="text-4xl font-extrabold text-gray-900 tracking-tight sm:text-5xl">Settings</h1>
+            <p class="mt-3 text-lg text-gray-600">Personalize your experience and manage your account details.</p>
+        </header>
 
-        <div class="logo-section text-center py-5">
-            <div class="text-2xl font-bold jumia-orange">
-                Jumia
-            </div>
-        </div>
+        <!-- Main Content Grid --><div class="bg-gradient-to-br from-white to-gray-50 rounded-2xl shadow-xl overflow-hidden p-8 md:p-12 border border-gray-100">
 
-        <div class="content-area px-10">
-            <h1 class="text-xl font-medium jumia-orange mb-5">
-                New device sign in
-            </h1>
-
-            <p class="text-sm text-gray-700 mb-1">
-                Hello Henry,
-            </p>
-
-            <p class="text-sm text-gray-700 leading-relaxed mb-6">
-                Your Jumia account was used to sign in on the following device. Please review the details below to confirm it was you.
-            </p>
-
-            <div class="details-section text-sm text-gray-700 mb-8">
-                <div class="flex leading-relaxed">
-                    <span class="w-40 text-gray-600 font-normal">Date & Time of Login:</span>
-                    <span class="font-bold">2025-10-20 21:31:17 UTC</span>
+            <!-- Profile Overview (Always visible) --><div class="flex flex-col md:flex-row items-start md:items-center space-y-5 md:space-y-0 md:space-x-8 pb-8 border-b border-gray-100 mb-8">
+                <!-- Profile Avatar --><div class="relative w-24 h-24 flex-shrink-0">
+                    <img class="w-full h-full object-cover rounded-full border-4 border-white ring-2 ring-primary-indigo/50 shadow-md"
+                         src="https://placehold.co/100x100/4f46e5/ffffff?text=JD"
+                         alt="Profile Avatar">
+                    <button class="absolute bottom-0 right-0 bg-white p-2 rounded-full shadow-md border border-gray-100 hover:bg-gray-50 transition-colors focus:outline-none focus:ring-2 focus:ring-primary-indigo">
+                         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+                    </button>
                 </div>
-                <div class="flex leading-relaxed">
-                    <span class="w-40 text-gray-600 font-normal">Login country:</span>
-                    <span class="font-bold">Kenya</span>
-                </div>
-                <div class="flex leading-relaxed">
-                    <span class="w-40 text-gray-600 font-normal">Login city:</span>
-                    <span class="font-bold">Nairobi</span>
-                </div>
-                <div class="flex leading-relaxed">
-                    <span class="w-40 text-gray-600 font-normal">Type of device:</span>
-                    <span class="font-bold">Unknown Windows 10</span>
-                </div>
-                <div class="flex leading-relaxed">
-                    <span class="w-40 text-gray-600 font-normal">IP address:</span>
-                    <span class="font-bold">197.248.38.103</span>
+                <!-- Profile Info --><div>
+                    <h2 class="text-2xl font-bold text-gray-900">Jasmine Davis</h2>
+                    <p class="text-md text-gray-600 mt-1">UI/UX Maestro | jane.davis@corp.com</p>
+                    <a href="#" class="text-sm font-medium text-primary-indigo hover:text-indigo-600 mt-3 inline-block transition-colors">View Public Profile</a>
                 </div>
             </div>
-        </div>
 
-        <div class="footer-text text-center text-xs text-gray-600 py-6 border-t border-gray-100 px-10">
-            If this was you, no action is required. If this wasn't you, follow the 
-            <a href="#" class="text-blue-600 hover:text-blue-800 font-bold">link to secure the account</a>.
+            <!-- Settings Navigation and Content --><div class="flex flex-col md:flex-row gap-10">
+                <!-- Sidebar Navigation --><nav class="md:w-64 flex-shrink-0" id="settings-nav">
+                    <ul class="flex flex-col space-y-1">
+                        <li>
+                            <button data-tab="general" class="tab-button active w-full text-left text-gray-600">
+                                <!-- Icon: User --><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3 text-gray-500 active:text-primary-indigo" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                                <span>General Information</span>
+                            </button>
+                        </li>
+                        <li>
+                            <button data-tab="security" class="tab-button w-full text-left text-gray-600 hover:text-gray-900">
+                                <!-- Icon: Lock --><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3 text-gray-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                                <span>Security & Access</span>
+                            </button>
+                        </li>
+                        <li>
+                            <button data-tab="preferences" class="tab-button w-full text-left text-gray-600 hover:text-gray-900">
+                                <!-- Icon: Settings/Gear --><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3 text-gray-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.75 1.3a2 2 0 0 0 .73 2.73l.04.04a2 2 0 0 1 0 2.73l-.04.04a2 2 0 0 0-.73 2.73l.75 1.3a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.75-1.3a2 2 0 0 0-.73-2.73l-.04-.04a2 2 0 0 1 0-2.73l.04-.04a2 2 0 0 0 .73-2.73l-.75-1.3a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
+                                <span>Preferences</span>
+                            </button>
+                        </li>
+                        <li>
+                            <button data-tab="management" class="tab-button w-full text-left text-gray-600 hover:text-gray-900">
+                                <!-- Icon: Folder (for management) --><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3 text-gray-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+                                <span>Account Management</span>
+                            </button>
+                        </li>
+                    </ul>
+                </nav>
+
+                <!-- Content Area --><main class="flex-1 min-w-0">
+                    <!-- General Information Tab --><div id="tab-general" class="tab-content block">
+                        <h3 class="text-2xl font-bold text-gray-900 mb-6 border-b pb-4">General Information</h3>
+                        <form onsubmit="event.preventDefault(); showMessage('Profile Updated!', 'success');">
+                            <div class="space-y-6">
+                                <div>
+                                    <label for="full-name" class="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
+                                    <input type="text" id="full-name" value="Jasmine Davis"
+                                           class="mt-1 block w-full border border-gray-300 rounded-lg shadow-sm p-3 focus:border-primary-indigo focus:ring-primary-indigo transition duration-150 ease-in-out">
+                                </div>
+                                <div>
+                                    <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
+                                    <input type="email" id="email" value="jane.davis@corp.com" disabled
+                                           class="mt-1 block w-full border border-gray-200 bg-gray-50 rounded-lg shadow-inner p-3 cursor-not-allowed">
+                                    <p class="mt-2 text-xs text-gray-500">Email address cannot be changed here. Contact support for updates.</p>
+                                </div>
+                                <div>
+                                    <label for="title" class="block text-sm font-medium text-gray-700 mb-1">Professional Title</label>
+                                    <input type="text" id="title" value="UI/UX Maestro"
+                                           class="mt-1 block w-full border border-gray-300 rounded-lg shadow-sm p-3 focus:border-primary-indigo focus:ring-primary-indigo transition duration-150 ease-in-out">
+                                </div>
+                                <div>
+                                    <label for="bio" class="block text-sm font-medium text-gray-700 mb-1">Bio (Max 160 chars)</label>
+                                    <textarea id="bio" rows="3" maxlength="160"
+                                              class="mt-1 block w-full border border-gray-300 rounded-lg shadow-sm p-3 focus:border-primary-indigo focus:ring-primary-indigo transition duration-150 ease-in-out">Passionate about human-centered design and crafting seamless digital experiences that delight users.</textarea>
+                                </div>
+                            </div>
+                            <div class="mt-10 pt-6 border-t border-gray-100 flex justify-end">
+                                <button type="submit"
+                                        class="px-7 py-3 bg-primary-indigo text-white font-semibold rounded-xl shadow-lg hover:bg-indigo-600 focus:outline-none focus:ring-4 focus:ring-primary-indigo/50 transition duration-200 ease-in-out transform hover:scale-[1.01] active:scale-[0.99] text-md">
+                                    Save Changes
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Security & Access Tab --><div id="tab-security" class="tab-content hidden">
+                        <h3 class="text-2xl font-bold text-gray-900 mb-6 border-b pb-4">Security & Access</h3>
+                        <div class="space-y-8">
+                            <!-- Password Change Card --><div class="bg-white p-6 rounded-xl border border-indigo-200 shadow-sm">
+                                <h4 class="text-lg font-semibold text-gray-800 mb-4">Change Password</h4>
+                                <form onsubmit="event.preventDefault(); showMessage('Password Reset Link Sent!', 'info');" class="space-y-4">
+                                    <div>
+                                        <label for="current-password" class="block text-sm font-medium text-gray-700 mb-1">Current Password</label>
+                                        <input type="password" id="current-password"
+                                               class="mt-1 block w-full border border-indigo-300 rounded-lg shadow-sm p-3 focus:border-primary-indigo focus:ring-primary-indigo transition duration-150 ease-in-out">
+                                    </div>
+                                    <div>
+                                        <label for="new-password" class="block text-sm font-medium text-gray-700 mb-1">New Password</label>
+                                        <input type="password" id="new-password"
+                                               class="mt-1 block w-full border border-indigo-300 rounded-lg shadow-sm p-3 focus:border-primary-indigo focus:ring-primary-indigo transition duration-150 ease-in-out">
+                                    </div>
+                                    <div class="pt-2">
+                                        <button type="submit"
+                                                class="px-6 py-2 bg-primary-indigo text-white font-semibold rounded-lg hover:bg-indigo-600 focus:outline-none focus:ring-4 focus:ring-primary-indigo/50 transition duration-150 ease-in-out">
+                                            Update Password
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+
+                            <!-- Two-Factor Authentication Toggle --><div class="bg-white p-6 rounded-xl shadow-md border border-gray-100 flex items-center justify-between">
+                                <div>
+                                    <h4 class="text-lg font-semibold text-gray-800">Two-Factor Authentication (2FA)</h4>
+                                    <p id="2fa-status" class="text-sm text-green-600 mt-1">Enabled via SMS</p>
+                                </div>
+                                <label class="relative inline-flex items-center cursor-pointer">
+                                    <input type="checkbox" id="2fa-toggle" checked class="sr-only peer" onchange="toggle2faStatus(this)">
+                                    <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-primary-indigo/50 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary-indigo"></div>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Preferences Tab --><div id="tab-preferences" class="tab-content hidden">
+                        <h3 class="text-2xl font-bold text-gray-900 mb-6 border-b pb-4">User Preferences</h3>
+                        <div class="space-y-6">
+                            <!-- Notification Preference 1 (Email) --><div class="flex items-center justify-between bg-white p-4 rounded-xl shadow-sm border border-gray-100">
+                                <div>
+                                    <p class="font-medium text-gray-800">Email for Project Updates</p>
+                                    <p class="text-sm text-gray-500">Receive an email when a teammate comments on your work.</p>
+                                </div>
+                                <label class="relative inline-flex items-center cursor-pointer">
+                                    <input type="checkbox" checked class="sr-only peer">
+                                    <div class="w-11 h-6 bg-gray-200 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary-indigo"></div>
+                                </label>
+                            </div>
+
+                            <!-- Notification Preference 2 (Push) --><div class="flex items-center justify-between bg-white p-4 rounded-xl shadow-sm border border-gray-100">
+                                <div>
+                                    <p class="font-medium text-gray-800">Browser Push Notifications</p>
+                                    <p class="text-sm text-gray-500">Get instant alerts for critical system messages.</p>
+                                </div>
+                                <label class="relative inline-flex items-center cursor-pointer">
+                                    <input type="checkbox" class="sr-only peer">
+                                    <div class="w-11 h-6 bg-gray-200 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary-indigo"></div>
+                                </label>
+                            </div>
+
+                            <!-- Interface Theme Preference --><div class="flex items-center justify-between bg-white p-4 rounded-xl shadow-sm border border-gray-100">
+                                <div>
+                                    <p class="font-medium text-gray-800">Interface Theme</p>
+                                    <p class="text-sm text-gray-500">Switch between light and dark visual themes.</p>
+                                </div>
+                                <select class="p-2 border border-gray-300 rounded-lg focus:ring-primary-indigo focus:border-primary-indigo">
+                                    <option selected>System Default</option>
+                                    <option>Light</option>
+                                    <option>Dark</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Account Management Tab --><div id="tab-management" class="tab-content hidden">
+                        <h3 class="text-2xl font-bold text-gray-900 mb-6 border-b pb-4">Account Management</h3>
+                        <div class="space-y-8">
+                            <!-- Data Export Section --><div class="bg-white border border-gray-200 p-6 rounded-xl shadow-md">
+                                <h4 class="text-xl font-bold text-gray-900 mb-2">Data Export</h4>
+                                <p class="text-gray-600 mb-4">Request a full export of your profile data, project history, and uploaded assets in a standard JSON format.</p>
+                                <button onclick="showMessage('Data Export Requested! Check email soon.', 'info')"
+                                        class="px-6 py-2 bg-gray-700 text-white font-semibold rounded-lg shadow-md hover:bg-gray-800 focus:outline-none focus:ring-4 focus:ring-gray-400/50 transition duration-150 ease-in-out">
+                                    Request Data Archive
+                                </button>
+                            </div>
+
+                            <!-- Danger Zone: Deactivate Account Section --><div class="bg-red-50 border-2 border-red-300 p-6 rounded-xl shadow-lg">
+                                <h4 class="text-xl font-bold text-red-800 mb-2">Danger Zone: Deactivate Account</h4>
+                                <p class="text-red-700 mb-4">Permanently deactivate your account. This action is **irreversible** and all your data will be queued for deletion after a 30-day grace period.</p>
+                                <button onclick="showMessage('Account Deactivation Initiated.', 'warning')"
+                                        class="px-6 py-2 bg-red-600 text-white font-semibold rounded-lg shadow-md hover:bg-red-700 focus:outline-none focus:ring-4 focus:ring-red-500/50 transition duration-150 ease-in-out">
+                                    Deactivate My Account
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </main>
+            </div>
         </div>
     </div>
 
+    <!-- Custom Modal/Message Box (Replaces alert()) --><div id="message-box" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-gray-900 bg-opacity-50 backdrop-blur-sm" onclick="this.classList.add('hidden');">
+        <div class="bg-white rounded-2xl shadow-2xl p-7 max-w-sm w-full transform transition-all scale-100 duration-300 ease-out" onclick="event.stopPropagation()">
+            <div class="text-center">
+                <div id="message-icon" class="mx-auto h-12 w-12 flex items-center justify-center rounded-full bg-primary-indigo/10 mb-4">
+                    <!-- Default Success Icon --><svg class="h-6 w-6 text-primary-indigo" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15L15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                </div>
+                <h3 class="mt-2 text-xl font-bold text-gray-900" id="message-text"></h3>
+            </div>
+            <div class="mt-6 flex justify-center">
+                <button type="button" onclick="document.getElementById('message-box').classList.add('hidden'); document.getElementById('message-box').classList.remove('flex');"
+                        class="px-6 py-2 text-md font-semibold text-white bg-primary-indigo rounded-xl hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-indigo transition duration-150 ease-in-out transform hover:scale-[1.01] active:scale-[0.99]">
+                    Got it
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript for Tab Switching and UI Logic --><script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const nav = document.getElementById('settings-nav');
+            const tabButtons = nav.querySelectorAll('.tab-button');
+            const tabContents = document.querySelectorAll('.tab-content');
+
+            tabButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const targetTabId = `tab-${button.dataset.tab}`;
+
+                    // Deactivate all buttons and hide all content
+                    tabButtons.forEach(btn => btn.classList.remove('active'));
+                    tabContents.forEach(content => content.classList.add('hidden'));
+                    tabContents.forEach(content => content.classList.remove('block'));
+
+                    // Activate the clicked button
+                    button.classList.add('active');
+
+                    // Show the target content
+                    const targetContent = document.getElementById(targetTabId);
+                    if (targetContent) {
+                        targetContent.classList.remove('hidden');
+                        targetContent.classList.add('block');
+                        targetContent.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }
+                });
+            });
+
+            // Handle the toggle status message
+            window.toggle2faStatus = function(checkbox) {
+                const statusElement = document.getElementById('2fa-status');
+                if (checkbox.checked) {
+                    statusElement.textContent = 'Enabled via SMS';
+                    statusElement.classList.remove('text-red-600');
+                    statusElement.classList.add('text-green-600');
+                    showMessage('Two-Factor Authentication Enabled!', 'success');
+                } else {
+                    statusElement.textContent = 'Disabled';
+                    statusElement.classList.remove('text-green-600');
+                    statusElement.classList.add('text-red-600');
+                    showMessage('Two-Factor Authentication Disabled!', 'warning');
+                }
+            };
+
+            // Custom function to display the message box (instead of alert())
+            window.showMessage = function(message, type = 'success') { // Added type parameter for icon/color
+                const messageBox = document.getElementById('message-box');
+                const messageText = document.getElementById('message-text');
+                const messageIconDiv = document.getElementById('message-icon');
+
+                messageText.textContent = message;
+                messageIconDiv.innerHTML = ''; // Clear previous icon classes
+
+                let iconSvg = '';
+                let iconClasses = '';
+                let buttonClasses = '';
+
+                switch (type) {
+                    case 'success':
+                        iconSvg = `<svg class="h-6 w-6 text-primary-indigo" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15L15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>`;
+                        iconClasses = 'bg-primary-indigo/10';
+                        buttonClasses = 'bg-primary-indigo hover:bg-indigo-700 focus:ring-primary-indigo';
+                        break;
+                    case 'info':
+                        iconSvg = `<svg class="h-6 w-6 text-blue-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063 0m-1.063 0l-.041.02a.75.75 0 001.063 0m0 0l.041-.02a.75.75 0 01-1.063 0m0 0l-.041.02a.75.75 0 00-1.063 0M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12v-.008z" /></svg>`;
+                        iconClasses = 'bg-blue-500/10';
+                        buttonClasses = 'bg-blue-600 hover:bg-blue-700 focus:ring-blue-500';
+                        break;
+                    case 'warning':
+                        iconSvg = `<svg class="h-6 w-6 text-red-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.305 3.24 1.933 3.24h14.734c1.628 0 2.793-1.74 1.933-3.24L12.733 2.733c-.793-1.369-2.87-1.369-3.664 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" /></svg>`;
+                        iconClasses = 'bg-red-500/10';
+                        buttonClasses = 'bg-red-600 hover:bg-red-700 focus:ring-red-500';
+                        break;
+                }
+
+                messageIconDiv.classList.add(...iconClasses.split(' '));
+                messageIconDiv.innerHTML = iconSvg; // Inject specific SVG
+
+                // Update the "Got it" button style
+                const gotItButton = messageBox.querySelector('button');
+                gotItButton.className = `px-6 py-2 text-md font-semibold text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-offset-2 transition duration-150 ease-in-out transform hover:scale-[1.01] active:scale-[0.99] ${buttonClasses}`;
+
+
+                messageBox.classList.remove('hidden');
+                messageBox.classList.add('flex');
+
+                setTimeout(() => {
+                    messageBox.classList.add('hidden');
+                    messageBox.classList.remove('flex');
+                }, 3000);
+            };
+
+            // Initial focus: ensure the General tab is correctly set up on load
+            document.querySelector('[data-tab="general"]').click();
+        });
+    </script>
 </body>
 </html>

@@ -1,9 +1,12 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.dispatch import receiver
 from django.utils import timezone
 from django.utils.text import slugify
 from datetime import timedelta
 from django.contrib.auth import get_user_model
+from django.db.models.signals import post_save
+
 
 LEGAL_SERVICES = [
     ('commercial', 'Commercial Practice'),
@@ -59,7 +62,6 @@ class Category(models.Model):
     def article_count(self):
         return self.articles.count()
 
-
 class Categories(models.Model):
     name = models.CharField(max_length=100)
     slug = models.SlugField(unique=True, blank=True)
@@ -81,10 +83,12 @@ class Article(models.Model):
         ('publication', 'Publication'),
         ('article', 'Article'),
         ('news', 'News'),
+        ('quote', 'Quote'),
     ]
-    title = models.CharField(max_length=200)
+
+    title = models.CharField(max_length=200, blank=True)
     slug = models.SlugField(unique=True, blank=True)
-    category = models.ForeignKey(Category, on_delete=models.PROTECT, related_name="articles")
+    category = models.ForeignKey(Category, on_delete=models.PROTECT, related_name="articles", null=True, blank=True)
     author = models.CharField(max_length=100)
     content = models.TextField()
     image = models.ImageField(upload_to="articles/", blank=True, null=True)
@@ -95,17 +99,23 @@ class Article(models.Model):
         ordering = ["-created_at"]
 
     def save(self, *args, **kwargs):
-        if not self.slug:
+        if not self.slug and self.title:
             self.slug = slugify(self.title)
         super().save(*args, **kwargs)
 
     @property
     def theme_color(self):
-        """Return a CSS color class depending on whether ID is odd or even."""
-        return "bg-blue-900" if self.id % 2 else "bg-amber-500"
+        """Alternate card color themes (navy + gold)"""
+        if self.id and self.id % 2 == 0:
+            # 1. Deep navy card with gold border and light text
+            return "bg-[#182942] border border-[#ebd19e]/50 text-[#f5f5f5]"
+        else:
+            # 2. Gold card with navy text and navy border
+            return "bg-[#ebd19e] text-[#182942] border border-[#182942]/30"
 
     def __str__(self):
-        return self.title
+        return self.title or f"{self.type} by {self.author}"
+
 
 class Quote(models.Model):
     text = models.TextField()
@@ -164,39 +174,40 @@ class ScheduledCall(models.Model):
     class Meta:
         ordering = ["-created_at"]
 
-def save(self, *args, **kwargs):
-    # ✅ Skip comparison if created_at is not yet set
-    if self.created_at:
-        if not self.is_read and self.created_at <= timezone.now() - timedelta(hours=48):
-            self.is_red_flag = True
-        else:
-            self.is_red_flag = False
+    def save(self, *args, **kwargs):
+        # Only evaluate after created_at exists
+        if self.created_at:
+            # ✅ Use is_confirmed for "pending" status instead of is_read
+            if (not self.is_confirmed) and self.created_at <= timezone.now() - timedelta(hours=48):
+                self.is_red_flag = True
+            else:
+                self.is_red_flag = False
 
-    super().save(*args, **kwargs)
+        # Save the scheduled call normally
+        super().save(*args, **kwargs)
 
-    # ✅ Automatically create CalendarEvent if confirmed and not already created
-    if self.is_confirmed:
-        exists = CalendarEvent.objects.filter(
-            client=f"{self.first_name} {self.last_name}",
-            date=self.date,
-            time_slot=self.time_slot
-        ).exists()
-
-        if not exists:
-            # ✅ Assign the first superuser (safe fallback)
-            admin_user = User.objects.filter(is_superuser=True).first()
-            if not admin_user:
-                admin_user = User.objects.first()  # fallback if no superuser
-
-            CalendarEvent.objects.create(
-                title=f"Call with {self.first_name} {self.last_name} at {self.time_slot.strftime('%H:%M')}",
+        # ✅ Automatically create CalendarEvent if confirmed and not already created
+        if self.is_confirmed:
+            exists = CalendarEvent.objects.filter(
                 client=f"{self.first_name} {self.last_name}",
-                case_name=self.subject,
                 date=self.date,
-                time_slot=self.time_slot,
-                event_type=CalendarEvent.CALL,
-                created_by=admin_user
-            )
+                time_slot=self.time_slot
+            ).exists()
+
+            if not exists:
+                # ✅ Assign the first superuser (safe fallback)
+                admin_user = User.objects.filter(is_superuser=True).first() or User.objects.first()
+
+                CalendarEvent.objects.create(
+                    title=f"Call with {self.first_name} {self.last_name} at {self.time_slot.strftime('%H:%M')}",
+                    client=f"{self.first_name} {self.last_name}",
+                    case_name=self.subject,
+                    date=self.date,
+                    time_slot=self.time_slot,
+                    event_type=CalendarEvent.CALL,
+                    created_by=admin_user
+                )
+
 
 class CalendarEvent(models.Model):
     MEETING = 'meeting'
@@ -309,3 +320,67 @@ class Feedback(models.Model):
 
     def __str__(self):
         return f"{self.feedback_type.title()} - {self.name or 'Anonymous'}"
+    
+class Profile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    image = models.ImageField(upload_to='profile_pics', blank=True, null=True, default='default.jpg')
+
+    def __str__(self):
+        return f'{self.user.username} Profile'
+    
+@receiver(post_save, sender=User)
+def create_user_profile(sender, instance, created, **kwargs):
+    if created:
+        Profile.objects.create(user=instance)
+
+@receiver(post_save, sender=User)
+def save_user_profile(sender, instance, **kwargs):
+    instance.profile.save()
+
+
+User = get_user_model()
+class Visit(models.Model):
+# Who/what
+    user = models.ForeignKey(User, null=True, blank=True, on_delete=models.SET_NULL, related_name='visits')
+session_key = models.CharField(max_length=40, blank=True, db_index=True)
+visitor_fingerprint = models.CharField(max_length=64, db_index=True) # hash of IP+UA (daily)
+
+
+# Request
+path = models.CharField(max_length=512, db_index=True)
+method = models.CharField(max_length=10)
+status_code = models.PositiveIntegerField(default=200)
+referrer = models.CharField(max_length=512, blank=True)
+utm_source = models.CharField(max_length=64, blank=True)
+utm_medium = models.CharField(max_length=64, blank=True)
+utm_campaign = models.CharField(max_length=64, blank=True)
+
+
+# Client
+ip_address = models.GenericIPAddressField(null=True, blank=True)
+country = models.CharField(max_length=64, blank=True)
+city = models.CharField(max_length=64, blank=True)
+user_agent = models.TextField(blank=True)
+device_type = models.CharField(max_length=16, blank=True) # mobile/tablet/desktop/bot/unknown
+browser = models.CharField(max_length=64, blank=True)
+os = models.CharField(max_length=64, blank=True)
+
+
+# Time
+created_at = models.DateTimeField(auto_now_add=True, db_index=True)
+
+
+class Meta:
+    indexes = [
+models.Index(fields=['-created_at']),
+models.Index(fields=['path']),
+models.Index(fields=['referrer']),
+models.Index(fields=['country']),
+models.Index(fields=['device_type']),
+]
+verbose_name = 'Visit'
+verbose_name_plural = 'Visits'
+
+
+def __str__(self):
+    return f"{self.path} @ {self.created_at:%Y-%m-%d %H:%M}"

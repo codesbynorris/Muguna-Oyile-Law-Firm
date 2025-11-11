@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Deep Blue Accent Color Comparison</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            // Mapped Primary Colors
+            'primary-dark': '#0f1b2e',
+            'primary-base': '#182942', // Your main deep blue
+            
+            // Accent Options
+            'accent-gold': '#ebd19e',   // Option 1: primary-accent
+            'accent-blue': '#405069',   // Option 2: secondary-blue-3
+            'accent-gray': '#dddddd',   // Option 3: light-2
+            
+            // Supporting Colors
+            'secondary-1': '#314769',
+            'light-4': '#f4f4f4',      // Background
+            'gray-3': '#8e8e8e',
+            'gray-5': '#c9c9c9',
+          },
+          boxShadow: {
+            // Shadows defined for each accent color
+            'glow-gold': '0 12px 30px rgba(235, 209, 158, 0.4)',
+            'glow-blue': '0 12px 30px rgba(64, 80, 105, 0.4)',
+            'glow-gray': '0 12px 30px rgba(221, 221, 221, 0.4)',
+            'navy-deep': '0 12px 30px rgba(24, 41, 66, 0.5)',
+          },
+        },
+      },
+    };
+  </script>
+  <style>
+    body {
+      background-color: #f4f4f4; /* light-4 */
+      font-family: 'Inter', sans-serif;
+    }
+    .card {
+      transition: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
+      transform: scale(1);
+    }
+    .card:hover {
+      transform: translateY(-3px) scale(1.01);
+    }
+  </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-10">
+
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl">
+
+    <!-- 1. GOLD ACCENT (DARK CARD) -->
+    <div class="bg-primary-base border border-accent-gold/50 rounded-xl p-8 shadow-navy-deep text-light-4 card hover:shadow-glow-gold relative">
+      <span class="absolute top-0 right-0 px-3 py-1 bg-accent-gold text-primary-base text-xs font-bold rounded-tr-xl rounded-bl-lg">Gold Accent</span>
+      <h3 class="text-2xl font-bold text-accent-gold mb-2 mt-4">Tony Muguna</h3>
+      <p class="text-gray-5 text-xs mb-4 uppercase tracking-widest border-b border-accent-gold/30 pb-2">Managing Partner</p>
+      <p class="text-gray-3 mb-6 leading-relaxed text-sm">
+        The classic, luxurious combination. Great for high-end professional services.
+      </p>
+      <a href="#" class="bg-accent-gold text-primary-base font-bold px-6 py-2 rounded-full hover:bg-light-4 transition shadow-lg inline-block mt-2">View Profile</a>
+    </div>
+
+    <!-- 2. GOLD ACCENT (LIGHT CARD) -->
+    <div class="bg-accent-gold text-primary-base border border-primary-base/30 rounded-xl p-8 shadow-glow-gold card hover:shadow-navy-deep relative">
+      <span class="absolute top-0 right-0 px-3 py-1 bg-primary-base text-accent-gold text-xs font-bold rounded-tr-xl rounded-bl-lg">Gold Inverse</span>
+      <h3 class="text-2xl font-bold text-primary-base mb-2 mt-4">Oyile Okoth</h3>
+      <p class="text-secondary-1 text-xs mb-4 uppercase tracking-widest border-b border-primary-base/30 pb-2">Senior Partner</p>
+      <p class="text-primary-base/80 mb-6 leading-relaxed text-sm">
+        This provides a sharp, highly visible contrast to a dark background.
+      </p>
+      <a href="#" class="bg-primary-base text-accent-gold font-bold px-6 py-2 rounded-full hover:bg-primary-dark transition shadow-lg inline-block mt-2">View Profile</a>
+    </div>
+
+    <!-- 3. MID-BLUE ACCENT (DARK CARD) -->
+    <div class="bg-primary-base border border-accent-blue/50 rounded-xl p-8 shadow-navy-deep text-light-4 card hover:shadow-glow-blue relative">
+      <span class="absolute top-0 right-0 px-3 py-1 bg-accent-blue text-primary-base text-xs font-bold rounded-tr-xl rounded-bl-lg">Mid-Blue Accent</span>
+      <h3 class="text-2xl font-bold text-accent-blue mb-2 mt-4">Norris Kamau</h3>
+      <p class="text-gray-5 text-xs mb-4 uppercase tracking-widest border-b border-accent-blue/30 pb-2">Head of Technology</p>
+      <p class="text-gray-3 mb-6 leading-relaxed text-sm">
+        A sleek, monochromatic feel. Subtle and sophisticated, often used in tech and finance.
+      </p>
+      <a href="#" class="bg-accent-blue text-primary-base font-bold px-6 py-2 rounded-full hover:bg-secondary-1 transition shadow-lg inline-block mt-2">View Profile</a>
+    </div>
+
+    <!-- 4. MID-BLUE ACCENT (LIGHT CARD) -->
+    <div class="bg-accent-blue text-primary-base border border-primary-base/30 rounded-xl p-8 shadow-glow-blue card hover:shadow-navy-deep relative">
+      <span class="absolute top-0 right-0 px-3 py-1 bg-primary-base text-accent-blue text-xs font-bold rounded-tr-xl rounded-bl-lg">Mid-Blue Inverse</span>
+      <h3 class="text-2xl font-bold text-light-4 mb-2 mt-4">Mercy Wanjiku</h3>
+      <p class="text-primary-base/90 text-xs mb-4 uppercase tracking-widest border-b border-primary-base/30 pb-2">Corporate Associate</p>
+      <p class="text-primary-base/80 mb-6 leading-relaxed text-sm">
+        A unique field card, standing out while keeping the palette consistent.
+      </p>
+      <a href="#" class="bg-primary-base text-accent-blue font-bold px-6 py-2 rounded-full hover:bg-primary-dark transition shadow-lg inline-block mt-2">View Profile</a>
+    </div>
+
+
+    <!-- 5. LIGHT GRAY ACCENT (DARK CARD) -->
+    <div class="bg-primary-base border border-accent-gray/50 rounded-xl p-8 shadow-navy-deep text-light-4 card hover:shadow-glow-gray relative">
+      <span class="absolute top-0 right-0 px-3 py-1 bg-accent-gray text-primary-base text-xs font-bold rounded-tr-xl rounded-bl-lg">Light Gray Accent</span>
+      <h3 class="text-2xl font-bold text-accent-gray mb-2 mt-4">Faith Mugo</h3>
+      <p class="text-gray-5 text-xs mb-4 uppercase tracking-widest border-b border-accent-gray/30 pb-2">Legal Assistant</p>
+      <p class="text-gray-3 mb-6 leading-relaxed text-sm">
+        High contrast and very modern. Excellent for readability and a crisp, clean aesthetic.
+      </p>
+      <a href="#" class="bg-accent-gray text-primary-base font-bold px-6 py-2 rounded-full hover:bg-light-4 transition shadow-lg inline-block mt-2">View Profile</a>
+    </div>
+
+    <!-- 6. LIGHT GRAY ACCENT (LIGHT CARD) -->
+    <div class="bg-accent-gray text-primary-base border border-primary-base/30 rounded-xl p-8 shadow-glow-gray card hover:shadow-navy-deep relative">
+      <span class="absolute top-0 right-0 px-3 py-1 bg-primary-base text-accent-gray text-xs font-bold rounded-tr-xl rounded-bl-lg">Light Gray Inverse</span>
+      <h3 class="text-2xl font-bold text-primary-base mb-2 mt-4">Brian Otieno</h3>
+      <p class="text-secondary-1 text-xs mb-4 uppercase tracking-widest border-b border-primary-base/30 pb-2">Intern Advocate</p>
+      <p class="text-primary-base/80 mb-6 leading-relaxed text-sm">
+        Extremely bright and provides a visual break from the primary dark color.
+      </p>
+      <a href="#" class="bg-primary-base text-accent-gray font-bold px-6 py-2 rounded-full hover:bg-primary-dark transition shadow-lg inline-block mt-2">View Profile</a>
+    </div>
+
+  </div>
+
+</body>
+</html>

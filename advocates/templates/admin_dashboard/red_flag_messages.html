@@ -1,24 +1,26 @@
 {% extends "admin_dashboard/base_admin.html" %}
 
-{% block title %}Red Flag Messages{% endblock %}
+{% block title %}Red Flag Scheduled Calls{% endblock %}
 
 {% block dashboard_content %}
 <div class="p-6">
-    <h1 class="text-2xl font-bold text-red-600 mb-6">🚩 Red Flag Messages</h1>
+    <h1 class="text-2xl font-bold text-red-600 mb-6">🚩 Red Flag Scheduled Calls</h1>
 
-    {% if red_flags %}
+    {% if calls %}
         <div class="space-y-4">
-            {% for msg in red_flags %}
+            {% for call in calls %}
                 <div class="p-4 bg-white rounded-lg shadow hover:shadow-md transition">
-                    <p class="text-sm text-gray-500">{{ msg.created_at|date:"M d, Y H:i" }}</p>
-                    <h2 class="font-semibold text-red-600">{{ msg.subject }}</h2>
-                    <p class="text-gray-700">From: {{ msg.first_name }} {{ msg.last_name }}</p>
-                    <p class="text-gray-600 mt-2">{{ msg.message|truncatewords:25 }}</p>
+                    <p class="text-sm text-gray-500">{{ call.created_at|date:"M d, Y H:i" }}</p>
+                    <h2 class="font-semibold text-red-600">{{ call.subject }}</h2>
+                    <p class="text-gray-700">Client: {{ call.first_name }} {{ call.last_name }}</p>
+                    <p class="text-gray-600">Email: {{ call.email }}</p>
+                    <p class="text-gray-600">Phone: {{ call.phone_number }}</p>
+                    <p class="text-sm text-gray-500 mt-1">⏱ Pending for {{ call.pending_duration }}</p>
                 </div>
             {% endfor %}
         </div>
     {% else %}
-        <p class="text-gray-500">🎉 No red-flag messages found.</p>
+        <p class="text-gray-500">🎉 No scheduled calls pending over 48 hours.</p>
     {% endif %}
 </div>
 {% endblock %}

@@ -1,0 +1,136 @@
+{% extends "admin_dashboard/base_admin.html" %}
+{% load static %}
+
+{% block title %}{% if form.instance.id %}Edit Quote{% else %}Create Quote{% endif %}{% endblock %}
+
+{% block dashboard_content %}
+<div class="p-4 sm:p-8 max-w-3xl mx-auto min-h-screen flex items-start justify-center pt-10">
+    <div class="w-full">
+        <!-- Header -->
+        <h1 class="text-3xl sm:text-4xl font-bold mb-8 text-gray-800 font-header text-center tracking-tight">
+            {% if form.instance.id %}📝 Edit Quote{% else %}📜 Create Quote{% endif %}
+        </h1>
+
+        <!-- Form Card -->
+        <div class="bg-white p-6 sm:p-8 rounded-2xl shadow-2xl border border-gray-100 transform transition-all hover:shadow-3xl">
+            <form method="post" class="space-y-6">
+                {% csrf_token %}
+                <div class="space-y-6">
+                    <!-- Quote Text Field -->
+                    <div>
+                        <label for="{{ form.text.id_for_label }}" class="block text-sm font-semibold text-gray-700 font-content mb-1">Quote Text</label>
+                        <textarea 
+                            id="{{ form.text.id_for_label }}"
+                            name="{{ form.text.name }}"
+                            rows="5"
+                            class="mt-1 w-full border border-gray-300 rounded-lg px-4 py-3 text-base text-gray-800 focus:ring-indigo-600 focus:border-indigo-600 font-content transition-all duration-300 ease-in-out resize-y"
+                            required
+                        >{{ form.text.value|default_if_none:'' }}</textarea>
+                        {% if form.text.errors %}
+                            <p class="mt-1 text-sm text-red-600">{{ form.text.errors.as_text }}</p>
+                        {% endif %}
+                    </div>
+                    
+                    <!-- Author Field -->
+                    <div>
+                        <label for="{{ form.author.id_for_label }}" class="block text-sm font-semibold text-gray-700 font-content mb-1">Author</label>
+                        <input 
+                            type="text"
+                            id="{{ form.author.id_for_label }}"
+                            name="{{ form.author.name }}"
+                            value="{{ form.author.value|default_if_none:'' }}"
+                            class="mt-1 w-full border border-gray-300 rounded-lg px-4 py-3 text-base text-gray-800 focus:ring-indigo-600 focus:border-indigo-600 font-content transition-all duration-300 ease-in-out"
+                            required
+                        >
+                        {% if form.author.errors %}
+                            <p class="mt-1 text-sm text-red-600">{{ form.author.errors.as_text }}</p>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <!-- Action Buttons -->
+                <div class="flex justify-end space-x-4 pt-4">
+                    <a href="{% url 'manage_quotes' %}" class="btn-secondary">
+                        Cancel
+                    </a>
+                    <button type="submit" class="btn-primary">
+                        {% if form.instance.id %}Update Quote{% else %}Create Quote{% endif %}
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<style>
+/* CSS Variables for Cleanliness and Reusability */
+:root {
+    --font-header: 'EB Garamond', serif;
+    --font-content: 'Open Sans', sans-serif;
+    --color-indigo-600: #4f46e5;
+    --color-indigo-700: #4338ca;
+}
+
+/* Custom Font Definitions */
+.font-header {
+    font-family: var(--font-header);
+}
+.font-content {
+    font-family: var(--font-content);
+}
+
+/* Enhanced Utility Classes */
+.rounded-2xl {
+    border-radius: 1.25rem; /* Slightly more prominent rounding */
+}
+.shadow-2xl {
+    /* Deeper, softer shadow for a floating effect */
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+.shadow-3xl {
+    /* Subtle hover effect for the card */
+    box-shadow: 0 30px 40px -8px rgba(0, 0, 0, 0.15), 0 15px 15px -5px rgba(0, 0, 0, 0.06);
+}
+
+/* Custom Button Styles for Professionalism */
+.btn-primary {
+    padding: 0.65rem 1.5rem; /* Slightly larger padding */
+    background-color: var(--color-indigo-600);
+    color: white;
+    border-radius: 0.75rem;
+    font-weight: 600;
+    font-size: 0.9rem;
+    font-family: var(--font-content);
+    transition: all 300ms cubic-bezier(0.4, 0, 0.2, 1); /* Smoother transition */
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.06);
+}
+.btn-primary:hover {
+    background-color: var(--color-indigo-700);
+    transform: translateY(-1px);
+    box-shadow: 0 6px 10px -2px rgba(0, 0, 0, 0.15);
+}
+
+.btn-secondary {
+    padding: 0.65rem 1.5rem;
+    background-color: #e5e7eb; /* Light gray */
+    color: #4b5563; /* Dark gray text */
+    border-radius: 0.75rem;
+    font-weight: 600;
+    font-size: 0.9rem;
+    font-family: var(--font-content);
+    transition: all 300ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+.btn-secondary:hover {
+    background-color: #d1d5db; /* Darker gray on hover */
+    color: #1f2937;
+}
+
+/* Input Focus Polish (used in HTML classes) */
+.focus\:ring-indigo-600:focus {
+    --tw-ring-opacity: 1;
+    --tw-ring-color: rgb(79 70 229 / var(--tw-ring-opacity));
+    border-color: rgb(79 70 229 / var(--tw-ring-opacity));
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.2); /* Soft shadow on focus */
+}
+</style>
+{% endblock %}

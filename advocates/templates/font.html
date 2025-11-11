@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quote Example</title>
+    <style>
+        body {
+            font-family: Georgia, serif;
+            font-size: 16px; /* Base font size for comparison (1em) */
+            line-height: 1.6;
+            padding: 40px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Styling for the main quote block */
+        .quote-block {
+            border-left: 5px solid #ccc;
+            padding-left: 20px;
+            margin: 20px 0;
+        }
+
+        .quote-block q {
+            /* Quote text: 125% of body font size (1.25em) */
+            font-size: 1.25em;
+            display: block; 
+            quotes: "“" "”" "‘" "’"; /* Defines quotation marks */
+        }
+
+        .quote-block .author {
+            /* Author name: 90% of body font size (0.9em) */
+            font-size: 0.9em;
+            font-style: italic;
+            color: #666;
+            margin-top: 10px;
+            display: block;
+            text-align: right;
+        }
+    </style>
+</head>
+<body>
+
+    <p>This is the standard body text set to 16px.</p>
+
+    <div class="quote-block">
+        <q>The future belongs to those who believe in the beauty of their dreams.</q>
+        <span class="author">Eleanor Roosevelt</span>
+    </div>
+
+    <p>In this style, the quote is **1.25em** (125% of body text) and the author is **0.9em** (90% of body text).</p>
+
+</body>
+</html>

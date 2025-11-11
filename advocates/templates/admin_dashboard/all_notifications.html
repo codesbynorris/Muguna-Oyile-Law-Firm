@@ -1,87 +1,404 @@
 {% extends "admin_dashboard/base_admin.html" %}
+{% load static %}
 
 {% block title %}All Notifications{% endblock %}
 
 {% block dashboard_content %}
-<div class="p-6">
-    <h1 class="text-2xl font-bold mb-4">All Notifications</h1>
+<div class="p-4 sm:p-6 max-w-7xl mx-auto">
+    <h1 class="text-2xl sm:text-3xl font-bold mb-6 text-gray-800 font-header text-center" style="font-family: 'Poppins', serif;">🔔 All Notifications</h1>
 
-    <!-- Filter Buttons -->
-    <div class="mb-4 flex flex-wrap gap-2">
-        <button class="filter-btn bg-blue-500 text-white px-4 py-1 rounded" data-type="all">All</button>
-        <button class="filter-btn bg-green-500 text-white px-4 py-1 rounded" data-type="call">Calls</button>
-        <button class="filter-btn bg-blue-600 text-white px-4 py-1 rounded" data-type="message">Messages</button>
+    <!-- Filter Bar -->
+    <div class="mb-8 flex flex-col sm:flex-row sm:items-center sm:justify-between bg-white p-5 rounded-xl shadow-lg border border-gray-200">
+        <div class="relative w-full sm:w-64 mb-4 sm:mb-0">
+            <select id="typeFilter" 
+                    class="w-full border border-gray-300 rounded-lg px-4 py-3 text-sm text-gray-700 focus:ring-indigo-500 focus:border-indigo-500 bg-white font-content"
+                    style="font-family: 'Open Sans', sans-serif;">
+                <option value="">All Types</option>
+                <option value="call">Calls</option>
+                <option value="message">Messages</option>
+            </select>
+        </div>
+        <div class="flex items-center space-x-3">
+            <input type="checkbox" id="selectAllHeader" class="h-4 w-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500">
+            <button class="px-6 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition duration-300 shadow-md font-semibold text-sm font-content"
+                    title="Refresh" onclick="window.location.reload()" style="font-family: 'Open Sans', sans-serif;">
+                <svg class="w-5 h-5 inline-block mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m15.356-2H21v5"></path>
+                </svg>
+                Refresh
+            </button>
+        </div>
     </div>
 
-    {% if notifications %}
-    <div class="overflow-x-auto border rounded shadow">
-        <table class="w-full table-auto border-collapse responsive-table">
-            <thead class="bg-gray-100 sticky top-0 z-10">
+    <div class="overflow-x-auto border border-gray-200 rounded-2xl shadow-2xl bg-white">
+        <table class="min-w-[800px] w-full table-auto border-collapse">
+            <thead class="bg-indigo-50 top-0 z-10 border-b border-indigo-100">
                 <tr>
-                    <th class="px-4 py-2 text-left">Type</th>
-                    <th class="px-4 py-2 text-left">Client</th>
-                    <th class="px-4 py-2 text-left">Subject / Info</th>
-                    <th class="px-4 py-2 text-left">Date</th>
+                    <th class="px-4 py-3 text-left font-semibold text-gray-800 tracking-wider text-sm font-content w-12 sm:w-16">
+                        <input type="checkbox" id="selectAllHeaderTable" class="h-4 w-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500">
+                    </th>
+                    <th class="px-4 py-3 text-left font-semibold text-gray-800 tracking-wider text-sm font-content">Type</th>
+                    <th class="px-4 py-3 text-left font-semibold text-gray-800 tracking-wider text-sm font-content">Client</th>
+                    <th class="px-4 py-3 text-left font-semibold text-gray-800 tracking-wider text-sm font-content">Subject / Info</th>
+                    <th class="px-4 py-3 text-right font-semibold text-gray-800 tracking-wider text-sm font-content w-20 sm:w-24">Date</th>
                 </tr>
             </thead>
-            <tbody id="notificationsTable">
+            <tbody id="notificationsTable" class="divide-y divide-gray-100">
                 {% for item in notifications %}
-                <tr class="hover:bg-gray-50 cursor-pointer notification-row {% if item.red_flag %}bg-red-100{% endif %}" data-type="{{ item.type }}">
-                    <td class="px-4 py-2">
+                <tr class="notification-row hover:bg-indigo-50/30 transition-colors duration-150 cursor-pointer {% if item.red_flag %}bg-red-100{% endif %}" 
+                    data-notification-id="{{ item.id }}"
+                    data-type="{{ item.type }}"
+                    data-client="{{ item.client|default:'N/A' }}"
+                    data-subject="{{ item.subject|default:'N/A' }}"
+                    data-created-at="{{ item.created_at|date:'d M Y H:i' }}"
+                    data-is-read="{{ item.is_read|yesno:'true,false' }}"
+                    data-is-starred="{{ item.is_starred|yesno:'true,false' }}"
+                    data-red-flag="{{ item.red_flag|yesno:'true,false' }}">
+                    <td class="px-4 py-3 text-center">
+                        <div class="flex items-center space-x-2">
+                            <input type="checkbox" class="h-4 w-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500 notification-checkbox">
+                            <svg class="w-5 h-5 {% if item.is_starred %}text-yellow-500{% else %}text-gray-400 hover:text-yellow-500{% endif %} transition-colors star-icon" 
+                                 fill="{% if item.is_starred %}currentColor{% else %}none{% endif %}" 
+                                 stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                                      d="M11.049 2.152A.75.75 0 0112 2.25c.54 0 1.059.324 1.309.854l1.83 3.868a.75.75 0 00.56.439l4.385.637a.75.75 0 01.417 1.27l-3.17 3.093a.75.75 0 00-.215.688l.75 4.363a.75.75 0 01-1.082.784L12 18.017l-3.921 2.067a.75.75 0 01-1.082-.784l.75-4.363a.75.75 0 00-.215-.688l-3.17-3.093a.75.75 0 01.417-1.27l4.385-.637a.75.75 0 00.56-.439l1.83-3.868a.75.75 0 01.309-.854z"></path>
+                            </svg>
+                        </div>
+                    </td>
+                    <td class="px-4 py-3">
                         {% if item.type == 'message' %}
-                            <span class="px-2 py-1 bg-blue-600 text-white rounded-full text-xs font-semibold">Message</span>
+                            <span class="px-2 py-1 bg-indigo-600 text-white rounded-full text-xs font-semibold font-content" style="font-family: 'Open Sans', sans-serif;">Message</span>
                         {% elif item.type == 'call' %}
-                            <span class="px-2 py-1 bg-green-600 text-white rounded-full text-xs font-semibold">Call</span>
+                            <span class="px-2 py-1 bg-green-600 text-white rounded-full text-xs font-semibold font-content" style="font-family: 'Open Sans', sans-serif;">Call</span>
                         {% endif %}
                     </td>
-                    <td class="px-4 py-2">{{ item.client }}</td>
-                    <td class="px-4 py-2">{{ item.subject|default:"N/A" }}</td>
-                    <td class="px-4 py-2">{{ item.created_at|date:"Y-m-d H:i" }}</td>
+                    <td class="px-4 py-3 text-sm font-semibold text-gray-800 font-content {% if not item.is_read %}font-bold{% endif %}" style="font-family: 'Open Sans', sans-serif;">
+                        {{ item.client|default:"N/A" }}
+                    </td>
+                    <td class="px-4 py-3 text-sm font-medium text-indigo-600 font-content" style="font-family: 'Open Sans', sans-serif;">
+                        {{ item.subject|default:"N/A" }}
+                    </td>
+                    <td class="px-4 py-3 text-sm text-gray-500 text-right relative font-content" style="font-family: 'Open Sans', sans-serif;">
+                        <div class="date-column transition-opacity duration-150">
+                            {{ item.created_at|date:"M d" }}
+                        </div>
+                        <div class="icon-wrapper absolute top-1/2 right-4 transform -translate-y-1/2 space-x-2 hidden sm:flex opacity-0 transition-opacity duration-150">
+                            <button class="text-gray-500 hover:text-gray-700 archive-btn" title="Archive" data-notification-id="{{ item.id }}">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"></path>
+                                </svg>
+                            </button>
+                            <button class="text-gray-500 hover:text-gray-700 delete-btn" title="Delete" data-notification-id="{{ item.id }}">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                                </svg>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5" class="px-4 py-10 text-center text-gray-500 font-content" style="font-family: 'Open Sans', sans-serif;">
+                        No notifications found.
+                    </td>
                 </tr>
                 {% endfor %}
             </tbody>
         </table>
     </div>
-    {% else %}
-        <p class="text-gray-500 mt-4">No notifications to show 🎉</p>
-    {% endif %}
+
+    <div id="notificationModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-gray-900/40 p-4">
+        <div class="bg-white rounded-xl shadow-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto font-content notification-modal border border-gray-100" style="font-family: 'Open Sans', sans-serif;">
+            <div class="logo-section text-center py-6 border-b border-gray-100 bg-gray-50 rounded-t-xl">
+                <a href="#">
+                    <img src="{% static 'images/logo.png' %}" 
+                         alt="Muguna & Oyile Law Firm Logo" 
+                         width="180" 
+                         height="60"
+                         loading="eager"
+                         class="mx-auto"
+                    >
+                </a>
+            </div>
+            <div class="content-area px-8 sm:px-10 py-6">
+                <h1 id="modalSubject" class="text-2xl font-semibold text-indigo-700 mb-4 font-header border-b pb-3 border-indigo-100" style="font-family: 'EB Garamond', serif;"></h1>
+                <p id="modalGreeting" class="text-sm text-gray-700 mb-1 font-content" style="font-family: 'Open Sans', sans-serif;">Hello Admin,</p>
+                <p class="text-sm text-gray-600 leading-relaxed mb-6 font-content" style="font-family: 'Open Sans', sans-serif;">
+                    Review the details for this notification:
+                </p>
+                <div class="details-section text-sm text-gray-700 mb-8 space-y-3">
+                    <div class="leading-relaxed bg-indigo-50 p-4 rounded-lg border border-indigo-200">
+                        <span class="w-24 text-indigo-700 font-semibold block mb-1">Subject:</span>
+                        <p id="modalSubjectInfo" class="font-normal text-gray-800 leading-normal italic ml-2"></p>
+                    </div>
+                    <div class="flex leading-relaxed items-start">
+                        <span class="w-24 text-gray-600 font-normal">Type:</span>
+                        <span id="modalType" class="font-semibold text-gray-800 flex-1"></span>
+                    </div>
+                    <div class="flex leading-relaxed items-start">
+                        <span class="w-24 text-gray-600 font-normal">Client:</span>
+                        <span id="modalClient" class="font-semibold text-gray-800 flex-1"></span>
+                    </div>
+                    <div class="flex leading-relaxed items-start">
+                        <span class="w-24 text-gray-600 font-normal">Date Received:</span>
+                        <span id="modalCreated" class="font-semibold text-gray-800 flex-1"></span>
+                    </div>
+                    <div class="flex leading-relaxed items-start pt-2 border-t border-gray-100">
+                        <span class="w-24 text-gray-600 font-normal">Red Flag:</span>
+                        <span id="modalRedFlag" class="font-bold text-indigo-600 flex-1"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-text text-center text-sm text-gray-600 py-4 px-8 sm:px-10 border-t border-gray-200 bg-gray-50 rounded-b-xl flex justify-between items-center">
+                <button id="closeModal" class="px-5 py-2 bg-indigo-600 rounded-lg text-white hover:bg-indigo-700 transition-colors shadow-md font-semibold" title="Close">
+                    Close Notification
+                </button>
+                <div class="text-right text-xs text-gray-500">
+                    ID: <span id="modalNotificationId" class="font-bold text-gray-700"></span>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
-<script>
-// Make rows clickable
-document.querySelectorAll('.notification-row').forEach(row => {
-    row.addEventListener('click', () => {
-        const type = row.dataset.type;
-        if (type === 'message') {
-            window.location.href = "{% url 'admin_dashboard_contacts' %}";
-        } else if (type === 'call') {
-            window.location.href = "{% url 'admin_dashboard_calls' %}";
-        }
-    });
-});
-
-// Filter by type
-const filterBtns = document.querySelectorAll('.filter-btn');
-filterBtns.forEach(btn => {
-    btn.addEventListener('click', () => {
-        const type = btn.dataset.type;
-        document.querySelectorAll('.notification-row').forEach(row => {
-            row.style.display = (type === 'all' || row.dataset.type === type) ? '' : 'none';
-        });
-    });
-});
-</script>
-
 <style>
-/* Responsive tweaks */
+:root {
+    --font-header: 'EB Garamond', serif;
+    --font-content: 'Open Sans', sans-serif;
+}
+.font-header {
+    font-family: var(--font-header);
+}
+.font-content {
+    font-family: var(--font-content);
+}
+.rounded-2xl {
+    border-radius: 1rem;
+}
+.shadow-2xl {
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+}
+.shadow-lg {
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+.overflow-x-auto::-webkit-scrollbar {
+    height: 8px;
+}
+.overflow-x-auto::-webkit-scrollbar-thumb {
+    background-color: #6366F1;
+    border-radius: 10px;
+}
+.overflow-x-auto::-webkit-scrollbar-thumb:hover {
+    background-color: #4F46E5;
+}
+.notification-row .icon-wrapper {
+    opacity: 0;
+    transition: opacity 0.15s ease-in-out;
+}
+.notification-row:hover .icon-wrapper {
+    opacity: 1;
+}
+.notification-row:hover .date-column {
+    opacity: 0;
+}
+.notification-modal {
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    transform: scale(0.95);
+    opacity: 0;
+}
+.notification-modal.active {
+    transform: scale(1);
+    opacity: 1;
+}
 @media(max-width:768px){
-    table.responsive-table {
-        min-width: 100%;
-    }
-    th, td {
-        padding: 0.5rem;
+    table th, table td {
+        padding: 0.75rem 0.5rem;
         font-size: 0.875rem;
+    }
+    .sm\:flex-row {
+        flex-direction: column;
+        align-items: center;
+    }
+    .sm\:w-64 {
+        width: 100%;
+        max-width: 250px;
+    }
+    .sm\:flex {
+        display: none;
     }
 }
 </style>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    // Select All Checkbox
+    const selectAllHeader = document.getElementById('selectAllHeader');
+    const selectAllHeaderTable = document.getElementById('selectAllHeaderTable');
+    const checkboxes = document.querySelectorAll('.notification-checkbox');
+    const syncCheckboxes = () => {
+        checkboxes.forEach(checkbox => {
+            checkbox.checked = selectAllHeader.checked;
+        });
+    };
+    selectAllHeader.addEventListener('change', syncCheckboxes);
+    selectAllHeaderTable.addEventListener('change', syncCheckboxes);
+
+    // Modal Elements
+    const modal = document.getElementById('notificationModal');
+    const modalContent = modal.querySelector('.notification-modal');
+    const modalSubject = document.getElementById('modalSubject');
+    const modalSubjectInfo = document.getElementById('modalSubjectInfo');
+    const modalType = document.getElementById('modalType');
+    const modalClient = document.getElementById('modalClient');
+    const modalCreated = document.getElementById('modalCreated');
+    const modalRedFlag = document.getElementById('modalRedFlag');
+    const modalNotificationId = document.getElementById('modalNotificationId');
+    const closeModalButton = document.getElementById('closeModal');
+
+    // Notification Row Click Handler
+    const notificationRows = document.querySelectorAll('.notification-row');
+    notificationRows.forEach(row => {
+        row.addEventListener('click', (event) => {
+            const interactiveElements = event.target.closest('input[type="checkbox"], button, svg');
+            if (interactiveElements) {
+                return;
+            }
+            const notification = row.dataset;
+
+            // Populate modal
+            modalSubject.textContent = notification.subject;
+            modalSubjectInfo.textContent = notification.subject;
+            modalType.textContent = notification.type.charAt(0).toUpperCase() + notification.type.slice(1);
+            modalClient.textContent = notification.client;
+            modalCreated.textContent = notification.createdAt;
+            modalRedFlag.textContent = notification.redFlag === 'true' ? 'Yes' : 'No';
+            modalNotificationId.textContent = notification.notificationId;
+
+            // Show modal with animation
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            void modalContent.offsetWidth;
+            modalContent.classList.add('active');
+
+            // Mark as read (visual update)
+            if (notification.isRead === 'false') {
+                row.classList.remove('bg-blue-50');
+                row.querySelectorAll('.font-bold').forEach(el => {
+                    el.classList.remove('font-bold');
+                    el.classList.add('font-semibold');
+                });
+                row.dataset.isRead = 'true';
+
+                // Mark as Read AJAX call
+                fetch(`/admin/notifications/${notification.notificationId}/mark-read/`, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': '{{ csrf_token }}',
+                        'Content-Type': 'application/json'
+                    }
+                }).catch(err => console.error('Error marking as read:', err));
+            }
+
+            // Redirect to respective pages
+            setTimeout(() => {
+                if (notification.type === 'message') {
+                    window.location.href = "{% url 'admin_dashboard_contacts' %}";
+                } else if (notification.type === 'call') {
+                    window.location.href = "{% url 'admin_dashboard_calls' %}";
+                }
+            }, 500); // Delay to allow modal animation
+        });
+    });
+
+    // Close Modal Handler
+    const hideModal = () => {
+        modalContent.classList.remove('active');
+        setTimeout(() => {
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }, 300);
+    };
+
+    closeModalButton.addEventListener('click', hideModal);
+    modal.addEventListener('click', (event) => {
+        if (event.target === modal) {
+            hideModal();
+        }
+    });
+
+    // Star Toggle
+    const stars = document.querySelectorAll('.star-icon');
+    stars.forEach(star => {
+        star.addEventListener('click', (event) => {
+            event.stopPropagation();
+            const notificationId = star.closest('.notification-row').getAttribute('data-notification-id');
+            const isStarred = star.getAttribute('fill') === 'currentColor';
+            star.setAttribute('fill', isStarred ? 'none' : 'currentColor');
+            star.classList.toggle('text-yellow-500', !isStarred);
+            star.classList.toggle('text-gray-400', isStarred);
+            fetch(`/admin/notifications/${notificationId}/toggle-star/`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}',
+                    'Content-Type': 'application/json'
+                }
+            }).catch(err => console.error('Error toggling star:', err));
+        });
+    });
+
+    // Archive and Delete Buttons
+    const archiveButtons = document.querySelectorAll('.archive-btn');
+    const deleteButtons = document.querySelectorAll('.delete-btn');
+    archiveButtons.forEach(btn => {
+        btn.addEventListener('click', (event) => {
+            event.stopPropagation();
+            const notificationId = btn.getAttribute('data-notification-id');
+            fetch(`/admin/notifications/${notificationId}/archive/`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}',
+                    'Content-Type': 'application/json'
+                }
+            }).then(() => {
+                btn.closest('.notification-row').remove();
+            }).catch(err => console.error('Error archiving:', err));
+        });
+    });
+    deleteButtons.forEach(btn => {
+        btn.addEventListener('click', (event) => {
+            event.stopPropagation();
+            const notificationId = btn.getAttribute('data-notification-id');
+            fetch(`/admin/notifications/${notificationId}/delete/`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}',
+                    'Content-Type': 'application/json'
+                }
+            }).then(() => {
+                btn.closest('.notification-row').remove();
+            }).catch(err => console.error('Error deleting:', err));
+        });
+    });
+
+    // Type Filter
+    const typeFilter = document.getElementById('typeFilter');
+    typeFilter.addEventListener('change', () => {
+        const selectedType = typeFilter.value;
+        const url = new URL(window.location);
+        url.searchParams.set('type', selectedType);
+        window.history.pushState({}, '', url);
+        notificationRows.forEach(row => {
+            row.style.display = selectedType === '' || row.dataset.type === selectedType ? '' : 'none';
+        });
+    });
+
+    // Initialize filter based on URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const selectedType = urlParams.get('type') || '';
+    typeFilter.value = selectedType;
+    notificationRows.forEach(row => {
+        row.style.display = selectedType === '' || row.dataset.type === selectedType ? '' : 'none';
+    });
+});
+</script>
 {% endblock %}

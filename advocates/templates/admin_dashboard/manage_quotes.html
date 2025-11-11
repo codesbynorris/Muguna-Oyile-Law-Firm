@@ -1,44 +1,32 @@
 {% extends "admin_dashboard/base_admin.html" %}
 {% load static %}
 
-{% block title %}Manage Blogs{% endblock %}
+{% block title %}Manage Quotes{% endblock %}
 
 {% block dashboard_content %}
 <div class="p-4 sm:p-6 max-w-7xl mx-auto">
-    <h1 class="text-2xl sm:text-3xl font-bold mb-6 text-gray-800 font-header text-center" style="font-family: 'Poppins', serif;">📝 Manage Blogs</h1>
+    <h1 class="text-2xl sm:text-3xl font-bold mb-6 text-gray-800 font-header text-center" style="font-family: 'Poppins', serif;">📜 Manage Quotes</h1>
 
-    <!-- Filter Buttons and New Blog Button -->
+    <!-- Filter Buttons and New Quote Button -->
     <div class="flex flex-wrap items-center gap-4 mb-8 bg-white p-5 rounded-xl shadow-lg border border-gray-200">
         <div class="flex flex-wrap justify-center gap-4">
-            <a href="?type=all"
+            <a href="?sort=all"
                class="px-6 py-3 rounded-lg border font-semibold transition duration-300 text-sm hover:shadow-md
-               {% if selected_type == 'all' %}bg-indigo-700 text-white border-indigo-700{% else %}border-gray-300 text-indigo-600 hover:bg-indigo-50{% endif %} font-content"
+               {% if selected_sort == 'all' %}bg-indigo-700 text-white border-indigo-700{% else %}border-gray-300 text-indigo-600 hover:bg-indigo-50{% endif %} font-content"
                style="font-family: 'Open Sans', sans-serif;">
                 All
             </a>
-            <a href="?type=publication"
+            <a href="?sort=author"
                class="px-6 py-3 rounded-lg border font-semibold transition duration-300 text-sm hover:shadow-md
-               {% if selected_type == 'publication' %}bg-indigo-700 text-white border-indigo-700{% else %}border-gray-300 text-indigo-600 hover:bg-indigo-50{% endif %} font-content"
+               {% if selected_sort == 'author' %}bg-indigo-700 text-white border-indigo-700{% else %}border-gray-300 text-indigo-600 hover:bg-indigo-50{% endif %} font-content"
                style="font-family: 'Open Sans', sans-serif;">
-                Publications
-            </a>
-            <a href="?type=article"
-               class="px-6 py-3 rounded-lg border font-semibold transition duration-300 text-sm hover:shadow-md
-               {% if selected_type == 'article' %}bg-indigo-700 text-white border-indigo-700{% else %}border-gray-300 text-indigo-600 hover:bg-indigo-50{% endif %} font-content"
-               style="font-family: 'Open Sans', sans-serif;">
-                Articles
-            </a>
-            <a href="?type=news"
-               class="px-6 py-3 rounded-lg border font-semibold transition duration-300 text-sm hover:shadow-md
-               {% if selected_type == 'news' %}bg-indigo-700 text-white border-indigo-700{% else %}border-gray-300 text-indigo-600 hover:bg-indigo-50{% endif %} font-content"
-               style="font-family: 'Open Sans', sans-serif;">
-                News
+                By Author
             </a>
         </div>
-        <a href="{% url 'article_create' %}"
+        <a href="{% url 'quote_create' %}"
            class="ml-auto px-6 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition duration-300 shadow-md font-semibold text-sm font-content"
            style="font-family: 'Open Sans', sans-serif;">
-            ➕ New Blog
+            ➕ New Quote
         </a>
     </div>
 
@@ -49,33 +37,29 @@
                     <th class="px-4 py-3 text-left font-semibold text-gray-800 tracking-wider text-sm font-content w-12 sm:w-16">
                         <input type="checkbox" id="selectAllHeader" class="h-4 w-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500">
                     </th>
-                    <th class="px-4 py-3 text-left font-semibold text-gray-800 tracking-wider text-sm font-content">Title</th>
-                    <th class="px-4 py-3 text-left font-semibold text-gray-800 tracking-wider text-sm font-content">Category</th>
+                    <th class="px-4 py-3 text-left font-semibold text-gray-800 tracking-wider text-sm font-content">Quote</th>
                     <th class="px-4 py-3 text-left font-semibold text-gray-800 tracking-wider text-sm font-content">Author</th>
                     <th class="px-4 py-3 text-left font-semibold text-gray-800 tracking-wider text-sm font-content">Created At</th>
                 </tr>
             </thead>
             <tbody class="divide-y divide-gray-100">
-                {% for article in blogs %}
-                <tr class="blog-row hover:bg-indigo-50/30 transition-colors duration-150 cursor-pointer" 
-                    data-blog-id="{{ article.id }}"
-                    data-title="{{ article.title|default:'Untitled' }}"
-                    data-category="{{ article.category.name|default:'None' }}"
-                    data-author="{{ article.author }}"
-                    data-created-at="{{ article.created_at|date:'d M Y' }}"
-                    data-content="{{ article.content|truncatewords:50 }}">
+                {% for quote in quotes %}
+                <tr class="quote-row hover:bg-indigo-50/30 transition-colors duration-150 cursor-pointer" 
+                    data-quote-id="{{ quote.id }}"
+                    data-text="{{ quote.text|truncatewords:50 }}"
+                    data-author="{{ quote.author }}"
+                    data-created-at="{{ quote.created_at|date:'d M Y' }}">
                     <td class="px-4 py-3 text-center">
-                        <input type="checkbox" class="h-4 w-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500 blog-checkbox">
+                        <input type="checkbox" class="h-4 w-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500 quote-checkbox">
                     </td>
-                    <td class="px-4 py-3 text-sm font-semibold text-gray-800 font-content" style="font-family: 'Open Sans', sans-serif;">{{ article.title|default:"Untitled" }}</td>
-                    <td class="px-4 py-3 text-sm text-gray-600 font-content" style="font-family: 'Open Sans', sans-serif;">{{ article.category.name|default:"None" }}</td>
-                    <td class="px-4 py-3 text-sm text-gray-600 font-content" style="font-family: 'Open Sans', sans-serif;">{{ article.author }}</td>
-                    <td class="px-4 py-3 text-sm text-gray-500 font-content" style="font-family: 'Open Sans', sans-serif;">{{ article.created_at|date:"d M Y" }}</td>
+                    <td class="px-4 py-3 text-sm font-semibold text-gray-800 font-content" style="font-family: 'Open Sans', sans-serif;">{{ quote.text|truncatewords:20 }}</td>
+                    <td class="px-4 py-3 text-sm text-gray-600 font-content" style="font-family: 'Open Sans', sans-serif;">{{ quote.author }}</td>
+                    <td class="px-4 py-3 text-sm text-gray-500 font-content" style="font-family: 'Open Sans', sans-serif;">{{ quote.created_at|date:"d M Y" }}</td>
                 </tr>
                 {% empty %}
                 <tr>
-                    <td colspan="5" class="px-4 py-10 text-center text-gray-500 font-content" style="font-family: 'Open Sans', sans-serif;">
-                        No blogs found for this category.
+                    <td colspan="4" class="px-4 py-10 text-center text-gray-500 font-content" style="font-family: 'Open Sans', sans-serif;">
+                        No quotes found.
                     </td>
                 </tr>
                 {% endfor %}
@@ -83,7 +67,7 @@
         </table>
     </div>
 
-    <div id="blogModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-gray-900/40 p-4">
+    <div id="quoteModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-gray-900/40 p-4">
         <div class="bg-white rounded-xl shadow-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto font-content message-modal border border-gray-100" style="font-family: 'Open Sans', sans-serif;">
             <div class="logo-section text-center py-6 border-b border-gray-100 bg-gray-50 rounded-t-xl">
                 <a href="#">
@@ -97,16 +81,8 @@
                 </a>
             </div>
             <div class="content-area px-8 sm:px-10 py-6">
-                <h1 id="modalTitle" class="text-2xl font-semibold text-indigo-700 mb-4 font-header border-b pb-3 border-indigo-100" style="font-family: 'EB Garamond', serif;"></h1>
+                <h1 id="modalText" class="text-2xl font-semibold text-indigo-700 mb-4 font-header border-b pb-3 border-indigo-100 italic" style="font-family: 'EB Garamond', serif;"></h1>
                 <div class="details-section text-sm text-gray-700 mb-8 space-y-3">
-                    <div class="leading-relaxed bg-indigo-50 p-4 rounded-lg border border-indigo-200">
-                        <span class="text-indigo-700 font-semibold block mb-1">Content:</span>
-                        <p id="modalContent" class="font-normal text-gray-800 leading-normal italic ml-2"></p>
-                    </div>
-                    <div class="flex leading-relaxed items-start">
-                        <span class="w-24 text-gray-600 font-normal">Category:</span>
-                        <span id="modalCategory" class="font-semibold text-gray-800 flex-1"></span>
-                    </div>
                     <div class="flex leading-relaxed items-start">
                         <span class="w-24 text-gray-600 font-normal">Author:</span>
                         <span id="modalAuthor" class="font-semibold text-gray-800 flex-1"></span>
@@ -136,7 +112,7 @@
                     Close
                 </button>
                 <div class="text-right text-xs text-gray-500">
-                    ID: <span id="modalBlogId" class="font-bold text-gray-700"></span>
+                    ID: <span id="modalQuoteId" class="font-bold text-gray-700"></span>
                 </div>
             </div>
         </div>
@@ -206,19 +182,17 @@
 <script>
 document.addEventListener('DOMContentLoaded', () => {
     const selectAllHeader = document.getElementById('selectAllHeader');
-    const checkboxes = document.querySelectorAll('.blog-checkbox');
-    const modal = document.getElementById('blogModal');
+    const checkboxes = document.querySelectorAll('.quote-checkbox');
+    const modal = document.getElementById('quoteModal');
     const modalContent = modal.querySelector('.message-modal');
-    const modalTitle = document.getElementById('modalTitle');
-    const modalContentText = document.getElementById('modalContent');
-    const modalCategory = document.getElementById('modalCategory');
+    const modalText = document.getElementById('modalText');
     const modalAuthor = document.getElementById('modalAuthor');
     const modalCreatedAt = document.getElementById('modalCreatedAt');
-    const modalBlogId = document.getElementById('modalBlogId');
+    const modalQuoteId = document.getElementById('modalQuoteId');
     const modalEdit = document.getElementById('modalEdit');
     const modalDelete = document.getElementById('modalDelete');
     const closeModalButton = document.getElementById('closeModal');
-    const blogRows = document.querySelectorAll('.blog-row');
+    const quoteRows = document.querySelectorAll('.quote-row');
 
     // Sync Select All checkbox
     const toggleCheckboxes = () => {
@@ -237,22 +211,20 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 300);
     };
 
-    blogRows.forEach(row => {
+    quoteRows.forEach(row => {
         row.addEventListener('click', (event) => {
             const interactiveElements = event.target.closest('input[type="checkbox"]');
             if (interactiveElements) {
                 return;
             }
 
-            const blogData = row.dataset;
-            modalTitle.textContent = blogData.title;
-            modalContentText.textContent = blogData.content;
-            modalCategory.textContent = blogData.category;
-            modalAuthor.textContent = blogData.author;
-            modalCreatedAt.textContent = blogData.createdAt;
-            modalBlogId.textContent = blogData.blogId;
-            modalEdit.href = `{% url 'edit_blog' 0 %}`.replace('0', blogData.blogId);
-            modalDelete.dataset.blogId = blogData.blogId;
+            const quoteData = row.dataset;
+            modalText.textContent = quoteData.text;
+            modalAuthor.textContent = quoteData.author;
+            modalCreatedAt.textContent = quoteData.createdAt;
+            modalQuoteId.textContent = quoteData.quoteId;
+            modalEdit.href = `{% url 'edit_quote' 0 %}`.replace('0', quoteData.quoteId);
+            modalDelete.dataset.quoteId = quoteData.quoteId;
 
             modal.classList.remove('hidden');
             modal.classList.add('flex');
@@ -271,12 +243,12 @@ document.addEventListener('DOMContentLoaded', () => {
     // Delete Button Handler
     modalDelete.addEventListener('click', (event) => {
         event.preventDefault();
-        const blogId = modalDelete.dataset.blogId;
-        if (!confirm('Are you sure you want to delete this blog?')) {
+        const quoteId = modalDelete.dataset.quoteId;
+        if (!confirm('Are you sure you want to delete this quote?')) {
             return;
         }
 
-        fetch(`{% url 'delete_blog' 0 %}`.replace('0', blogId), {
+        fetch(`{% url 'delete_quote' 0 %}`.replace('0', quoteId), {
             method: 'POST',
             headers: {
                 'X-CSRFToken': getCsrfToken(),
@@ -285,16 +257,16 @@ document.addEventListener('DOMContentLoaded', () => {
         })
         .then(response => {
             if (response.ok) {
-                document.querySelector(`.blog-row[data-blog-id="${blogId}"]`).remove();
+                document.querySelector(`.quote-row[data-quote-id="${quoteId}"]`).remove();
                 hideModal();
             } else {
-                console.error('Error deleting blog:', response.statusText);
-                alert('Failed to delete blog. Please try again.');
+                console.error('Error deleting quote:', response.statusText);
+                alert('Failed to delete quote. Please try again.');
             }
         })
         .catch(err => {
-            console.error('Error deleting blog:', err);
-            alert('An error occurred while deleting the blog.');
+            console.error('Error deleting quote:', err);
+            alert('An error occurred while deleting the quote.');
         });
     });
 

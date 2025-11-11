@@ -1,9 +1,11 @@
+import logging
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib import messages
 from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
 from django.http import HttpResponse, JsonResponse
+from django.urls import reverse
 from django.utils import timezone
 from django.conf import settings
 from django.contrib.auth import update_session_auth_hash, logout
@@ -14,9 +16,13 @@ import json
 from django.views.decorators.csrf import csrf_exempt
 from django.core.mail import send_mail
 from django.conf import settings
-from .models import Feedback, Notification
+from .models import Feedback, Notification, Profile, Quote, Message, Call, Client, ActivityLog
+from django.views.decorators.http import require_POST
+from django.core.paginator import Paginator
 
-from advocates.forms import ArticleForm, ContactMessageForm, ScheduledCallForm
+from advocates.forms import ArticleForm, ContactMessageForm, QuoteForm, ScheduledCallForm
+from django.db.models import Count
+from django.db.models.functions import TruncDate
 from .models import (
     LEGAL_SERVICES,
     Article,
@@ -59,48 +65,72 @@ def send_html_email(subject, template, context, to_email):
 
 @login_required
 @user_passes_test(admin_required)
-def dashboard_home(request):
+
+@login_required
+@user_passes_test(admin_required)
+def analytics_dashboard(request):
     now = timezone.now()
-    
-    # 1. Update Red Flags (This is essential for real-time counting)
-    ContactMessage.objects.filter(is_read=False, created_at__lte=now - timedelta(hours=48)).update(is_red_flag=True)
-    ScheduledCall.objects.filter(is_read=False, created_at__lte=now - timedelta(hours=48)).update(is_red_flag=True)
+    start_date = (now - timedelta(days=13)).date()
 
-    # 2. Fetch Metrics (The counts you see on the dashboard cards)
+    # Totals and status breakdowns
+    total_messages = ContactMessage.objects.count()
     unread_messages = ContactMessage.objects.filter(is_read=False).count()
+    red_flag_messages = ContactMessage.objects.filter(is_red_flag=True).count()
+
+    total_calls = ScheduledCall.objects.count()
+    confirmed_calls = ScheduledCall.objects.filter(is_confirmed=True).count()
     pending_calls = ScheduledCall.objects.filter(is_confirmed=False).count()
-    red_flag_count = ContactMessage.objects.filter(is_red_flag=True).count() + \
-                     ScheduledCall.objects.filter(is_red_flag=True).count()
-    total_notifications = unread_messages + pending_calls
+    red_flag_calls = ScheduledCall.objects.filter(is_red_flag=True).count()
 
-    # 3. Fetch Dynamic Content
-    recent_activity = ActivityLog.objects.order_by("-created_at")[:10]
-    
-    # FIXED: Fetch Upcoming Appointments (Confirmed Events)
-    # The date__isnull=False filter ensures we only query records that have a date,
-    # preventing the 'NoneType' error in the template when applying the |date filter.
-    upcoming_events = CalendarEvent.objects.filter(
-        date__gte=now.date(),
-        date__isnull=False
-    ).order_by('date', 'time_slot')[:5]
+    total_articles = Article.objects.exclude(type='quote').count()
+    total_quotes = Quote.objects.count()
+    total_feedbacks = Feedback.objects.count()
+    upcoming_events = CalendarEvent.objects.filter(date__gte=now.date()).count()
 
-    latest_messages = ContactMessage.objects.order_by('-created_at')[:10]
-    latest_calls = ScheduledCall.objects.order_by('-created_at')[:10]
+    # Time-series: last 14 days messages and calls
+    msg_qs = (
+        ContactMessage.objects.filter(created_at__date__gte=start_date)
+        .annotate(day=TruncDate('created_at'))
+        .values('day')
+        .annotate(count=Count('id'))
+    )
+    call_qs = (
+        ScheduledCall.objects.filter(created_at__date__gte=start_date)
+        .annotate(day=TruncDate('created_at'))
+        .values('day')
+        .annotate(count=Count('id'))
+    )
+
+    msg_map = {x['day'].strftime('%Y-%m-%d'): x['count'] for x in msg_qs}
+    call_map = {x['day'].strftime('%Y-%m-%d'): x['count'] for x in call_qs}
+
+    labels = []
+    msg_series = []
+    call_series = []
+    for i in range(14):
+        d = start_date + timedelta(days=i)
+        ds = d.strftime('%Y-%m-%d')
+        labels.append(ds)
+        msg_series.append(msg_map.get(ds, 0))
+        call_series.append(call_map.get(ds, 0))
 
     context = {
-        "admin_name": request.user.get_full_name() or request.user.username,
-        "unread_messages": unread_messages,
-        "pending_calls": pending_calls,
-        "red_flag_count": red_flag_count,
-        "total_notifications": total_notifications,
-        "recent_activity": recent_activity,
-        "upcoming_events": upcoming_events, 
-        
-        # Ensure these are correctly handled or removed if not used elsewhere
-        "total_clients": 0, # Placeholder/Replace with actual query if needed
-        "active_cases": 0,  # Placeholder/Replace with actual query if needed
+        'total_messages': total_messages,
+        'unread_messages': unread_messages,
+        'red_flag_messages': red_flag_messages,
+        'total_calls': total_calls,
+        'confirmed_calls': confirmed_calls,
+        'pending_calls': pending_calls,
+        'red_flag_calls': red_flag_calls,
+        'total_articles': total_articles,
+        'total_quotes': total_quotes,
+        'total_feedbacks': total_feedbacks,
+        'upcoming_events': upcoming_events,
+        'labels': labels,
+        'msg_series': msg_series,
+        'call_series': call_series,
     }
-    return render(request, "admin_dashboard/dashboard.html", context)
+    return render(request, 'admin_dashboard/analytics.html', context)
 
 
 # ---------------------------
@@ -163,6 +193,8 @@ def confirm_call(request, call_id):
 @user_passes_test(admin_required)
 def decline_call(request, call_id):
     call = get_object_or_404(ScheduledCall, id=call_id)
+    call.is_read = True  # Mark as read before deletion
+    call.save()
 
     # Email notification
     send_html_email(
@@ -190,12 +222,11 @@ def fetch_notifications(request):
     now = timezone.now()
     notifications = []
 
-    # 1. Update red flags dynamically (keep this as is)
+    # Update red flags dynamically
     ContactMessage.objects.filter(is_read=False, created_at__lte=now - timedelta(hours=48)).update(is_red_flag=True)
     ScheduledCall.objects.filter(is_read=False, created_at__lte=now - timedelta(hours=48)).update(is_red_flag=True)
 
-    # 2. Filter Contact Messages (FIXED)
-    # Exclude records where created_at is null before iterating
+    # Contact Messages
     for msg in ContactMessage.objects.filter(is_read=False, created_at__isnull=False).order_by("-created_at"):
         notifications.append({
             "id": msg.id,
@@ -206,16 +237,12 @@ def fetch_notifications(request):
             "red_flag": msg.is_red_flag
         })
 
-    # 3. Filter Scheduled Calls (FIXED)
-    # Exclude records where created_at is null before iterating
+    # Scheduled Calls
     for call in ScheduledCall.objects.filter(is_read=False, created_at__isnull=False).order_by("-created_at"):
         notifications.append({
             "id": call.id,
             "type": "call",
             "client": f"{call.first_name} {call.last_name}",
-            # Note: time_slot is a TimeField, which might also be null.
-            # You should check if time_slot is null on the model, 
-            # but created_at is the main problem.
             "time_slot": call.time_slot.strftime("%H:%M") if call.time_slot else None,
             "created_at": call.created_at.strftime("%Y-%m-%d %H:%M"),
             "red_flag": call.is_red_flag
@@ -223,6 +250,7 @@ def fetch_notifications(request):
 
     notifications = sorted(notifications, key=lambda x: x["created_at"], reverse=True)
     return JsonResponse({"notifications": notifications})
+
 # ---------------------------
 # Article Management
 # ---------------------------
@@ -233,14 +261,24 @@ def article_create(request):
         form = ArticleForm(request.POST, request.FILES)
         if form.is_valid():
             article = form.save()
-            return JsonResponse({"success": True, "message": f"Article '{article.title}' published successfully!"})
+            return JsonResponse({
+                "success": True,
+                "message": f"Article '{article.title}' published successfully!",
+                "redirect_url": reverse("manage_blogs")
+            })
         else:
-            errors = {field: [{"message": str(e)} for e in field_errors] for field, field_errors in form.errors.items()}
-            return JsonResponse({"success": False, "errors": errors})
+            errors = {field: [str(e) for e in field_errors] for field, field_errors in form.errors.items()}
+            return JsonResponse({"success": False, "errors": errors}, status=400)
 
     form = ArticleForm()
-    return render(request, "admin_dashboard/article_create.html", {"form": form})
+    categories = Category.objects.all().values_list("id", "name")
+    context = {
+        "form": form,
+        "categories": categories,
+    }
+    return render(request, "admin_dashboard/article_create.html", context)
 
+   
 @login_required
 @user_passes_test(admin_required)
 def manage_blogs(request):
@@ -299,36 +337,78 @@ def delete_blog(request, blog_id):
 # ---------------------------
 @login_required
 def admin_profile(request):
+    # Ensure the user has a Profile instance
+    profile, created = Profile.objects.get_or_create(user=request.user)
+
     if request.method == 'POST':
+        # Handle profile picture upload
+        if 'avatar' in request.FILES:
+            profile.image = request.FILES['avatar']
+            profile.save()
+            messages.success(request, 'Profile picture updated successfully.')
+            return redirect('admin_profile')
+
+        # Handle profile information update
         user = request.user
         user.first_name = request.POST.get('first_name', user.first_name)
         user.last_name = request.POST.get('last_name', user.last_name)
-        user.email = request.POST.get('email', user.email)
+        # Skip email update since the template disables it
+        # user.email = request.POST.get('email', user.email)
         user.save()
         messages.success(request, 'Profile updated successfully.')
 
+        # Handle password change
         password_form = PasswordChangeForm(user, request.POST)
         if password_form.is_valid():
             user = password_form.save()
             update_session_auth_hash(request, user)
             messages.success(request, 'Password changed successfully.')
         elif request.POST.get('old_password'):
-            messages.error(request, 'Password change failed. Check the old password.')
+            messages.error(request, 'Password change failed. Please check the old password.')
 
         return redirect('admin_profile')
 
-    return render(request, 'admin_dashboard/admin_profile.html')
+    # Render the template with the password form
+    password_form = PasswordChangeForm(user=request.user)
+    context = {
+        'password_form': password_form,
+    }
+    return render(request, 'admin_dashboard/admin_profile.html', context)
+
 
 @login_required
 def logout_view(request):
     logout(request)
     return redirect('login')
 
+def admin_required(user):
+    return user.is_staff or user.is_superuser
+
 @login_required
 @user_passes_test(admin_required)
 def scheduled_calls_admin(request):
+    # Get status filter from query parameters
+    status_filter = request.GET.get('status', '')
+    
+    # Base queryset
     calls = ScheduledCall.objects.order_by('-date', '-time_slot')
-    return render(request, "admin_dashboard/scheduled_calls.html", {"calls": calls})
+    
+    # Apply status filter if provided
+    if status_filter == 'confirmed':
+        calls = calls.filter(is_confirmed=True)
+    elif status_filter == 'pending':
+        calls = calls.filter(is_confirmed=False)
+    
+    # Paginate the filtered queryset
+    paginator = Paginator(calls, 10)  # Show 10 calls per page
+    page_number = request.GET.get('page', 1)  # Default to page 1
+    page_obj = paginator.get_page(page_number)
+    
+    return render(request, "admin_dashboard/scheduled_calls.html", {
+        "calls": page_obj,
+        "selected_status": status_filter,  # For dropdown persistence
+    })
+
 
 @login_required
 @user_passes_test(admin_required)
@@ -339,16 +419,43 @@ def activity_log_list(request):
 @login_required
 @user_passes_test(admin_required)
 def red_flag_messages(request):
-    messages = ContactMessage.objects.filter(is_red_flag=True).order_by('-created_at')
+    cutoff_time = timezone.now() - timedelta(hours=48)
+
+    # Find scheduled calls older than 48h that are still unconfirmed
+    overdue_calls = ScheduledCall.objects.filter(
+        is_confirmed=False,
+        created_at__lte=cutoff_time
+    )
+
+    # Automatically mark them as red flags and calculate how long they’ve been pending
+    for call in overdue_calls:
+        if not call.is_red_flag:
+            call.is_red_flag = True
+            call.save()
+
+        delta = timezone.now() - call.created_at
+        days = delta.days
+        hours = delta.seconds // 3600
+        call.pending_duration = (
+            f"{days} days, {hours} hours" if days or hours else "Less than an hour"
+        )
+
+    # Fetch all flagged scheduled calls
     calls = ScheduledCall.objects.filter(is_red_flag=True).order_by('-created_at')
-    
+
+    # Compute pending duration for all displayed calls
+    for call in calls:
+        delta = timezone.now() - call.created_at
+        days = delta.days
+        hours = delta.seconds // 3600
+        call.pending_duration = (
+            f"{days} days, {hours} hours" if days or hours else "Less than an hour"
+        )
+
     return render(
         request,
         "admin_dashboard/red_flag_messages.html",
-        {
-            "messages": messages,
-            "calls": calls,
-        }
+        {"calls": calls}
     )
 
 @csrf_exempt
@@ -407,23 +514,36 @@ def add_call(request):
         })
     
     from .models import Message, Call
+def dashboard_home(request):
+    print(">>> ADMIN DASHBOARD VIEW IS RUNNING <<<")
 
-def admin_dashboard(request):
-    unread_messages = Message.objects.filter(status='unread').count()
-    pending_calls = Call.objects.filter(status='pending').count()
+    # --- Basic dashboard stats ---
+    unread_messages = ContactMessage.objects.filter(is_read=False).count()
+    pending_calls = ScheduledCall.objects.filter(is_confirmed=False).count()
     total_clients = Client.objects.count()
-    active_cases = Call.objects.filter(status='pending').count()  # Or another criteria
+    active_cases = ScheduledCall.objects.filter(is_confirmed=False).count()  # Or another criteria
 
-    recent_activity = []  # Fetch logs if you have an ActivityLog model
+    # --- Scheduled Calls Over 48h (Pending Only) ---
+    cutoff_time = timezone.localtime(timezone.now()) - timedelta(hours=48)
+    overdue_scheduled_calls_count = ScheduledCall.objects.filter(
+        is_confirmed=False,
+        created_at__lte=cutoff_time
+    ).count()
 
-    return render(request, 'admin_dashboard/dashboard.html', {
-        'unread_messages': unread_messages,
-        'pending_calls': pending_calls,
-        'total_clients': total_clients,
-        'active_cases': active_cases,
-        'recent_activity': recent_activity
+    print("DEBUG >>> overdue_scheduled_calls_count =", overdue_scheduled_calls_count)
+
+    # --- Recent activity ---
+    recent_activity = ActivityLog.objects.order_by('-created_at')[:10]
+
+    # --- Render template ---
+    return render(request, "admin_dashboard/dashboard.html", {
+        "unread_messages": unread_messages,
+        "pending_calls": pending_calls,
+        "total_clients": total_clients,
+        "active_cases": active_cases,
+        "overdue_scheduled_calls_count": overdue_scheduled_calls_count,
+        "recent_activity": recent_activity,
     })
-
 from .models import Notification  # make sure to import Notification
 
 @login_required
@@ -610,8 +730,216 @@ def feedback_dashboard(request):
     else:
         feedbacks = Feedback.objects.filter(feedback_type__iexact=selected_type).order_by('-submitted_at')
 
-    print(f"Retrieved feedbacks: {feedbacks.count()} for type={selected_type}")
+    logger = logging.getLogger(__name__)
+    logger.info(f"Retrieved feedbacks: {feedbacks.count()} for type={selected_type}")
     return render(request, 'admin_dashboard/feedback_admin.html', {
         'feedbacks': feedbacks,
         'selected_type': selected_type,
     })
+
+def manage_blogs(request):
+    selected_type = request.GET.get('type', 'all')
+    blogs = Article.objects.exclude(type='quote')  # Exclude 'quote' type
+    if selected_type != 'all':
+        blogs = blogs.filter(type=selected_type)
+    context = {
+        'blogs': blogs,
+        'selected_type': selected_type,
+    }
+    return render(request, 'admin_dashboard/manage_blogs.html', context)
+
+def manage_quotes(request):
+    selected_sort = request.GET.get('sort', 'all')
+    quotes = Quote.objects.all()
+    if selected_sort == 'author':
+        quotes = quotes.order_by('author')
+    context = {
+        'quotes': quotes,
+        'selected_sort': selected_sort,
+    }
+    return render(request, 'admin_dashboard/manage_quotes.html', context)
+
+def quote_create(request):
+    if request.method == 'POST':
+        form = QuoteForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Quote created successfully.')
+            return redirect('manage_quotes')
+    else:
+        form = QuoteForm()
+    return render(request, 'admin_dashboard/quote_create.html', {'form': form})
+
+def edit_quote(request, pk):
+    quote = get_object_or_404(Quote, pk=pk)
+    if request.method == 'POST':
+        form = QuoteForm(request.POST, instance=quote)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Quote updated successfully.')
+            return redirect('manage_quotes')
+    else:
+        form = QuoteForm(instance=quote)
+    return render(request, 'admin_dashboard/quote_create.html', {'form': form})
+
+@require_POST
+def delete_quote(request, pk):
+    quote = get_object_or_404(Quote, pk=pk)
+    quote.delete()
+    return JsonResponse({'status': 'success'})
+
+@login_required
+@user_passes_test(admin_required)
+def get_events(request):
+    """
+    Fetch CalendarEvent objects for FullCalendar.
+    Returns events in the format expected by FullCalendar.
+    """
+    try:
+        events = CalendarEvent.objects.filter(
+            date__gte=timezone.now().date(),
+            date__isnull=False
+        ).order_by('date', 'time_slot')
+        
+        event_list = [
+            {
+                'id': event.id,
+                'title': event.title,
+                'start': event.date.strftime('%Y-%m-%d'),
+                'client': event.client,
+                'case_name': event.case_name,
+                'event_type': event.event_type,
+                'time_slot': event.time_slot.strftime('%H:%M') if event.time_slot else None,
+                'color': event.color if event.color else None
+            } for event in events
+        ]
+        return JsonResponse(event_list, safe=False)
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=500)
+    
+@csrf_exempt
+@login_required
+@user_passes_test(admin_required)
+def add_event(request):
+    """
+    Add a new CalendarEvent via AJAX from the calendar modal.
+    """
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            title = data.get('title')
+            client = data.get('client')
+            case_name = data.get('case_name')
+            date = data.get('date')
+            event_type = data.get('event_type')
+            time_slot = data.get('time_slot')  # Optional, can be null
+
+            if not all([title, client, case_name, date, event_type]):
+                return JsonResponse({'error': 'Missing required fields'}, status=400)
+
+            event = CalendarEvent.objects.create(
+                title=title,
+                client=client,
+                case_name=case_name,
+                date=date,
+                time_slot=time_slot,
+                event_type=event_type,
+                created_by=request.user,
+                color='#1E90FF' if event_type == 'call' else '#228B22' if event_type == 'meeting' else None
+            )
+
+            # Log activity
+            ActivityLog.objects.create(
+                admin_user=request.user,
+                action=f"Added {event_type} event: {title} for {client} ({case_name}) on {date}"
+            )
+
+            return JsonResponse({
+                'id': event.id,
+                'title': event.title,
+                'start': event.date.strftime('%Y-%m-%d'),
+                'client': event.client,
+                'case_name': event.case_name,
+                'event_type': event.event_type,
+                'time_slot': event.time_slot.strftime('%H:%M') if event.time_slot else None,
+                'color': event.color
+            })
+        except Exception as e:
+            return JsonResponse({'error': str(e)}, status=500)
+    return JsonResponse({'error': 'Invalid request method'}, status=405)
+
+@csrf_exempt
+@login_required
+@user_passes_test(admin_required)
+def edit_event(request, event_id):
+    """
+    Edit an existing CalendarEvent via AJAX.
+    """
+    if request.method == 'POST':
+        try:
+            event = get_object_or_404(CalendarEvent, id=event_id)
+            data = json.loads(request.body)
+            title = data.get('title')
+
+            if not title:
+                return JsonResponse({'error': 'Title is required'}, status=400)
+
+            event.title = title
+            event.save()
+
+            # Log activity
+            ActivityLog.objects.create(
+                admin_user=request.user,
+                action=f"Edited event: {title} (ID: {event_id})"
+            )
+
+            return JsonResponse({
+                'id': event.id,
+                'title': event.title,
+                'start': event.date.strftime('%Y-%m-%d'),
+                'client': event.client,
+                'case_name': event.case_name,
+                'event_type': event.event_type,
+                'time_slot': event.time_slot.strftime('%H:%M') if event.time_slot else None,
+                'color': event.color
+            })
+        except Exception as e:
+            return JsonResponse({'error': str(e)}, status=500)
+    return JsonResponse({'error': 'Invalid request method'}, status=405)
+
+@csrf_exempt
+@login_required
+@user_passes_test(admin_required)
+def delete_event(request, event_id):
+    """
+    Delete a CalendarEvent via AJAX.
+    """
+    if request.method == 'POST':
+        try:
+            event = get_object_or_404(CalendarEvent, id=event_id)
+            title = event.title
+            event.delete()
+
+            # Log activity
+            ActivityLog.objects.create(
+                admin_user=request.user,
+                action=f"Deleted event: {title} (ID: {event_id})"
+            )
+
+            return JsonResponse({'status': 'success'})
+        except Exception as e:
+            return JsonResponse({'error': str(e)}, status=500)
+    return JsonResponse({'error': 'Invalid request method'}, status=405)
+
+@require_POST
+@csrf_exempt  # Note: Consider removing csrf_exempt in production
+def mark_call_read(request, call_id):
+    try:
+        call = ScheduledCall.objects.get(id=call_id)
+        call.is_read = True
+        call.save()
+        return JsonResponse({'status': 'success'})
+    except ScheduledCall.DoesNotExist:
+        return JsonResponse({'status': 'error', 'message': 'Call not found'}, status=404)
+    except Exception as e:
+        return JsonResponse({'status': 'error', 'message': str(e)}, status=500)

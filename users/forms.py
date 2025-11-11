@@ -1,21 +1,33 @@
 # users/forms.py
 from django import forms
+from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
-from .models import UserProfile
+from .models import Profile
 
-class UserRegistrationForm(forms.ModelForm):
-    profile_picture = forms.ImageField(required=True)
+
+class RegistrationForm(UserCreationForm):
+    email = forms.EmailField(required=True, help_text='Required.')
+    first_name = forms.CharField(max_length=30, required=False)
+    last_name = forms.CharField(max_length=30, required=False)
+    avatar = forms.ImageField(required=False, label='Profile Picture')
 
     class Meta:
         model = User
-        fields = ['username', 'email', 'password']
+        fields = (
+            'username', 'first_name', 'last_name',
+            'email', 'password1', 'password2', 'avatar'
+        )
 
     def save(self, commit=True):
         user = super().save(commit=False)
-        user.set_password(self.cleaned_data['password'])
+        user.email = self.cleaned_data['email']
+        user.first_name = self.cleaned_data['first_name']
+        user.last_name = self.cleaned_data['last_name']
+
         if commit:
-            user.save()
-            # Save profile
-            profile = UserProfile(user=user, profile_picture=self.cleaned_data['profile_picture'])
-            profile.save()
+            user.save()                     # creates Profile via signal
+            if self.cleaned_data.get('avatar'):
+                profile = user.profile
+                profile.image = self.cleaned_data['avatar']
+                profile.save()
         return user
